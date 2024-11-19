@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign in</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--    <link rel="stylesheet" th:href="@{/css/login-form.css}">-->
+</head>
+<body>
+
+<section>
+    <div class="default-from">
+        <div class="content">
+            <h2>sign in</h2>
+            <form class="form" th:action="@{/login}" method="post">
+                <div class="inputBox">
+                    <input type="text" name = "username" required><i>Login</i>
+                </div>
+                <div class="inputBox">
+                    <input type="password" name = "password"  required><i>Password</i>
+                </div>
+                <div class="inputBox">
+                    <a href="/user/getSignupForm">Sign up</a>
+                </div>
+                <div class="inputBox">
+                    <input id = "entry-btn" type="submit" value="Sign in">
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

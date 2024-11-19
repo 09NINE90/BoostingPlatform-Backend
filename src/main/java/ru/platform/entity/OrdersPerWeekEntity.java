@@ -3,6 +3,7 @@ package ru.platform.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -13,7 +14,9 @@ import java.util.UUID;
  * выполненых за неделю конкретным пользователем
  * для того, чтобы динамически изменять уровень активности пользователя
  */
+@Entity
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders_per_week", schema = "dev")

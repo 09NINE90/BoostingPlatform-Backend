@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -15,7 +16,9 @@ import java.util.UUID;
  * - взятых в работу;
  * - выполненых заказах;
  */
+@Entity
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders_by_customers", schema = "dev")
@@ -31,8 +34,7 @@ public class OrdersByCustomersEntity {
     private UUID id;
 
     @Column(name = "second_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long secondId;
+    private String secondId;
 
     @Column(name = "description")
     @Schema(description = "Описание созданого заказа")
