@@ -2,6 +2,8 @@ package ru.platform.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,10 +13,9 @@ import ru.platform.entity.UserEntity;
 import ru.platform.repository.UserRepository;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
 public class SecurityService implements UserDetailsService {
 
+    @Autowired
     private UserRepository userRepository;
 
     @Override

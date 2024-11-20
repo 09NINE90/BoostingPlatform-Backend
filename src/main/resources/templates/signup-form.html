@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Sign up</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/login-form.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-
+<div class="default-from">
+    <div class="content">
+        <h2>Sign up</h2>
+        <form class="form">
+            <div class="inputBox">
+                <input type="email" id="email"  name = "email"><i>Email</i>
+            </div>
+            <div class="inputBox">
+                <input type="password" id="password" name = "password"><i>Password</i>
+            </div>
+            <div class="inputBox">
+                <input type="password" id="confirm-password" name = "confirmPassword"><i>Confirm password</i>
+            </div>
+            <div class="inputBox">
+                <input id="signup-btn" type="button" value="create">
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/sign-up-form.js}"></script>
 </body>
 </html>

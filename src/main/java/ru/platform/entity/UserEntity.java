@@ -28,6 +28,10 @@ public class UserEntity {
     @Schema(description = "ID пользователя")
     private UUID id;
 
+    @Column(name = "name")
+    @Schema(description = "Имя пользователя")
+    private String name;
+
     @Column(name = "roles")
     private String roles;
 
@@ -48,7 +52,7 @@ public class UserEntity {
     private String rating;
 
     @Column(name = "orders_count")
-    @Schema(description = "Общее количество выполненых заказов")
+    @Schema(description = "Общее количество выполненых/купленных заказов")
     private int ordersCount;
 
     @Column(name = "created_at")
