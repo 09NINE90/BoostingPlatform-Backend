@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dead PackMan - Home</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="navbar" th:include="navbar.html"></div>
+    <main>
+        <section class="slider">
+            <div class="slider-container">
+                <div class="slide"><img th:src="@{/images/slider.PNG}" alt="Call of Duty"></div>
+                <div class="slide"><img th:src="@{/images/slider.PNG}" alt="Call of Duty"></div>
+                <div class="slide"><img th:src="@{/images/slider.PNG}" alt="Call of Duty"></div>
+            </div>
+        </section>
+        <section class="why-choose-us">
+            <h2>WHY PLAYERS CHOOSING US?</h2>
+            <div class="reasons">
+                <div class="reason">
+                    <h3>💪 Pro Gamers</h3>
+                    <p>Our boosters are pro-gamers at their disciplines.</p>
+                </div>
+                <div class="reason">
+                    <h3>💲 Best Prices</h3>
+                    <p>The price corresponds to the quality. We always try to put the best prices on our services.</p>
+                </div>
+                <div class="reason">
+                    <h3>💬 Face-to-Face Support</h3>
+                    <p>You can always contact your booster or coach with chat.</p>
+                </div>
+                <div class="reason">
+                    <h3>🛡️ Total Safety</h3>
+                    <p>We perform our services without cheats, hacks, or exploits. Players use VPN to enter your account.</p>
+                </div>
+                <div class="reason">
+                    <h3>🔥 Hot Offers</h3>
+                    <p>Buy more - pay less. Discounts, promos, and more!</p>
+                </div>
+                <div class="reason">
+                    <h3>⏰ 24/7 Online</h3>
+                    <p>We are online 24/7 - you can contact us at any time and any time zone.</p>
+                </div>
+            </div>
+        </section>
+        <section class="about-us">
+            <h2>ABOUT US</h2>
+            <p>
+                <strong>Dead PackMan —</strong> We are a team focused on the comfort of the players. 
+                You no longer need to waste time getting rare achievements, items, or endless grind. 
+                Working with us, you will be able to get all the content in the game without sacrificing your time - 
+                do your personal business while we do everything you need. We will eliminate the routine from the gameplay 
+                so that you can enjoy it to the fullest.
+            </p>
+            <p class="signature">
+                Good luck, have fun. <br> 
+                Always yours - DPM team.
+            </p>
+        </section>
+    </main>
+
+    <div class="footer" th:include="footer.html"></div>
+
+    <script th:src="@{/js/slider.js}"></script>
+</body>
+</html>
