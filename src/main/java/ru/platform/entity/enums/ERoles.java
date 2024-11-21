@@ -4,6 +4,7 @@ public enum ERoles {
     ADMIN ("ADMIN"),
     CUSTOMER ("CUSTOMER"),
     BOOSTER ("BOOSTER"),
+    USER ("USER"),
     MANAGER ("MANAGER");
 
     private String title;

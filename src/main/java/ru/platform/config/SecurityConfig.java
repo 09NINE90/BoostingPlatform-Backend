@@ -37,7 +37,11 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/user/getSignupForm","/login","/css/**","/js/**").permitAll()
+                        request.requestMatchers("/user/mainPage",
+                                        "/user/createUser",
+                                        "/user/getSignupForm",
+                                        "/login","/css/**",
+                                        "/js/**","/images/**").permitAll()  // todo поправить доступы
                                 .anyRequest()
                                 .authenticated())
                 .formLogin(form -> form.loginPage("/login")

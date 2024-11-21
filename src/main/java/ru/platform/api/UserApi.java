@@ -1,10 +1,11 @@
 package ru.platform.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.platform.dto.UserDTO;
 import ru.platform.entity.UserEntity;
 import ru.platform.service.IUserService;
 
@@ -20,7 +21,7 @@ public class UserApi {
     @GetMapping("/mainPage")
     public ModelAndView getMainPage(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("main-page");
+        modelAndView.setViewName("services");
         return modelAndView;
     }
 
@@ -34,6 +35,12 @@ public class UserApi {
     @GetMapping("/getAllUsers")
     public List<UserEntity> getAllUsers(){
         return service.getAllUsers();
+    }
+
+    @PostMapping("/createUser")
+    public ResponseEntity<Void> userSave(@RequestBody UserDTO user){
+        service.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/user/mainPage").build();
     }
 
 }

@@ -28,9 +28,9 @@ public class UserEntity {
     @Schema(description = "ID пользователя")
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "nickname")
     @Schema(description = "Имя пользователя")
-    private String name;
+    private String nickname;
 
     @Column(name = "roles")
     private String roles;

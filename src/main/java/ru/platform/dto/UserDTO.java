@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class UserDTO {
     private String roles;
     private long secondId;
+    private String nickname;
     private String username;
     private String password;
     private String rating;
