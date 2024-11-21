@@ -1,0 +1,142 @@
+/* Базовые стили */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    display: flex; /* Для корректного размещения футера */
+    flex-direction: column; /* Элементы располагаются вертикально */
+    height: 100%; /* Высота страницы — 100% экрана */
+}
+
+main {
+    flex: 1; /* Основное содержимое растягивается */
+    display: flex;
+    flex-direction: column; /* Расположение контента вертикально */
+}
+
+/* Слайдер */
+.slider {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Ограничиваем максимальную ширину слайдера */
+    height: 400px; /* Высота слайдера */
+    margin: 20px auto; /* Центрируем слайдер */
+    overflow: hidden; /* Скрываем лишнее */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Небольшая тень */
+}
+
+.slider-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Плавный переход между слайдами */
+}
+
+.slide {
+    min-width: 100%; /* Каждый слайд занимает 100% ширины контейнера */
+}
+
+.slide img {
+    width: 100%; /* Картинки заполняют весь слайд */
+    height: 100%; /* Растягиваем по высоте */
+    object-fit: cover; /* Обрезаем изображения, чтобы они выглядели аккуратно */
+}
+
+/* КНОПКА ВЫХОДА */
+.logout-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #0056b3; /* Темно-синий при наведении */
+}
+
+/* Анимация слайдера */
+@keyframes slide {
+    0%, 20% { transform: translateX(0); }
+    25%, 45% { transform: translateX(-100%); }
+    50%, 70% { transform: translateX(-200%); }
+    75%, 100% { transform: translateX(-300%); }
+}
+
+/* WHY PLAYERS CHOOSING US */
+.why-choose-us {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.why-choose-us h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.reasons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Три элемента в ряд */
+    gap: 20px; /* Отступы между элементами */
+    max-width: 1200px; /* Ограничение ширины */
+    margin: 0 auto; /* Центрируем */
+}
+
+.reason {
+    text-align: center;
+    background: #f9f9f9; /* Легкий фон для каждого блока */
+    padding: 15px;
+    border-radius: 10px; /* Скругленные углы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    transition: transform 0.3s ease;
+}
+
+.reason:hover {
+    transform: scale(1.05); /* Легкое увеличение при наведении */
+}
+
+.reason h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.reason p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* ABOUT US */
+.about-us {
+    background-color: #f9f9f9; /* Легкий серый фон */
+    padding: 40px 20px;
+    border-radius: 10px; /* Скругленные углы */
+    margin: 40px 20px; /* Отступы сверху и по бокам */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    text-align: center;
+    max-width: 900px; /* Ограничение ширины */
+    margin-left: auto;
+    margin-right: auto; /* Центрируем */
+}
+
+.about-us h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.about-us p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.about-us .signature {
+    margin-top: 20px;
+    font-style: italic;
+    color: #333;
+}

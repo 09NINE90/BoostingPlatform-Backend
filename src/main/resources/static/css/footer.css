@@ -1,0 +1,116 @@
+/* Общий стиль для body и html */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Устанавливаем минимальную высоту для страницы */
+    display: flex;
+    flex-direction: column; /* Элементы располагаются столбцом */
+}
+
+main {
+    flex: 1; /* Основной контент занимает доступное пространство */
+}
+
+/* Стили для футера */
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 15px;
+    text-align: center;
+}
+
+
+.footer-content {
+    display: flex; /* Используем Flexbox */
+    justify-content: space-between; /* Распределяем элементы по сторонам */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    gap: 20px; /* Отступы между блоками */
+    max-width: 1200px; /* Ограничиваем ширину футера */
+    margin: 0 auto; /* Центрируем футер */
+    flex-wrap: wrap; /* Элементы будут переноситься на следующую строку при нехватке места */
+}
+
+/* ЛОГОТИПЫ ПЛАТЕЖНЫХ СИСТЕМ */
+.footer-payment {
+    display: flex; /* Располагаем логотипы в одну строку */
+    justify-content: flex-start; /* Логотипы выравниваются по левому краю */
+    align-items: center;
+}
+
+.footer-payment img {
+    width: 60px; /* Размер логотипов */
+    margin-right: 15px; /* Расстояние между логотипами */
+    transition: transform 0.3s ease; /* Анимация */
+}
+
+.footer-payment img:hover {
+    transform: scale(1.1); /* Увеличение при наведении */
+}
+
+/* ФОРМА ПОДПИСКИ */
+.footer-newsletter {
+    text-align: center; /* Текст по центру */
+}
+
+.footer-newsletter h4 {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.footer-newsletter form {
+    display: flex; /* Поле ввода и кнопка в одну строку */
+    justify-content: center;
+    gap: 5px;
+}
+
+.footer-newsletter input {
+    padding: 8px; /* Внутренние отступы */
+    border: 1px solid #ccc; /* Граница */
+    border-radius: 5px; /* Скругленные углы */
+    width: 250px; /* Ширина поля ввода */
+}
+
+.footer-newsletter button {
+    padding: 8px 15px;
+    background-color: #007BFF; /* Синий фон кнопки */
+    color: white; /* Белый текст */
+    border: none; /* Убираем границы */
+    border-radius: 5px; /* Скругленные углы */
+    cursor: pointer; /* Указатель мыши */
+}
+
+.privacy-note {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 10px;
+}
+
+/* КОНТАКТНАЯ ИНФОРМАЦИЯ */
+.footer-contact {
+    text-align: right; /* Выравнивание текста по правому краю */
+}
+
+.footer-contact h4 {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.footer-contact p {
+    margin: 3px 0;
+    font-size: 14px; /* Размер шрифта контактов */
+    cursor: pointer; /* Указатель мыши */
+    transition: color 0.3s ease; /* Анимация при наведении */
+}
+
+.footer-contact p:hover {
+    color: #007BFF; /* Синий цвет при наведении */
+}
+
+/* КОПИРАЙТ */
+.footer-copyright {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #aaa;
+}

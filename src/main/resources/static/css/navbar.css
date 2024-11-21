@@ -1,0 +1,75 @@
+/* Стили для навбара */
+.navbar {
+    display: flex; /* Элементы в строку */
+    justify-content: space-between; /* Логотип слева, меню по центру, корзина и кнопка справа */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    padding: 15px 30px;
+    background-color: black;
+    color: white;
+}
+
+/* ЛОГОТИП */
+.logo {
+    margin-right: auto; /* Отодвигаем логотип к левому краю */
+}
+
+.logo img {
+    width: 120px; /* Размер логотипа */
+    height: auto;
+    cursor: pointer; /* Указатель при наведении */
+}
+
+/* МЕНЮ */
+.menu {
+    display: flex;
+    justify-content: center; /* Центрируем ссылки внутри меню */
+    gap: 20px; /* Отступ между ссылками */
+    position: absolute; /* Абсолютное позиционирование */
+    left: 50%; /* Центрируем относительно страницы */
+    transform: translateX(-50%); /* Корректируем центрирование */
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: #007BFF; /* Синий цвет при наведении */
+}
+
+/* КОРЗИНА И КНОПКА */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto; /* Сдвигаем вправо */
+}
+
+.cart img {
+    width: 35px; /* Размер корзины */
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.cart img:hover {
+    transform: scale(1.1); /* Увеличение при наведении */
+}
+
+.logout-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #0056b3;
+}
