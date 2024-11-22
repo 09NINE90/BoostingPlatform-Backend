@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.UUID;
  */
 @Entity
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user", schema = "dev")
@@ -26,14 +28,20 @@ public class UserEntity {
     @Schema(description = "ID пользователя")
     private UUID id;
 
-    @Column(name = "second_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID пользователя для отображения на странице")
-    private long secondId;
+    @Column(name = "nickname")
+    @Schema(description = "Имя пользователя")
+    private String nickname;
 
-    @Column(name = "email")
+    @Column(name = "roles")
+    private String roles;
+
+    @Column(name = "second_id")
+    @Schema(description = "ID пользователя для отображения на странице")
+    private String secondId;
+
+    @Column(name = "username")
     @Schema(description = "Email пользователя")
-    private String email;
+    private String username;
 
     @Column(name = "password")
     @Schema(description = "Пароль пользователя")
@@ -44,7 +52,7 @@ public class UserEntity {
     private String rating;
 
     @Column(name = "orders_count")
-    @Schema(description = "Общее количество выполненых заказов")
+    @Schema(description = "Общее количество выполненых/купленных заказов")
     private int ordersCount;
 
     @Column(name = "created_at")

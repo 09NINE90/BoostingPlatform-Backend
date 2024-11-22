@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Services</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/services.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <!-- Подключаем общий навбар -->
+    <div class="navbar" th:include="navbar.html"></div>
+
+    <!-- Основное содержимое страницы -->
+    <main>
+        <div class="services-page">
+            <!-- Боковое меню с играми -->
+            <aside class="games-list">
+                <h2>Games</h2>
+                <ul>
+                    <ul id="game-list"></ul>
+                </ul>
+            </aside>
+
+            <!-- Секция услуг -->
+            <section class="services-list">
+                <div class="services"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Подключаем общий футер -->
+    <div class="footer" th:include="footer.html"></div>
+
+    <!-- Подключаем скрипты -->
+    <script th:src="@{/js/slider.js}"></script>
+    <script th:src="@{/js/services.js}"></script>
+</body>
+</html>
