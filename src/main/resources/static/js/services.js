@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return response.json(); // Парсим JSON из ответа
         })
         .then((data) => {
+            console.log(data)
             data.forEach((order) => {
                 const serviceCard = document.createElement("div");
                 serviceCard.classList.add("service-card");

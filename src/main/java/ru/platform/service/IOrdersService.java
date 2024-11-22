@@ -1,9 +1,11 @@
 package ru.platform.service;
 
 import ru.platform.entity.BaseOrdersEntity;
+import ru.platform.request.BaseOrderRequest;
+import ru.platform.response.BaseOrderResponse;
 
 import java.util.List;
 
 public interface IOrdersService {
-    List<BaseOrdersEntity> getAllOrders();
+    BaseOrderResponse getAllOrders(BaseOrderRequest request);
 }
