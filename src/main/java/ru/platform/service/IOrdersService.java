@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IOrdersService {
     BaseOrderResponse getAllOrders(BaseOrderRequest request);
+    void saveEditingBaseOrder(BaseOrdersEntity request);
 }

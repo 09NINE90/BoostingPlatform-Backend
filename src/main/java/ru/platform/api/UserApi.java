@@ -21,7 +21,7 @@ public class UserApi {
     @GetMapping("/mainPage")
     public ModelAndView getMainPage(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("services");
+        modelAndView.setViewName("admin-services");
         return modelAndView;
     }
 

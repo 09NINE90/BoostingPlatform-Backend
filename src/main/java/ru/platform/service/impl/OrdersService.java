@@ -1,9 +1,9 @@
 package ru.platform.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.repository.BaseOrdersRepository;
@@ -30,8 +30,19 @@ public class OrdersService implements IOrdersService {
         return mapToResponse(getBaseOrderPageFunc().apply(request));
     }
 
+    @Override
+    public void saveEditingBaseOrder(BaseOrdersEntity request) {
+        BaseOrdersEntity existingOrder = baseOrdersRepository.findById(request.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        existingOrder.setTitle(request.getTitle());
+        existingOrder.setDescription(request.getDescription());
+        existingOrder.setBasePrice(request.getBasePrice());
+        baseOrdersRepository.save(existingOrder);
+    }
+
     private BaseOrdersEntity mapBaseOrderFrom(BaseOrdersEntity e){
         return BaseOrdersEntity.builder()
+                .id(e.getId())
                 .basePrice(e.getBasePrice())
                 .title(e.getTitle())
                 .createdAt(e.getCreatedAt())

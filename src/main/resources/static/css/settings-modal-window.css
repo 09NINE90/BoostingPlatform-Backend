@@ -1,0 +1,203 @@
+.modal {
+    display: none; /* Изначально скрыто */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.modal-section {
+    margin-bottom: 15px;
+}
+
+.modal-section h3 {
+    margin: 5px 0;
+}
+
+.modal-section input,
+.modal-section textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none; /* Класс для скрытия */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.save-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.save-button:hover {
+    background-color: #0056b3;
+}
+
+.hidden{
+    display: none;
+}
+
+/* Основной стиль фильтров */
+.filter-panel {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-panel h3 {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.filter-panel .filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-panel h4 {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.filter-panel label {
+    font-size: 14px;
+    color: #555;
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-panel label:hover {
+    color: #007BFF;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    accent-color: #007BFF;
+    cursor: pointer;
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.modal-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.modal-section input,
+.modal-section textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+.save-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.save-button:hover {
+    background-color: #0056b3;
+}
