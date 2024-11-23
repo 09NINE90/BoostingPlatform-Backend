@@ -44,8 +44,10 @@ public class OrdersService implements IOrdersService {
         List<BaseOrdersEntity> mappedOrders = entities.stream().map(this::mapBaseOrderFrom).collect(Collectors.toList());
         return BaseOrderResponse.builder()
                 .baseOrder(mappedOrders)
-                .pageNumber(1)
-                .pageSize(20)
+                .pageNumber(entities.getNumber() + 1)
+                .pageSize(entities.getSize())
+                .pageTotal(entities.getTotalPages())
+                .recordTotal(entities.getTotalElements())
                 .build();
     }
     private Function<BaseOrderRequest, Page<BaseOrdersEntity>> getBaseOrderPageFunc(){
@@ -65,10 +67,10 @@ public class OrdersService implements IOrdersService {
     }
 
     private int getSizeBy(BaseOrderRequest request) {
-        return 20;
+        return getSizeBy(request.getPageSize());
     }
 
     private int getSizeBy(Integer pageSize) {
-        return pageSize == null ? 20 : pageSize;
+        return pageSize == null || pageSize <=0 ? 20 : pageSize;
     }
 }

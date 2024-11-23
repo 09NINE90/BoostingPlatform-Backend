@@ -9,6 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/services.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/page-request.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -33,13 +34,13 @@
                 <div class="services"></div>
             </section>
         </div>
+        <div class="pagination"></div>
     </main>
 
     <!-- Подключаем общий футер -->
     <div class="footer" th:include="footer.html"></div>
 
     <!-- Подключаем скрипты -->
-    <script th:src="@{/js/slider.js}"></script>
     <script th:src="@{/js/services.js}"></script>
 </body>
 </html>

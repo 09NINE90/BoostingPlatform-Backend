@@ -18,7 +18,7 @@ public class BaseOrderResponse {
     private int pageNumber;
     private int pageSize;
     private int pageTotal;
-    private int recordTotal;
+    private long recordTotal;
 
     @Override
     public String toString() {
