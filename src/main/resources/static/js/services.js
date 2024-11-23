@@ -1,5 +1,9 @@
 const gameListElement = document.getElementById("game-list");
 const servicesContainer = document.querySelector(".services");
+const paginationContainer = document.querySelector(".pagination");
+const token = $("meta[name='_csrf']").attr("content");
+let currentPage = 1; // Текущая страница (начинается с 1)
+const pageSize = 20; // Размер страницы
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -35,16 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching games:", error);
         });
 
+    fetchOrders(currentPage)
 
-    fetch('/orders/getAllOrders')  // Укажите ваш правильный эндпоинт
+
+});
+
+function fetchOrders(pageNumber) {
+    fetch('/orders/getAllOrders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify({ pageNumber, pageSize }),
+    })
         .then((response) => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok " + response.statusText);
-        }
-        return response.json(); // Парсим JSON из ответа
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json(); // Парсим JSON из ответа
         })
         .then((data) => {
-            data.forEach((order) => {
+            servicesContainer.innerHTML = '';
+            data.baseOrder.forEach((order) => {
                 const serviceCard = document.createElement("div");
                 serviceCard.classList.add("service-card");
 
@@ -79,10 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Добавляем карточку в контейнер
                 servicesContainer.appendChild(serviceCard);
-            })
+            });
+
+            renderPagination(data.pageNumber, data.pageTotal);
         })
         .catch(error => {
             console.error('Error fetching service data:', error);
         });
-
-});
+}
