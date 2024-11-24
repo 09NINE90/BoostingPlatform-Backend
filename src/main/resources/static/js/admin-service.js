@@ -3,25 +3,33 @@ let currentPage = 1; // Текущая страница (начинается с
 const pageSize = 12; // Размер страницы
 const servicesContainer = document.querySelector('.services'); // Контейнер для карточек
 const paginationContainer = document.querySelector(".pagination");
+
 // Загружаем данные после загрузки страницы
 document.addEventListener('DOMContentLoaded', () => {
     const addOrderBtn = document.getElementById('add-order-btn');
+    const searchBtn = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+
     addOrderBtn.addEventListener('click', openAddOrderModal);
+    searchBtn.addEventListener('click', () => searchOrder(searchInput));
 
     addPageNumber(currentPage)
 
 });
 
+function searchOrder (searchInput){
+    const request = searchInput.value;
+    console.log(request);
+}
 
 function addPageNumber(pageNumber) {
-    const title = 'ХЕР';
     fetch('/orders/getAllOrders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({ title, pageNumber, pageSize }),
+        body: JSON.stringify({ pageNumber, pageSize }),
     })
         .then(response => {
             if (!response.ok) {
