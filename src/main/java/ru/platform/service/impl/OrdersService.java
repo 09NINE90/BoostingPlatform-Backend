@@ -4,16 +4,23 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.BaseOrdersEntity;
-import ru.platform.repository.BaseOrdersRepository;
-import ru.platform.repository.OrdersByCustomersRepository;
-import ru.platform.repository.OrdersPerWeekRepository;
+import ru.platform.entity.GameEntity;
+import ru.platform.entity.UserEntity;
+import ru.platform.repository.*;
+import ru.platform.request.BaseOrderEditRequest;
 import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
 import ru.platform.service.IOrdersService;
+import ru.platform.utils.GenerateSecondIdUtil;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,7 +31,9 @@ public class OrdersService implements IOrdersService {
     private final OrdersByCustomersRepository ordersByCustomersRepository;
     private final OrdersPerWeekRepository ordersPerWeekRepository;
     private final BaseOrdersRepository baseOrdersRepository;
-
+    private final UserRepository userRepository;
+    private final GameRepository gameRepository;
+    private final GenerateSecondIdUtil generateSecondIdUtil;
     @Override
     public BaseOrderResponse getAllOrders(BaseOrderRequest request) {
         return mapToResponse(getBaseOrderPageFunc().apply(request));
@@ -38,6 +47,30 @@ public class OrdersService implements IOrdersService {
         existingOrder.setDescription(request.getDescription());
         existingOrder.setBasePrice(request.getBasePrice());
         baseOrdersRepository.save(existingOrder);
+    }
+
+    @Override
+    public void addNewBaseOrder(BaseOrderEditRequest request, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Optional<UserEntity> user = userRepository.findById(userDetails.getId());
+        Optional<GameEntity> game = gameRepository.findById(request.getGame().getId());
+
+        if (user.isPresent() && game.isPresent()){
+            baseOrdersRepository.save(BaseOrdersEntity.builder()
+                                .title(request.getTitle())
+                                .creator(user.get())
+                                .description(request.getDescription())
+                                .basePrice(request.getBasePrice())
+                                .createdAt(LocalDate.now())
+                                .game(game.get())
+                                .secondId(generateSecondIdUtil.getRandomId())
+                                .build());
+        }
+    }
+
+    @Override
+    public void deleteBaseOrder(UUID id) {
+        baseOrdersRepository.deleteById(id);
     }
 
     private BaseOrdersEntity mapBaseOrderFrom(BaseOrdersEntity e){

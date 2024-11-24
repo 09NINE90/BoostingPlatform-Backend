@@ -31,7 +31,7 @@
             <button class="filter-button">
                 <span>🔧</span>
             </button>
-            <button class="filter-button">
+            <button id="add-order-btn" class="filter-button">
                 <span>+</span>
             </button>
             <div class="search-bar">
@@ -96,6 +96,37 @@
         </div>
     </div>
 </div>
+
+<div id="add-card-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Add New Service Card</h2>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h3>Add Image</h3>
+                <input type="file" id="new-service-image">
+            </div>
+            <div class="modal-section">
+                <h3>Order Title</h3>
+                <input type="text" id="new-service-title" placeholder="Enter order title">
+            </div>
+            <div class="modal-section">
+                <h3>Order Description</h3>
+                <textarea id="new-service-description" rows="4" placeholder="Enter order description"></textarea>
+            </div>
+            <div class="modal-section">
+                <h3>Price</h3>
+                <input type="number" id="new-service-price" placeholder="Enter price">
+            </div>
+            <div class="modal-section">
+                <h3>Select Game</h3>
+                <select id="new-service-game"></select>
+            </div>
+            <button id="add-new-order-service-button" class="save-button">Add Service</button>
+        </div>
+    </div>
+</div>
+
 
 <script th:src="@{/js/admin-service.js}"></script>
 <script th:src="@{/js/pagination.js}"></script>

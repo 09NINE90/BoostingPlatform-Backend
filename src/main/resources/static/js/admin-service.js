@@ -5,10 +5,13 @@ const servicesContainer = document.querySelector('.services'); // Контейн
 const paginationContainer = document.querySelector(".pagination");
 // Загружаем данные после загрузки страницы
 document.addEventListener('DOMContentLoaded', () => {
+    const addOrderBtn = document.getElementById('add-order-btn');
+    addOrderBtn.addEventListener('click', openAddOrderModal);
 
     addPageNumber(currentPage)
 
 });
+
 
 function addPageNumber(pageNumber) {
     fetch('/orders/getAllOrders', {
@@ -33,9 +36,9 @@ function addPageNumber(pageNumber) {
                 serviceCard.classList.add('service-card');
 
                 // Создаем изображение
-                const img = document.createElement('img');
-                img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
-                img.alt = order.title || 'Service Image';
+                // const img = document.createElement('img');
+                // img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
+                // img.alt = order.title || 'Service Image';
 
                 // Создаем блок информации
                 const serviceInfo = document.createElement('div');
@@ -45,7 +48,7 @@ function addPageNumber(pageNumber) {
                 secondId.textContent = order.secondId;
 
                 const title = document.createElement('h3');
-                const maxLength = 20;
+                const maxLength = 30;
                 let text = order.title;
                 if (text.length > maxLength) {
                     text = text.substring(0, maxLength) + '...';
@@ -91,7 +94,6 @@ function addPageNumber(pageNumber) {
                 serviceActions.appendChild(deleteButton);
 
                 // Собираем карточку
-                serviceCard.appendChild(img);
                 serviceCard.appendChild(serviceInfo);
                 serviceCard.appendChild(serviceActions);
                 // Добавляем карточку в контейнер
@@ -101,6 +103,9 @@ function addPageNumber(pageNumber) {
                 editButton.addEventListener('click', () => {
                     openEditModal(order, data.pageNumber);
                 });
+                deleteButton.addEventListener('click', () => {
+                    deleteOrder(order)
+                });
             });
             renderPagination(data.pageNumber, data.pageTotal);
         })
@@ -109,13 +114,31 @@ function addPageNumber(pageNumber) {
         });
 }
 
+function deleteOrder(order){
+    fetch(`/orders/deleteBaseOrder`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify(order.id),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            location.reload()
+            return response.json(); // Парсим JSON
+        })
+}
+
 function openEditModal(order, pageNumber) {
     const modal = document.getElementById("modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");
     const priceInput = modal.querySelector("input[type='number']");
-    const saveBtn = modal.querySelector(".save-button")
-    const modalTitle = modal.querySelector('h2')
+    const saveBtn = modal.querySelector(".save-button");
+    const modalTitle = modal.querySelector('h2');
     // Заполняем поля модального окна данными
     titleInput.value = order.title;
     descriptionTextarea.value = order.description;
@@ -126,8 +149,6 @@ function openEditModal(order, pageNumber) {
     modal.classList.remove("hidden");
     modal.style.display = "flex";
 
-    order.title = titleInput.textContent
-    console.log(order);
     saveBtn.addEventListener('click',() => {
         order.title = titleInput.value
         order.description = descriptionTextarea.value
@@ -147,5 +168,61 @@ function openEditModal(order, pageNumber) {
                 location.reload()
                 return response.json(); // Парсим JSON
             })
+    })
+}
+
+function openAddOrderModal(){
+    const modal = document.getElementById("add-card-modal");
+    const titleInput = modal.querySelector("input[type='text']");
+    const descriptionTextarea = modal.querySelector("textarea");
+    const priceInput = modal.querySelector("input[type='number']");
+    const gameSelect = document.getElementById('new-service-game');
+    const addBtn = document.getElementById("add-new-order-service-button");
+
+    fetch('/games/getAllGames')
+        .then(response => response.json())
+        .then(games => {
+            games.forEach(game => {
+                const option = document.createElement('option');
+                option.value = game.id; // или другое уникальное значение
+                option.text = game.title; // или другое отображаемое поле
+                gameSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading games:', error));
+
+
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+
+    addBtn.addEventListener('click', () => {
+        const selectedOption = gameSelect.selectedOptions[0];
+        const newOrder = {
+            title: titleInput.value,
+            description: descriptionTextarea.value,
+            basePrice: priceInput.value,
+            game: {
+                id: selectedOption.value,
+                title: selectedOption.text
+            }
+        }
+
+        fetch(`/orders/addNewOrder`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify(newOrder),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok " + response.statusText);
+                }
+                location.reload()
+                return response.json(); // Парсим JSON
+            })
+
+        console.log(newOrder)
     })
 }

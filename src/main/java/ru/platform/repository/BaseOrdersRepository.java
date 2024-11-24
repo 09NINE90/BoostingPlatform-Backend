@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface BaseOrdersRepository extends JpaRepository<BaseOrdersEntity, UUID> {
+    void deleteBySecondId(String secondId);
+
+    boolean findBySecondId(String replace);
 }
