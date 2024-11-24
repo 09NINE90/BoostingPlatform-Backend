@@ -1,16 +1,26 @@
-const modal = document.getElementById("modal");
-const closeButton = modal.querySelector(".close-button");
+const editModal = document.getElementById("modal");
+const addModal = document.getElementById("add-card-modal");
 
+const closeEditButton = editModal.querySelector(".close-button");
+const closeAddButton = addModal.querySelector(".close-button");
+
+
+closeAddButton.addEventListener("click", () => {
+    addModal.classList.add("hidden");
+    addModal.style.display = "none";
+})
 // Закрытие модального окна
-closeButton.addEventListener("click", () => {
-    modal.classList.add("hidden");
-    modal.style.display = "none"; // Скрыть модальное окно
+closeEditButton.addEventListener("click", () => {
+    editModal.classList.add("hidden");
+    editModal.style.display = "none"; // Скрыть модальное окно
 });
 
 // Закрытие при клике вне окна
 window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        modal.classList.add("hidden");
-        modal.style.display = "none"; // Скрыть модальное окно
+    if (event.target === editModal || event.target === addModal) {
+        editModal.classList.add("hidden");
+        editModal.style.display = "none";
+        addModal.classList.add("hidden");
+        addModal.style.display = "none";
     }
 });

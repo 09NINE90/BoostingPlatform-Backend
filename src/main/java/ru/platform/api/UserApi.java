@@ -29,7 +29,7 @@ public class UserApi {
             modelAndView.setViewName("admin-services");
         }
         else {
-            modelAndView.setViewName("main-page");
+            modelAndView.setViewName("services");
         }
         return modelAndView;
 
