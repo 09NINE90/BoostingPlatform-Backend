@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.platform.dto.CustomUserDetails;
@@ -12,7 +13,6 @@ import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
 import ru.platform.repository.*;
 import ru.platform.request.BaseOrderEditRequest;
-import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
 import ru.platform.service.IOrdersService;
 import ru.platform.utils.GenerateSecondIdUtil;
@@ -34,8 +34,9 @@ public class OrdersService implements IOrdersService {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
+
     @Override
-    public BaseOrderResponse getAllOrders(BaseOrderRequest request) {
+    public BaseOrderResponse getAllOrders(BaseOrderEditRequest request) {
         return mapToResponse(getBaseOrderPageFunc().apply(request));
     }
 
@@ -73,6 +74,18 @@ public class OrdersService implements IOrdersService {
         baseOrdersRepository.deleteById(id);
     }
 
+    private Specification<BaseOrdersEntity> buildSpecification(BaseOrderEditRequest request) {
+        Specification<BaseOrdersEntity> spec = Specification.where(null);
+
+        // Add filter criteria based on the request object
+        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("title"), request.getTitle()));
+        }
+
+        return spec;
+    }
+
     private BaseOrdersEntity mapBaseOrderFrom(BaseOrdersEntity e){
         return BaseOrdersEntity.builder()
                 .id(e.getId())
@@ -94,15 +107,15 @@ public class OrdersService implements IOrdersService {
                 .recordTotal(entities.getTotalElements())
                 .build();
     }
-    private Function<BaseOrderRequest, Page<BaseOrdersEntity>> getBaseOrderPageFunc(){
-        return request -> baseOrdersRepository.findAll(getPageRequest(request));
+    private Function<BaseOrderEditRequest, Page<BaseOrdersEntity>> getBaseOrderPageFunc(){
+        return request -> baseOrdersRepository.findAll(buildSpecification(request), getPageRequest(request));
     }
 
-    private PageRequest getPageRequest(BaseOrderRequest request) {
+    private PageRequest getPageRequest(BaseOrderEditRequest request) {
         return PageRequest.of(getPageBy(request), getSizeBy(request));
     }
 
-    private int getPageBy(BaseOrderRequest request) {
+    private int getPageBy(BaseOrderEditRequest request) {
         return getPageBy(request.getPageNumber());
     }
 
@@ -110,7 +123,7 @@ public class OrdersService implements IOrdersService {
         return pageNumber == null || pageNumber <= 0 ? 0 : pageNumber - 1;
     }
 
-    private int getSizeBy(BaseOrderRequest request) {
+    private int getSizeBy(BaseOrderEditRequest request) {
         return getSizeBy(request.getPageSize());
     }
 

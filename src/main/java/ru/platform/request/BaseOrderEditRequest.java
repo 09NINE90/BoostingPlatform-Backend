@@ -9,6 +9,8 @@ public class BaseOrderEditRequest {
     private String description;
     private float basePrice;
     private GameEntity game;
+    private int pageNumber;
+    private int pageSize;
 
     @Override
     public String toString() {

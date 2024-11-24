@@ -14,13 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function addPageNumber(pageNumber) {
+    const title = 'ХЕР';
     fetch('/orders/getAllOrders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({ pageNumber, pageSize }),
+        body: JSON.stringify({ title, pageNumber, pageSize }),
     })
         .then(response => {
             if (!response.ok) {
@@ -101,7 +102,7 @@ function addPageNumber(pageNumber) {
 
                 // Обработчик клика на кнопку редактирования
                 editButton.addEventListener('click', () => {
-                    openEditModal(order, data.pageNumber);
+                    openEditModal(order);
                 });
                 deleteButton.addEventListener('click', () => {
                     deleteOrder(order)
@@ -132,7 +133,7 @@ function deleteOrder(order){
         })
 }
 
-function openEditModal(order, pageNumber) {
+function openEditModal(order) {
     const modal = document.getElementById("modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");
