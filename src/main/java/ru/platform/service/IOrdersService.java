@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface IOrdersService {
     BaseOrderResponse getAllOrders(BaseOrderEditRequest request);
     void saveEditingBaseOrder(BaseOrdersEntity request);
-    void addNewBaseOrder(BaseOrderEditRequest request, Authentication authentication);
+    BaseOrdersEntity addNewBaseOrder(BaseOrderEditRequest request, Authentication authentication);
     void deleteBaseOrder(UUID id);
 }

@@ -51,13 +51,13 @@ public class OrdersService implements IOrdersService {
     }
 
     @Override
-    public void addNewBaseOrder(BaseOrderEditRequest request, Authentication authentication) {
+    public BaseOrdersEntity addNewBaseOrder(BaseOrderEditRequest request, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Optional<UserEntity> user = userRepository.findById(userDetails.getId());
         Optional<GameEntity> game = gameRepository.findById(request.getGame().getId());
 
         if (user.isPresent() && game.isPresent()){
-            baseOrdersRepository.save(BaseOrdersEntity.builder()
+            return(baseOrdersRepository.save(BaseOrdersEntity.builder()
                                 .title(request.getTitle())
                                 .creator(user.get())
                                 .description(request.getDescription())
@@ -65,8 +65,9 @@ public class OrdersService implements IOrdersService {
                                 .createdAt(LocalDate.now())
                                 .game(game.get())
                                 .secondId(generateSecondIdUtil.getRandomId())
-                                .build());
+                                .build()));
         }
+        return null;
     }
 
     @Override

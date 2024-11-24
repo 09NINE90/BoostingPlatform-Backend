@@ -27,20 +27,22 @@ public class OrdersApi {
 
     @PostMapping("/saveEditingBaseOrder")
     @Schema(description = "Изменение заказа, созданного админом")
-    public void saveEditingBaseOrder(@RequestBody BaseOrdersEntity request){
+    public ResponseEntity<Void> saveEditingBaseOrder(@RequestBody BaseOrdersEntity request){
         service.saveEditingBaseOrder(request);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/addNewOrder")
     @Schema(description = "Создание заказа админом")
-    public void addNewBaseOrder(@RequestBody BaseOrderEditRequest request, Authentication authentication){
-        service.addNewBaseOrder(request, authentication);
+    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(@RequestBody BaseOrderEditRequest request, Authentication authentication){
+        return ResponseEntity.ok(service.addNewBaseOrder(request, authentication));
     }
 
     @DeleteMapping("/deleteBaseOrder")
     @Schema(description = "Удаление заказа, созданного админом")
-    public void deleteBaseOrder(@RequestBody UUID id){
+    public ResponseEntity<Void> deleteBaseOrder(@RequestBody UUID id){
         service.deleteBaseOrder(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
