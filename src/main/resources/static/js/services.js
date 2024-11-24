@@ -39,12 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching games:", error);
         });
 
-    fetchOrders(currentPage)
+    addPageNumber(currentPage)
 
 
 });
 
-function fetchOrders(pageNumber) {
+function addPageNumber(pageNumber) {
     fetch('/orders/getAllOrders', {
         method: 'POST',
         headers: {

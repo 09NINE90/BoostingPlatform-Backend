@@ -11,7 +11,7 @@ function renderPagination(currentPage, totalPages) {
         e.preventDefault();
         if (currentPage > 1) {
             currentPage--;
-            fetchOrders(currentPage);
+            addPageNumber(currentPage);
         }
     });
     paginationContainer.appendChild(prevLink);
@@ -33,7 +33,7 @@ function renderPagination(currentPage, totalPages) {
             e.preventDefault();
             if (currentPage !== i) {
                 currentPage = i;
-                fetchOrders(currentPage);
+                addPageNumber(currentPage);
             }
         });
         paginationContainer.appendChild(pageLink);
@@ -49,7 +49,7 @@ function renderPagination(currentPage, totalPages) {
         e.preventDefault();
         if (currentPage < totalPages) {
             currentPage++;
-            fetchOrders(currentPage);
+            addPageNumber(currentPage);
         }
     });
     paginationContainer.appendChild(nextLink);
