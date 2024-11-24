@@ -3,10 +3,13 @@ package ru.platform.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.platform.dto.CustomUserDetails;
 import ru.platform.dto.UserDTO;
 import ru.platform.entity.UserEntity;
+import ru.platform.entity.enums.ERoles;
 import ru.platform.service.IUserService;
 
 import java.util.List;
@@ -19,10 +22,17 @@ public class UserApi {
     private final IUserService service;
 
     @GetMapping("/mainPage")
-    public ModelAndView getMainPage(){
+    public ModelAndView getMainPage(Authentication authentication){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("admin-services");
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (userDetails.getRole().equals(ERoles.ADMIN.getTitle())){
+            modelAndView.setViewName("admin-services");
+        }
+        else {
+            modelAndView.setViewName("main-page");
+        }
         return modelAndView;
+
     }
 
     @GetMapping("/getSignupForm")
