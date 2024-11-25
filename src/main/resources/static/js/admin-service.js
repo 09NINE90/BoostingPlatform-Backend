@@ -1,8 +1,9 @@
 const token = $("meta[name='_csrf']").attr("content");
 let currentPage = 1; // Текущая страница (начинается с 1)
-const pageSize = 12; // Размер страницы
+const pageSize = 10; // Размер страницы
 const servicesContainer = document.querySelector('.services'); // Контейнер для карточек
 const paginationContainer = document.querySelector(".pagination");
+
 
 // Загружаем данные после загрузки страницы
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,13 +24,16 @@ function searchOrder (searchInput){
 }
 
 function addPageNumber(pageNumber) {
+    const game = {
+        title: 'Колда',
+    };
     fetch('/orders/getAllOrders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({ pageNumber, pageSize }),
+        body: JSON.stringify({game, pageNumber, pageSize }),
     })
         .then(response => {
             if (!response.ok) {
