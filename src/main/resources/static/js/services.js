@@ -4,35 +4,74 @@ const paginationContainer = document.querySelector(".pagination");
 const token = $("meta[name='_csrf']").attr("content");
 let currentPage = 1; // Текущая страница (начинается с 1)
 const pageSize = 20; // Размер страницы
+const filterPanel = document.getElementById("filter-panel");
+const gameOptions = document.getElementById("game-options");
+const hideButton = document.getElementById("hide-filters-button");
+const showButton= document.getElementById("show-filters-button");
+const getButton = document.getElementById("get-filters-button");
 
+let gameTitle = '';
+const game = {
+    title: gameTitle,
+};
+hideButton.addEventListener("click", () => {
+    filterPanel.classList.remove("flex");
+    filterPanel.classList.add("hidden");
+});
+
+showButton.addEventListener("click", () => {
+    filterPanel.classList.remove("hidden");
+    filterPanel.classList.add("flex");
+});
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Выполняем GET-запрос к эндпоинту Spring Boot
     fetch(`/games/getAllGames`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok " + response.statusText);
             }
-            return response.json(); // Парсим JSON из ответа
+            return response.json();
         })
         .then((data) => {
-            // Проходим по каждому элементу из списка игр
-            data.forEach((game) => {
-                // Создаем новый элемент <li>
+            gameOptions.innerHTML = "";
+            data.forEach((games) => {
+                const label = document.createElement("label");
+                const input = document.createElement("input");
+
+                input.type = "radio";
+                input.name = "game";
+                input.id = 'radio-game';
+                input.checked = true;
+                input.value = games.title;
+
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(games.title));
+                gameOptions.appendChild(label);
+
                 const listItem = document.createElement("li");
 
-                // Создаем ссылку <a>
                 const link = document.createElement("a");
                 link.href = "#";
-                link.textContent = game.title;
+                link.textContent = games.title;
 
-                // Добавляем класс "active" для первого элемента
                 link.classList.add("active");
 
-
-                // Вставляем ссылку внутрь <li>, а <li> внутрь <ul>
                 listItem.appendChild(link);
                 gameListElement.appendChild(listItem);
+
+                getButton.addEventListener('click', () => {
+                    const gameRadios = document.querySelectorAll('input[name="game"]');
+                    gameRadios.forEach(radio => {
+                        if (radio.checked === true){
+                            gameTitle = radio.value;
+                            const game = {
+                                title: gameTitle,
+                            };
+                            addPageNumber(currentPage, game);
+                        }
+                    })
+                })
+
             });
         })
         .catch((error) => {
@@ -44,20 +83,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function addPageNumber(pageNumber) {
+function addPageNumber(pageNumber, game = {}) {
     fetch('/orders/getAllOrders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({ pageNumber, pageSize }),
+        body: JSON.stringify({game, pageNumber, pageSize }),
     })
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok " + response.statusText);
             }
-            return response.json(); // Парсим JSON из ответа
+            return response.json();
         })
         .then((data) => {
             servicesContainer.innerHTML = '';
@@ -65,7 +104,6 @@ function addPageNumber(pageNumber) {
                 const serviceCard = document.createElement("div");
                 serviceCard.classList.add("service-card");
 
-                // Создаем элементы внутри карточки
                 const img = document.createElement("img");
                 img.src = "/images/slider.PNG";
                 img.alt = "Order Icon";
@@ -79,22 +117,24 @@ function addPageNumber(pageNumber) {
                 const description = document.createElement("p");
                 description.textContent = order.description;
 
+                const gameTitle = document.createElement("p");
+                gameTitle.textContent = order.game?.title;
+
                 const priceContainer = document.createElement("div");
                 priceContainer.classList.add("service-price");
 
                 const price = document.createElement("p");
                 price.textContent = `${order.basePrice} $`;
 
-                // Собираем карточку
                 details.appendChild(title);
                 details.appendChild(description);
+                details.appendChild(gameTitle);
                 priceContainer.appendChild(price);
 
                 serviceCard.appendChild(img);
                 serviceCard.appendChild(details);
                 serviceCard.appendChild(priceContainer);
 
-                // Добавляем карточку в контейнер
                 servicesContainer.appendChild(serviceCard);
             });
 

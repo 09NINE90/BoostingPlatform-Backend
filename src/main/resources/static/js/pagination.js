@@ -18,9 +18,7 @@ function renderPagination(currentPage, totalPages) {
 
     const maxPages = 4;
     let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-    console.log(startPage)
     let endPage = Math.min(totalPages, startPage + maxPages + 1);
-    console.log(endPage)
 
 
     // Номера страниц

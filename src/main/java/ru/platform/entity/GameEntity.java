@@ -1,5 +1,6 @@
 package ru.platform.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,10 +29,12 @@ public class GameEntity {
     private UUID id;
 
     @Column(name = "title")
+    @JsonProperty("title")
     @Schema(description = "Название игры")
     private String title;
 
     @Column(name = "description")
+    @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
 }

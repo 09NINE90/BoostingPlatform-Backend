@@ -11,6 +11,7 @@ import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
+import ru.platform.entity.specification.BaseOrderSpecification;
 import ru.platform.repository.*;
 import ru.platform.request.BaseOrderEditRequest;
 import ru.platform.response.BaseOrderResponse;
@@ -34,6 +35,7 @@ public class OrdersService implements IOrdersService {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
+    private final BaseOrderSpecification specification;
 
     @Override
     public BaseOrderResponse getAllOrders(BaseOrderEditRequest request) {
@@ -92,6 +94,7 @@ public class OrdersService implements IOrdersService {
                 .id(e.getId())
                 .basePrice(e.getBasePrice())
                 .title(e.getTitle())
+                .game(e.getGame())
                 .createdAt(e.getCreatedAt())
                 .description(e.getDescription())
                 .secondId(e.getSecondId())
@@ -109,7 +112,7 @@ public class OrdersService implements IOrdersService {
                 .build();
     }
     private Function<BaseOrderEditRequest, Page<BaseOrdersEntity>> getBaseOrderPageFunc(){
-        return request -> baseOrdersRepository.findAll(buildSpecification(request), getPageRequest(request));
+        return request -> baseOrdersRepository.findAll(specification.getFilter(request), getPageRequest(request));
     }
 
     private PageRequest getPageRequest(BaseOrderEditRequest request) {
