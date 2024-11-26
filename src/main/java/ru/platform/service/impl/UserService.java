@@ -30,7 +30,7 @@ public class UserService implements IUserService {
     public void createUser(UserDTO user) {
         userRepository.save(UserEntity.builder()
                 .username(user.getUsername())
-                .roles(ERoles.USER.getTitle())
+                .roles(ERoles.CUSTOMER.getTitle())
                 .password(encoder.encode(user.getPassword()))
                 .nickname(user.getNickname())
                 .createdAt(LocalDate.now())

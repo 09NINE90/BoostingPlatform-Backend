@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.platform.LocalConstants;
 import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.entity.GameEntity;
@@ -77,18 +78,6 @@ public class OrdersService implements IOrdersService {
         baseOrdersRepository.deleteById(id);
     }
 
-    private Specification<BaseOrdersEntity> buildSpecification(BaseOrderEditRequest request) {
-        Specification<BaseOrdersEntity> spec = Specification.where(null);
-
-        // Add filter criteria based on the request object
-        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
-            spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("title"), request.getTitle()));
-        }
-
-        return spec;
-    }
-
     private BaseOrdersEntity mapBaseOrderFrom(BaseOrdersEntity e){
         return BaseOrdersEntity.builder()
                 .id(e.getId())
@@ -124,7 +113,7 @@ public class OrdersService implements IOrdersService {
     }
 
     private int getPageBy(Integer pageNumber) {
-        return pageNumber == null || pageNumber <= 0 ? 0 : pageNumber - 1;
+        return pageNumber == null || pageNumber <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_NUMBER : pageNumber - 1;
     }
 
     private int getSizeBy(BaseOrderEditRequest request) {
@@ -132,6 +121,6 @@ public class OrdersService implements IOrdersService {
     }
 
     private int getSizeBy(Integer pageSize) {
-        return pageSize == null || pageSize <=0 ? 20 : pageSize;
+        return pageSize == null || pageSize <=0 ? LocalConstants.Variables.DEFAULT_PAGE_SIZE : pageSize;
     }
 }

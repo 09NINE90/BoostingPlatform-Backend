@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IGameService {
     List<GameEntity> getAllGames();
+
+    void addNewGame(GameEntity request);
 }
