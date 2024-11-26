@@ -1,0 +1,270 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+.hidden {
+    display: none; /* Скрываем элемент */
+}
+
+
+.main-content {
+    flex-grow: 1; /* Заполнение оставшегося пространства */
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    margin-left: 0; /* Убираем лишний отступ для выравнивания с сайдбаром */
+}
+
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #2c2c54;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.navbar .logo span {
+    color: #9b59b6;
+}
+
+.logout-button {
+    background-color: #9b59b6;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #7e3c99;
+}
+
+/* Container */
+.container {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch; /* Растягивание контейнера на всю высоту */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 400px; /* Увеличена ширина до 240px для совпадения с правильным значением */
+    background-color: #4A4A4A;
+    color: white;
+    padding: 20px;
+    min-height: 100vh; /* Убедитесь, что Sidebar растянут на всю высоту */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    color: #9b59b6;
+}
+
+.services {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Используем grid для карточек */
+    gap: 20px; /* Отступ между карточками */
+}
+
+/* Filter Panel */
+.filter-panel {
+    background-color: #e7dcec;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-panel h3 {
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.filter-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.filter-options div {
+    flex: 1;
+}
+
+.filter-options h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+.filter-options label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Filters and Search */
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Увеличен отступ между элементами для лучшей читабельности */
+    margin-bottom: 20px;
+}
+
+.filter-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px; /* Увеличен отступ между элементами поиска */
+    flex-grow: 1;
+}
+
+.search-bar input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.service-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.service-info {
+    flex-grow: 1;
+}
+
+.service-info h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.service-info p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.service-info .price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.service-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-button,
+.delete-button {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.edit-button:hover {
+    color: #007BFF;
+    transform: scale(1.1);
+}
+
+.delete-button:hover {
+    color: #FF0000;
+    transform: scale(1.1);
+}
+
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+textarea {
+    resize: none;
+}

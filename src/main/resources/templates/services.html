@@ -9,6 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/services.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/page-request.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -28,18 +29,36 @@
                 </ul>
             </aside>
 
+            <button id="show-filters-button" class="filter-button">
+                <span>🔧</span>
+            </button>
+
+            <div class="filter-panel flex" id="filter-panel">
+                <h3>Filters</h3>
+                <div id="game-filter" class="filter-group">
+                    <h4>Choose a Game</h4>
+                    <div id="game-options"></div>
+                    <button id="hide-filters-button">
+                        <span>Скрыть</span>
+                    </button>
+                    <button id="get-filters-button">
+                        <span>Показать</span>
+                    </button>
+                </div>
+            </div>
             <!-- Секция услуг -->
             <section class="services-list">
                 <div class="services"></div>
             </section>
         </div>
+        <div class="pagination"></div>
     </main>
 
     <!-- Подключаем общий футер -->
     <div class="footer" th:include="footer.html"></div>
 
     <!-- Подключаем скрипты -->
-    <script th:src="@{/js/slider.js}"></script>
     <script th:src="@{/js/services.js}"></script>
+    <script th:src="@{/js/pagination.js}"></script>
 </body>
 </html>

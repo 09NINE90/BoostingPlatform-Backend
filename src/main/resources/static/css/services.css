@@ -125,3 +125,63 @@ body {
     color: #007BFF;
     text-align: right;
 }
+
+
+.filter-panel {
+    background-color: #e7dcec;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none; /* Скрываем элемент */
+}
+
+.filter-panel h3 {
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.filter-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.filter-options div {
+    flex: 1;
+}
+
+.filter-options h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+.filter-options label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Filters and Search */
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Увеличен отступ между элементами для лучшей читабельности */
+    margin-bottom: 20px;
+}
+
+.filter-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+}
