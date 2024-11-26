@@ -3,11 +3,10 @@ package ru.platform.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,4 +36,12 @@ public class GameEntity {
     @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "game_id")
+    private List<CategoryEntity> categories;
+
+    public void addCategory(CategoryEntity category) {
+        categories.add(category);
+    }
 }
