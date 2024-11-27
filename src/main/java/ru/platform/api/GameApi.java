@@ -36,7 +36,8 @@ public class GameApi {
 
 
     @PostMapping("/addNewGame")
-    public void addNewGame(@RequestBody GameEntity request){
+    public ResponceEntity<?> addNewGame(@RequestBody GameEntity request){
         service.addNewGame(request);
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 }
