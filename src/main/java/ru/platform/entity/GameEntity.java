@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +40,4 @@ public class GameEntity {
     @JoinColumn(name = "game_id")
     private List<CategoryEntity> categories;
 
-    public void addCategory(CategoryEntity category) {
-        categories.add(category);
-    }
 }
