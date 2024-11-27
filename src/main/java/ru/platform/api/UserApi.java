@@ -27,7 +27,11 @@ public class UserApi {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         if (userDetails.getRole().equals(ERoles.ADMIN.getTitle())){
 //            modelAndView.setViewName("admin-services");
-            modelAndView.setViewName("add-game-form");
+//            modelAndView.setViewName("add-game-form");
+//            modelAndView.setViewName("get-all-games");
+//            modelAndView.setViewName("test");
+            modelAndView.setViewName("final-category");
+
 //            modelAndView.setViewName("services");
 
 
