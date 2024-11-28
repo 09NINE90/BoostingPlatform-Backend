@@ -30,8 +30,4 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryEntity> subcategories;
 
-    public void addSubcategory(CategoryEntity subcategory) {
-        subcategory.setParent(this);
-        subcategories.add(subcategory);
-    }
 }

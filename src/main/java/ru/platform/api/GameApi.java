@@ -20,7 +20,7 @@ public class GameApi {
 
     @GetMapping("/getAllGames")
     public List<GameEntity> getAllGames(){
-        List<GameEntity> games = service.getAllGames(); // Загрузка игр
+        List<GameEntity> games = service.getAllGames();
         try {
             System.out.println(new ObjectMapper().writeValueAsString(games));
         } catch (JsonProcessingException e) {

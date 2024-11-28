@@ -33,25 +33,21 @@ public class GameService implements IGameService {
     }
 
     private void processCategoryHierarchy(CategoryEntity category, GameEntity game) {
-        // Если категория не имеет родителя, это категория верхнего уровня
         if (category.getParent() == null) {
             category.setGame(game);
         }
 
-        // Обрабатываем подкатегории
         if (category.getSubcategories() != null && !category.getSubcategories().isEmpty()) {
             category.getSubcategories().forEach(subcategory -> {
-                subcategory.setParent(category); // Устанавливаем текущую категорию как родителя
-                processCategoryHierarchy(subcategory, game); // Рекурсивно обрабатываем подкатегории
+                subcategory.setParent(category);
+                processCategoryHierarchy(subcategory, game);
             });
         }
     }
     public GameResponse getGameWithCategories(String gameId) {
-        // Находим игру
         GameEntity game = repository.findById(UUID.fromString(gameId))
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // Преобразуем категории
         List<GameResponse.CategoryDTO> categories = game.getCategories()
                 .stream()
                 .map(this::toCategoryDTO)

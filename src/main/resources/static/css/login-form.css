@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 body
 {
@@ -12,21 +12,22 @@ body
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #ffffff;
+    background: #2d2c3c;
 }
 
  .default-from
 {
     position: absolute;
     width: 400px;
-    background: #ffffff;
+    background: #4a4a6a;
     z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 40px;
     border-radius: 4px;
-    box-shadow: 0 0 150px #000;
+    border: 1px solid #ff4c4c;
+    /*box-shadow: 0 0 150px #ff4c4c;*/
 }
  .default-from .content
 {
@@ -42,7 +43,7 @@ body
  .default-from .content h2
 {
     font-size: 2em;
-    color: #004ec7;
+    color: #ff4c4c;
     text-transform: uppercase;
 }
  .default-from .content .form
@@ -62,12 +63,12 @@ body
 {
     position: relative;
     width: 100%;
-    background: #c5c5c5;
+    background: #4a4a6a;
     border: none;
     outline: none;
     padding: 25px 10px 7.5px;
     border-radius: 4px;
-    color: #000;
+    color: #ff4c4c;
     font-weight: 500;
     font-size: 1em;
 }
@@ -77,7 +78,7 @@ body
     left: 0;
     padding: 15px 10px;
     font-style: normal;
-    color: #3b3b3b;
+    color: #4a4a6a;
     transition: 0.5s;
     pointer-events: none;
 }
@@ -86,7 +87,7 @@ body
 {
     transform: translateY(-7.5px);
     font-size: 0.8em;
-    color: #000;
+    color: #4a4a6a;
 }
 
 .default-from .content .form .links
@@ -103,15 +104,15 @@ body
 }
 .default-from .content .form .links a:nth-child(2)
 {
-    color: #004ec7;
+    color: #ff4c4c;
     font-weight: 600;
 }
 .default-from .content .form .inputBox input[type="submit"]
 {
     padding: 10px;
-    background: #004ec7;
+    background: #2d2c3c;
     text-transform: uppercase;
-    color: #fff;
+    color: #ff4c4c;
     font-weight: 400;
     font-size: 1.35em;
     letter-spacing: 0.05em;
@@ -128,9 +129,9 @@ input[type="submit"]:active
 .default-from .content .form .inputBox input[type="button"]
 {
     padding: 10px;
-    background: #004ec7;
+    background: #2d2c3c;
     text-transform: uppercase;
-    color: #fff;
+    color: #ff4c4c;
     font-weight: 400;
     font-size: 1.35em;
     letter-spacing: 0.05em;
