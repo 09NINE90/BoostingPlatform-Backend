@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.entity.BaseOrdersEntity;
-import ru.platform.request.BaseOrderEditRequest;
+import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
 import ru.platform.service.IOrdersService;
 
@@ -21,7 +21,7 @@ public class OrdersApi {
 
     @PostMapping("/getAllOrders")
     @Schema(description = "Получение всех заказов, созданных админом")
-    public ResponseEntity<BaseOrderResponse> getAllOrders(@RequestBody BaseOrderEditRequest request){
+    public ResponseEntity<BaseOrderResponse> getAllOrders(@RequestBody BaseOrderRequest request){
         return ResponseEntity.ok(service.getAllOrders(request));
     }
 
@@ -34,7 +34,7 @@ public class OrdersApi {
 
     @PostMapping("/addNewOrder")
     @Schema(description = "Создание заказа админом")
-    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(@RequestBody BaseOrderEditRequest request, Authentication authentication){
+    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(@RequestBody BaseOrderRequest request, Authentication authentication){
         return ResponseEntity.ok(service.addNewBaseOrder(request, authentication));
     }
 

@@ -45,6 +45,9 @@ public class BaseOrdersEntity {
     @Schema(description = "Базовая стоимость заказа")
     private float basePrice;
 
+    @Column(name = "categories")
+    private String categories;
+
     @Column(name = "created_at")
     @Schema(description = "Дата создания заказа на платформе")
     private LocalDate createdAt;
