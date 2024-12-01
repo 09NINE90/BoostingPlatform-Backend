@@ -265,6 +265,20 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-textarea {
-    resize: none;
+body::-webkit-scrollbar {
+    width: 10px; /* Ширина полосы прокрутки */
+}
+
+body::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Цвет дорожки */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #3a3a6e; /* Цвет ползунка */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #2c2c54; /* Цвет ползунка при наведении */
 }

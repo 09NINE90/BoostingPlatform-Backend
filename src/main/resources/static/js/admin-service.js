@@ -24,7 +24,7 @@ function searchOrder (searchInput){
 
 function addPageNumber(pageNumber) {
     const game = {
-        title: 'Колда',
+        title: '',
     };
     fetch('/orders/getAllOrders', {
         method: 'POST',
@@ -189,7 +189,11 @@ function openAddOrderModal(){
     const descriptionTextarea = modal.querySelector("textarea");
     const priceInput = modal.querySelector("input[type='number']");
     const gameSelect = document.getElementById('new-service-game');
+    const categoryContainer = document.getElementById('category-select-container');
     const addBtn = document.getElementById("add-new-order-service-button");
+
+    gameSelect.innerHTML = '<option value="" disabled selected>Select a game</option>';
+    categoryContainer.innerHTML = '';
 
     fetch('/games/getAllGames')
         .then(response => response.json())
@@ -204,15 +208,39 @@ function openAddOrderModal(){
         .catch(error => console.error('Error loading games:', error));
 
 
+    gameSelect.addEventListener('change', () => {
+        const selectedGameId = gameSelect.value;
+
+        // Очищаем контейнер категорий
+        categoryContainer.innerHTML = '';
+
+        fetch(`/games/${selectedGameId}`)
+            .then(response => response.json())
+            .then(game => {
+                if (game.categories && game.categories.length > 0) {
+                    createCategorySelect(game.categories, categoryContainer);
+                    console.log(JSON.stringify(game))
+                }
+            })
+            .catch(error => console.error('Error loading categories:', error));
+    });
+
     modal.classList.remove("hidden");
     modal.style.display = "flex";
 
     addBtn.addEventListener('click', () => {
         const selectedOption = gameSelect.selectedOptions[0];
+        const selectedCategories = Array.from(categoryContainer.querySelectorAll('select'))
+            .map(select => select.selectedOptions[0]?.text || '') // Извлекаем текст выбранной опции
+            .filter(name => name) // Убираем пустые строки
+            .join(',');
+
+        console.log(selectedCategories)
         const newOrder = {
             title: titleInput.value,
             description: descriptionTextarea.value,
             basePrice: priceInput.value,
+            categories: selectedCategories,
             game: {
                 id: selectedOption.value,
                 title: selectedOption.text
@@ -234,7 +262,34 @@ function openAddOrderModal(){
                 location.reload()
                 return response.json();
             })
-
-        console.log(newOrder)
     })
+}
+
+function createCategorySelect(categories, container) {
+    const select = document.createElement('select');
+    select.innerHTML = '<option value="" disabled selected>Select a category</option>';
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.name; // Используем имя категории как value
+        option.textContent = category.name;
+        select.appendChild(option);
+    });
+
+    // Обрабатываем выбор в текущем селекте
+    select.addEventListener('change', () => {
+        const selectedCategory = categories.find(cat => cat.name === select.value);
+
+        // Удаляем все следующие селекты
+        while (select.nextSibling) {
+            select.nextSibling.remove();
+        }
+
+        // Если у выбранной категории есть подкатегории, создаем новый `<select>`
+        if (selectedCategory && selectedCategory.subcategories && selectedCategory.subcategories.length > 0) {
+            createCategorySelect(selectedCategory.subcategories, container);
+        }
+    });
+
+    container.appendChild(select);
 }

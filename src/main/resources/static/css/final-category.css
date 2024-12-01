@@ -4,6 +4,7 @@ body {
     padding: 0;
     background-color: #1c1b29;
     color: #fff;
+    padding-inline: 15%;
 }
 
 main {
@@ -69,6 +70,62 @@ main {
     color: #ff4c4c;
 }
 
+.show-all {
+    background-color: #ff4c4c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px; /* Отступ справа */
+}
+
+.show-all:hover {
+    background-color: #2d2c3c;
+    color: white;
+}
+
+
 .hidden {
     display: none;
 }
+
+.services-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.card p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.card span {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #28a745;
+}
+
