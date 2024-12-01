@@ -4,30 +4,39 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.platform.entity.BaseOrdersEntity;
+import ru.platform.entity.BaseOrdersEntity_;
 import ru.platform.entity.GameEntity;
-import ru.platform.request.BaseOrderEditRequest;
+import ru.platform.request.BaseOrderRequest;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
 @Service
 @RequiredArgsConstructor
-public class BaseOrderSpecification implements IBaseSpecification<BaseOrdersEntity, BaseOrderEditRequest> {
+public class BaseOrderSpecification implements IBaseSpecification<BaseOrdersEntity, BaseOrderRequest> {
 
     @Override
-    public Set<Specification<BaseOrdersEntity>> prepareSpecificationSet(BaseOrderEditRequest request) {
+    public Set<Specification<BaseOrdersEntity>> prepareSpecificationSet(BaseOrderRequest request) {
         return  prepareSpecificationSet(request, Objects::nonNull);
     }
 
     @Override
-    public List<BiConsumer<Set<Specification<BaseOrdersEntity>>, BaseOrderEditRequest>> getSpecificationConsumerList() {
-        List<BiConsumer<Set<Specification<BaseOrdersEntity>>, BaseOrderEditRequest>> result = new ArrayList<>();
-        result.add(this::prepareTitle);
+    public List<BiConsumer<Set<Specification<BaseOrdersEntity>>, BaseOrderRequest>> getSpecificationConsumerList() {
+        List<BiConsumer<Set<Specification<BaseOrdersEntity>>, BaseOrderRequest>> result = new ArrayList<>();
+//        result.add(this::prepareTitle);
         result.add(this::prepareGame);
+        result.add(this::prepareCategories);
         return result;
     }
 
-    private void prepareGame(Set<Specification<BaseOrdersEntity>> set, BaseOrderEditRequest request) {
+    private void prepareCategories(Set<Specification<BaseOrdersEntity>> set, BaseOrderRequest request) {
+        String categories = request.getCategories();
+        if (categories != null && !categories.isEmpty()){
+            set.add(categoryFilter(categories, BaseOrdersEntity_.CATEGORIES));
+        }
+    }
+
+    private void prepareGame(Set<Specification<BaseOrdersEntity>> set, BaseOrderRequest request) {
         GameEntity game = request.getGame();
         if (Objects.nonNull(game)){
             String title = request.getGame().getTitle();
@@ -38,9 +47,9 @@ public class BaseOrderSpecification implements IBaseSpecification<BaseOrdersEnti
         }
     }
 
-    private void prepareTitle(Set<Specification<BaseOrdersEntity>> set, BaseOrderEditRequest request) {
+    private void prepareTitle(Set<Specification<BaseOrdersEntity>> set, BaseOrderRequest request) {
         String title = request.getTitle();
-        if (Objects.nonNull(title) && !title.isEmpty()){
+        if (!title.isBlank()){
             set.add(fieldAreLike(title, "title"));
         }
     }

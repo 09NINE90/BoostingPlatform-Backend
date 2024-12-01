@@ -1,5 +1,6 @@
 package ru.platform.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class GameEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
+    @JsonIgnore
     private List<CategoryEntity> categories;
 
 }

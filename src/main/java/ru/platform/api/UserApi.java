@@ -33,8 +33,6 @@ public class UserApi {
             modelAndView.setViewName("final-category");
 
 //            modelAndView.setViewName("services");
-
-
         }
         else {
             modelAndView.setViewName("services");
