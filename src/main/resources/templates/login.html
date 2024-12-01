@@ -10,25 +10,21 @@
 </head>
 <body>
 
-    <div class="default-from">
-        <div class="content">
-            <h2>sign in</h2>
-            <form class="form" th:action="@{/login}" method="post">
-                <div class="inputBox">
-                    <input type="text" name = "username" required><i>Login</i>
-                </div>
-                <div class="inputBox">
-                    <input type="password" name = "password"  required><i>Password</i>
-                </div>
-                <div class="inputBox">
-                    <a href="/user/getSignupForm">Sign up</a>
-                </div>
-                <div class="inputBox">
-                    <input id = "entry-btn" type="submit" value="Sign in">
-                </div>
-            </form>
+<div class="form-container">
+    <h2>Sign in</h2>
+    <form th:action="@{/login}" method="post">
+        <div class="input-group">
+            <input type="text" name="username" id="username" required placeholder=" " autocomplete="off">
+            <label for="username">Login</label>
         </div>
-    </div>
+        <div class="input-group">
+            <input type="password" name="password" id="password" required placeholder=" " autocomplete="off">
+            <label for="password">Password</label>
+        </div>
+        <button id="entry-btn" type="submit" class="btn">Sign in</button>
+        <button type="button" class="btn"><a class="link" href="/user/getSignupForm">Sign up</a></button>
+    </form>
+</div>
 </body>
 
 </html>
