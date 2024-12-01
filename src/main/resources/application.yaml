@@ -14,3 +14,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  minio:
+    url: ${MINIO_URL:http://localhost:9000}
+    access-key: ${USERNAME_MINIO:minio}
+    secret-key: ${PASSWORD_MINIO:minio123}
