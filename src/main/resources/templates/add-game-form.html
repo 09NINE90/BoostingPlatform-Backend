@@ -11,21 +11,21 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-  <div class="form-container">
-    <h1>Добавить игру</h1>
-    <form id="gameForm">
-      <label for="gameTitle">Название игры:</label>
-      <input type="text" id="gameTitle" name="gameTitle" required>
-      <label for="gameDescription">Описание игры:</label>
-      <textarea id="gameDescription" name="gameDescription" required></textarea>
-      <div id="categoriesContainer">
-        <h3>Категории</h3>
-        <button type="button" id="addCategoryBtn">Добавить категорию</button>
-      </div>
-      <button type="button" id="saveGameBtn">Сохранить в JSON</button>
-    </form>
-    <pre id="jsonOutput"></pre>
-  </div>
-  <script th:src="@{/js/add-game-form.js}"></script>
+<div class="form-container">
+  <h1>Добавить игру</h1>
+  <form id="gameForm">
+    <label for="gameTitle">Название игры:</label>
+    <input type="text" id="gameTitle" name="gameTitle" required>
+    <label for="gameDescription">Описание игры:</label>
+    <textarea id="gameDescription" name="gameDescription" required></textarea>
+    <div id="categoriesContainer">
+      <h3>Категории</h3>
+      <button type="button" id="addCategoryBtn">Добавить категорию</button>
+    </div>
+    <button type="button" id="saveGameBtn">Сохранить в JSON</button>
+  </form>
+  <pre id="jsonOutput"></pre>
+</div>
+<script th:src="@{/js/add-game-form.js}"></script>
 </body>
 </html>

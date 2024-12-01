@@ -7,6 +7,7 @@ import ru.platform.entity.CategoryEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.repository.CategoryRepository;
 import ru.platform.repository.GameRepository;
+import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
 import ru.platform.service.IGameService;
 
@@ -27,15 +28,24 @@ public class GameService implements IGameService {
 
     @Override
     @Transactional
-    public void addNewGame(GameEntity request) {
-        request.getCategories().forEach(category -> processCategoryHierarchy(category, request));
-        repository.save(request);
+    public void addNewGame(GameRequest request) {
+        GameEntity gameEntity = GameEntity.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .categories(new ArrayList<>()) // Пустой список для избежания ошибок
+                .build();
+
+        repository.save(gameEntity);
+
+        request.getCategories().forEach(category -> processCategoryHierarchy(category, gameEntity));
+        gameEntity.setCategories(request.getCategories());
+
+        repository.save(gameEntity);
     }
 
+
     private void processCategoryHierarchy(CategoryEntity category, GameEntity game) {
-        if (category.getParent() == null) {
-            category.setGame(game);
-        }
+        category.setGame(game);
 
         if (category.getSubcategories() != null && !category.getSubcategories().isEmpty()) {
             category.getSubcategories().forEach(subcategory -> {
