@@ -1,33 +1,24 @@
 const signUpBtn = document.querySelector('#signup-btn');
-const passwordInputS= document.querySelectorAll('#password');
-const confirmPasswordInputS= document.querySelectorAll('#confirm-password');
+const passwordInput = document.querySelector('#password');
+const confirmPasswordInput = document.querySelector('#confirm-password');
 const token = $("meta[name='_csrf']").attr("content");
 
-for (const elem of confirmPasswordInputS) {
-    elem.addEventListener("input", checkPassword);
-    elem.addEventListener("focus", checkPassword);
-    elem.addEventListener("blur", checkPassword);
-}
+passwordInput.addEventListener("input", checkPassword);
+confirmPasswordInput.addEventListener("input", checkPassword);
 
-for (const elem of passwordInputS) {
-    elem.addEventListener("input", checkPassword);
-    elem.addEventListener("focus", checkPassword);
-    elem.addEventListener("blur", checkPassword);
-}
-
-signUpBtn.addEventListener('click', ()=>{
-    const nickname = document.querySelector('#nickname')
-    const email = document.querySelector('#email')
-    const password = document.querySelector('#password')
+signUpBtn.addEventListener('click', ()=> {
+    const nickname = document.querySelector('#nickname');
+    const email = document.querySelector('#email');
+    const password = document.querySelector('#password');
     if (
         nickname.value &&
         email.value &&
-        password.value
+        passwordInput.value
     ){
         const requestData = {
             nickname: nickname.value,
             username: email.value,
-            password: password.value
+            password: passwordInput.value
         };
         fetch('/user/createUser', {
             method: 'POST',
@@ -38,7 +29,6 @@ signUpBtn.addEventListener('click', ()=>{
             body: JSON.stringify(requestData),
         })
             .then((response) => {
-                console.log(response);
                 if (response.ok){
                     window.location.href = '/user/mainPage';
                 }
@@ -49,22 +39,26 @@ signUpBtn.addEventListener('click', ()=>{
     }
 })
 
-function checkPassword(){
-    const passwordInput= document.querySelector('#password');
-    const confirmPasswordInput= document.querySelector('#confirm-password');
-    if (passwordInput.value !== ''){
-        if (passwordInput.value !== confirmPasswordInput.value){
-            signUpBtn.disabled = true;
-            passwordInput.style.background = '#9a1400';
-            confirmPasswordInput.style.background = '#9a1400';
-        }else {
+function checkPassword() {
+    const passwordMatch = passwordInput.value === confirmPasswordInput.value;
+    const passwordNotEmpty = passwordInput.value.trim() !== '';
+    if (passwordNotEmpty) {
+        if (passwordMatch) {
+            updateInputStyle(passwordInput, "valid");
+            updateInputStyle(confirmPasswordInput, "valid");
             signUpBtn.disabled = false;
-            passwordInput.style.background = '#138f00';
-            confirmPasswordInput.style.background = '#138f00';
+        } else {
+            updateInputStyle(passwordInput, "invalid");
+            updateInputStyle(confirmPasswordInput, "invalid");
+            signUpBtn.disabled = true;
         }
-    }else {
+    } else {
+        updateInputStyle(passwordInput, "neutral");
+        updateInputStyle(confirmPasswordInput, "neutral");
         signUpBtn.disabled = true;
-        passwordInput.style.background = '#c5c5c5';
-        confirmPasswordInput.style.background = '#c5c5c5';
     }
+}
+function updateInputStyle(input, status) {
+    input.classList.remove("valid", "invalid", "neutral");
+    input.classList.add(status);
 }

@@ -12,27 +12,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-<div class="default-from">
-    <div class="content">
-        <h2>Sign up</h2>
-        <form class="form">
-            <div class="inputBox">
-                <input type="text" id="nickname"  name = "nickname"><i>Nickname</i>
-            </div>
-            <div class="inputBox">
-                <input type="email" id="email"  name = "email"><i>Email</i>
-            </div>
-            <div class="inputBox">
-                <input type="password" id="password" name = "password"><i>Password</i>
-            </div>
-            <div class="inputBox">
-                <input type="password" id="confirm-password" name = "confirmPassword"><i>Confirm password</i>
-             </div>
-            <div class="inputBox">
-                <input id="signup-btn" type="button" value="create">
-            </div>
-        </form>
-    </div>
+<div class="form-container">
+    <h2>Sign up</h2>
+    <form method="post">
+        <div class="input-group">
+            <input type="text" id="nickname" name="nickname" required placeholder=" ">
+            <label for="nickname">Nickname</label>
+        </div>
+        <div class="input-group">
+            <input type="email" id="email" name="email" required placeholder=" ">
+            <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" name="password" required placeholder=" ">
+            <label for="password">Password</label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="confirm-password" name="confirmPassword" required placeholder=" ">
+            <label for="confirm-password">Confirm Password</label>
+        </div>
+        <button id="signup-btn" type="button" class="btn">Create</button>
+        <button type="button" class="btn"><a class="link" th:href="@{/login}">Sign in</a></button>
+    </form>
 </div>
 <script th:src="@{/js/sign-up-form.js}"></script>
 </body>
