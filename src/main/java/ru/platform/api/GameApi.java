@@ -1,11 +1,10 @@
 package ru.platform.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.entity.GameEntity;
+import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
 import ru.platform.service.IGameService;
 
@@ -20,12 +19,6 @@ public class GameApi {
 
     @GetMapping("/getAllGames")
     public List<GameEntity> getAllGames(){
-        List<GameEntity> games = service.getAllGames();
-        try {
-            System.out.println(new ObjectMapper().writeValueAsString(games));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
         return service.getAllGames();
     }
 
@@ -36,7 +29,7 @@ public class GameApi {
 
 
     @PostMapping("/addNewGame")
-    public void addNewGame(@RequestBody GameEntity request){
+    public void addNewGame(@RequestBody GameRequest request){
         service.addNewGame(request);
     }
 }
