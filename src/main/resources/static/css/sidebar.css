@@ -45,6 +45,10 @@
     font-weight: bold;
 }
 
+.sidebar ul li a {
+    cursor: pointer;
+}
+
 .container {
     display: flex;
     min-height: 100vh;

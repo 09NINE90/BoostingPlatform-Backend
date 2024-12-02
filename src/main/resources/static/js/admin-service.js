@@ -3,36 +3,65 @@ let currentPage = 1;
 const pageSize = 10;
 const servicesContainer = document.querySelector('.services');
 const paginationContainer = document.querySelector(".pagination");
-
+const pageName = document.querySelector('#page-name');
+const filtersContent = document.querySelector('.filters');
 
 document.addEventListener('DOMContentLoaded', () => {
-    const addOrderBtn = document.getElementById('add-order-btn');
     const searchBtn = document.getElementById('search-button');
-    const searchInput = document.getElementById('search-input');
+    const sidebarItems = document.querySelectorAll("#sidebar-ul li a");
 
-    addOrderBtn.addEventListener('click', openAddOrderModal);
-    searchBtn.addEventListener('click', () => searchOrder(searchInput));
+    loadContent('services', '/orders/getAllOrders', currentPage);
+    setActiveSidebarItem("#sidebar-ul li:first-child");
 
-    addPageNumber(currentPage)
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = item.textContent.toLowerCase().replace(/\s/g, "-");
+            let url;
+
+            // Определение URL для разных разделов
+            switch (section) {
+                case 'games':
+                    url = '/games/getAllGames';
+                    break;
+                case 'services':
+                    url = '/orders/getAllOrders';
+                    break;
+                // case 'appeals':
+                //     url = '/appeals/getAllAppeals';
+                //     break;
+                default:
+                    console.error(`No URL defined for section: ${section}`);
+                    return;
+            }
+
+            // Установка активного элемента
+            document.querySelectorAll('#sidebar-ul li').forEach(li => li.classList.remove('active'));
+            item.parentElement.classList.add('active');
+
+            // Загрузка контента
+            loadContent(section, url, currentPage);
+        });
+    });
+
 
 });
 
-function searchOrder (searchInput){
-    const request = searchInput.value;
-    console.log(request);
+function setActiveSidebarItem(selector) {
+    document.querySelector(selector).classList.add('active');
 }
 
-function addPageNumber(pageNumber) {
-    const game = {
-        title: '',
-    };
-    fetch('/orders/getAllOrders', {
+function loadContent(section, url, pageNumber) {
+    const mainContent = document.querySelector('.services');
+    mainContent.innerHTML = `<p>Loading ${section}...</p>`; // Показать индикатор загрузки
+    pageName.textContent = section.toUpperCase();
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({game, pageNumber, pageSize }),
+        body: JSON.stringify({ pageNumber, pageSize }), // Пример для постраничной загрузки
     })
         .then(response => {
             if (!response.ok) {
@@ -41,89 +70,163 @@ function addPageNumber(pageNumber) {
             return response.json(); // Парсим JSON
         })
         .then(data => {
-            servicesContainer.innerHTML = '';
-            data.baseOrder.forEach(order => {
-                // Создаем карточку
-                const serviceCard = document.createElement('div');
-                serviceCard.classList.add('service-card');
-
-                // Создаем изображение
-                // const img = document.createElement('img');
-                // img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
-                // img.alt = order.title || 'Service Image';
-
-                // Создаем блок информации
-                const serviceInfo = document.createElement('div');
-                serviceInfo.classList.add('service-info');
-
-                const secondId = document.createElement('p');
-                secondId.textContent = order.secondId;
-
-                const title = document.createElement('h3');
-                const maxLength = 30;
-                let text = order.title;
-                if (text.length > maxLength) {
-                    text = text.substring(0, maxLength) + '...';
-                }
-                title.textContent = text;
-
-                const description = document.createElement('p');
-                text = order.description;
-                if (text.length > maxLength) {
-                    text = text.substring(0, maxLength) + '...';
-                }
-                description.textContent = text;
-
-                const price = document.createElement('span');
-                price.classList.add('price');
-                price.textContent = `${order.basePrice.toFixed(2)}$`;
-
-                // Добавляем элементы в блок информации
-                serviceInfo.appendChild(secondId);
-                serviceInfo.appendChild(title);
-                serviceInfo.appendChild(description);
-                serviceInfo.appendChild(price);
-
-                // Создаем блок действий
-                const serviceActions = document.createElement('div');
-                serviceActions.classList.add('service-actions');
-
-                const editButton = document.createElement('button');
-                editButton.classList.add('edit-button', 'settings-button');
-                editButton.textContent = '⚙️';
-
-                // Сохраняем данные из карточки в атрибутах кнопки
-                editButton.dataset.orderTitle = order.title;
-                editButton.dataset.orderDescription = order.description;
-                editButton.dataset.orderPrice = order.basePrice;
-
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('delete-button');
-                deleteButton.textContent = '🗑️';
-
-                // Добавляем кнопки в блок действий
-                serviceActions.appendChild(editButton);
-                serviceActions.appendChild(deleteButton);
-
-                // Собираем карточку
-                serviceCard.appendChild(serviceInfo);
-                serviceCard.appendChild(serviceActions);
-                // Добавляем карточку в контейнер
-                servicesContainer.appendChild(serviceCard);
-
-                // Обработчик клика на кнопку редактирования
-                editButton.addEventListener('click', () => {
-                    openEditModal(order);
-                });
-                deleteButton.addEventListener('click', () => {
-                    deleteOrder(order)
-                });
-            });
-            renderPagination(data.pageNumber, data.pageTotal);
+            mainContent.innerHTML = ''; // Очищаем основной контейнер
+            if (section === 'services') {
+                renderServices(data, section, url);
+            } else if (section === 'games') {
+                renderGames(data, section, url);
+            }
         })
         .catch(error => {
-            console.error("Error fetching services:", error);
+            console.error(`Error loading ${section}:`, error);
+            mainContent.innerHTML = `<p>Error loading ${section}</p>`;
         });
+}
+
+function renderGames(data, section, url) {
+    servicesContainer.innerHTML = '';
+    filtersContent.innerHTML = '';
+
+    const addGameBtn = document.createElement('button');
+    const textAddGameBtn = document.createElement('span');
+
+    textAddGameBtn.textContent = '+';
+    addGameBtn.appendChild(textAddGameBtn);
+    addGameBtn.id ='add-game-btn';
+    addGameBtn.classList.add('filter-button')
+
+    filtersContent.appendChild(addGameBtn);
+    data.games.forEach(game => {
+
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('service-card');
+
+        const serviceInfo = document.createElement('div');
+        serviceInfo.classList.add('service-info');
+
+        const title = document.createElement('h3');
+
+        const maxLength = 30;
+        let text = game.title;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        title.textContent = text;
+
+        const description = document.createElement('p');
+        text = game.description;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        description.textContent = text;
+
+
+        serviceInfo.appendChild(title);
+        serviceInfo.appendChild(description);
+
+        // Собираем карточку
+        serviceCard.appendChild(serviceInfo);
+        // Добавляем карточку в контейнер
+        servicesContainer.appendChild(serviceCard);
+
+    });
+    renderPagination(data.pageNumber, data.pageTotal, section, url);
+}
+
+function renderServices(data, section, url) {
+    servicesContainer.innerHTML = '';
+    filtersContent.innerHTML = '';
+    const addOrderBtn = document.createElement('button');
+    const textAddGameBtn = document.createElement('span');
+
+    textAddGameBtn.textContent = '+';
+    addOrderBtn.appendChild(textAddGameBtn);
+    addOrderBtn.id ='add-order-btn'
+    addOrderBtn.classList.add('filter-button')
+
+    addOrderBtn.addEventListener('click', () => {
+        openAddOrderModal();
+    });
+
+    filtersContent.appendChild(addOrderBtn);
+    data.baseOrder.forEach(order => {
+        // Создаем карточку
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('service-card');
+
+        // Создаем изображение
+        // const img = document.createElement('img');
+        // img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
+        // img.alt = order.title || 'Service Image';
+
+        // Создаем блок информации
+        const serviceInfo = document.createElement('div');
+        serviceInfo.classList.add('service-info');
+
+        const secondId = document.createElement('p');
+        secondId.textContent = order.secondId;
+
+        const title = document.createElement('h3');
+        const maxLength = 30;
+        let text = order.title;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        title.textContent = text;
+
+        const description = document.createElement('p');
+        text = order.description;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        description.textContent = text;
+
+        const price = document.createElement('span');
+        price.classList.add('price');
+        price.textContent = `${order.basePrice.toFixed(2)}$`;
+
+        // Добавляем элементы в блок информации
+        serviceInfo.appendChild(secondId);
+        serviceInfo.appendChild(title);
+        serviceInfo.appendChild(description);
+        serviceInfo.appendChild(price);
+
+        // Создаем блок действий
+        const serviceActions = document.createElement('div');
+        serviceActions.classList.add('service-actions');
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button', 'settings-button');
+        editButton.textContent = '⚙️';
+
+        // Сохраняем данные из карточки в атрибутах кнопки
+        editButton.dataset.orderTitle = order.title;
+        editButton.dataset.orderDescription = order.description;
+        editButton.dataset.orderPrice = order.basePrice;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = '🗑️';
+
+        // Добавляем кнопки в блок действий
+        serviceActions.appendChild(editButton);
+        serviceActions.appendChild(deleteButton);
+
+        // Собираем карточку
+        serviceCard.appendChild(serviceInfo);
+        serviceCard.appendChild(serviceActions);
+        // Добавляем карточку в контейнер
+        servicesContainer.appendChild(serviceCard);
+
+        // Обработчик клика на кнопку редактирования
+        editButton.addEventListener('click', () => {
+            openEditModal(order);
+        });
+        deleteButton.addEventListener('click', () => {
+            deleteOrder(order)
+        });
+    });
+    renderPagination(data.pageNumber, data.pageTotal, section, url);
 }
 
 function deleteOrder(order){
