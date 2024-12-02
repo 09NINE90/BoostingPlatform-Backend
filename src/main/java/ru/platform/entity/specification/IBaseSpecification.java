@@ -204,6 +204,16 @@ public interface IBaseSpecification<T, U>  {
         };
     }
 
+    default Specification<T> categoryFilter(String categoryName, String fieldName) {
+        return (root, query, criteriaBuilder) -> {
+            // LIKE '%категория%'
+            return criteriaBuilder.like(
+                    criteriaBuilder.upper(root.get(fieldName)),
+                    "%" + categoryName.toUpperCase() + "%"
+            );
+        };
+    }
+
     default <V extends Number> Specification<T> fieldNotEqualTo(V value, String field) {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.notEqual(root.get(field), value);

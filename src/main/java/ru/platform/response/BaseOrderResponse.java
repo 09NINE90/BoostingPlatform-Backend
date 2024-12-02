@@ -21,7 +21,8 @@ public class BaseOrderResponse {
     private int pageTotal;
     @JsonProperty("recordTotal")
     private long recordTotal;
-
+    @JsonProperty("categories")
+    private long categories;
     @Override
     public String toString() {
         return "BaseOrderResponse{" +

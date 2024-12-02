@@ -1,10 +1,11 @@
 package ru.platform.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.platform.entity.GameEntity;
+import ru.platform.request.GameRequest;
+import ru.platform.response.GameResponse;
 import ru.platform.service.IGameService;
 
 import java.util.List;
@@ -19,5 +20,16 @@ public class GameApi {
     @GetMapping("/getAllGames")
     public List<GameEntity> getAllGames(){
         return service.getAllGames();
+    }
+
+    @GetMapping("/{gameId}")
+    public ResponseEntity<GameResponse> getGameWithCategories(@PathVariable String gameId) {
+        return ResponseEntity.ok(service.getGameWithCategories(gameId));
+    }
+
+
+    @PostMapping("/addNewGame")
+    public void addNewGame(@RequestBody GameRequest request){
+        service.addNewGame(request);
     }
 }
