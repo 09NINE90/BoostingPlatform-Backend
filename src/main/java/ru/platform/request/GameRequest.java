@@ -12,4 +12,6 @@ public class GameRequest {
     private String title;
     private String description;
     private List<CategoryEntity> categories;
+    private int pageNumber;
+    private int pageSize;
 }

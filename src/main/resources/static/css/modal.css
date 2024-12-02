@@ -27,21 +27,7 @@
 }
 
 .modal-content::-webkit-scrollbar {
-    width: 10px; /* Ширина полосы прокрутки */
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Цвет дорожки */
-    border-radius: 5px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: #888; /* Цвет ползунка */
-    border-radius: 5px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Цвет ползунка при наведении */
+    width: 0; /* Ширина полосы прокрутки */
 }
 
 @keyframes fadeIn {

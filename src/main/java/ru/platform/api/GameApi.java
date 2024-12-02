@@ -17,6 +17,16 @@ public class GameApi {
 
     private final IGameService service;
 
+    @PostMapping("/addNewGame")
+    public void addNewGame(@RequestBody GameRequest request){
+        service.addNewGame(request);
+    }
+
+    @PostMapping("/getAllGames")
+    public ResponseEntity<GameResponse> getAllGames(@RequestBody GameRequest request){
+        return ResponseEntity.ok(service.getAllGamesByPage(request));
+    }
+
     @GetMapping("/getAllGames")
     public List<GameEntity> getAllGames(){
         return service.getAllGames();
@@ -27,9 +37,4 @@ public class GameApi {
         return ResponseEntity.ok(service.getGameWithCategories(gameId));
     }
 
-
-    @PostMapping("/addNewGame")
-    public void addNewGame(@RequestBody GameRequest request){
-        service.addNewGame(request);
-    }
 }
