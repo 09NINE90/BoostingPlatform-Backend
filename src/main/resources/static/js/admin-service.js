@@ -95,6 +95,10 @@ function renderGames(data, section, url) {
     addGameBtn.id ='add-game-btn';
     addGameBtn.classList.add('filter-button')
 
+    addGameBtn.addEventListener('click', () => {
+        window.location.href = '/games/getAddGameForm';
+    })
+
     filtersContent.appendChild(addGameBtn);
     data.games.forEach(game => {
 
@@ -120,14 +124,27 @@ function renderGames(data, section, url) {
         }
         description.textContent = text;
 
+        const serviceActions = document.createElement('div');
+        serviceActions.classList.add('service-actions');
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button', 'settings-button');
+        editButton.textContent = '⚙️';
+
+        serviceActions.appendChild(editButton)
 
         serviceInfo.appendChild(title);
         serviceInfo.appendChild(description);
 
         // Собираем карточку
         serviceCard.appendChild(serviceInfo);
+        serviceCard.appendChild(serviceActions);
         // Добавляем карточку в контейнер
         servicesContainer.appendChild(serviceCard);
+
+        editButton.addEventListener('click', () => {
+            window.location.href = `/games/getEditGameForm/` + game.id
+        });
 
     });
     renderPagination(data.pageNumber, data.pageTotal, section, url);
@@ -220,7 +237,7 @@ function renderServices(data, section, url) {
 
         // Обработчик клика на кнопку редактирования
         editButton.addEventListener('click', () => {
-            openEditModal(order);
+            editOrderModal(order);
         });
         deleteButton.addEventListener('click', () => {
             deleteOrder(order)
@@ -247,7 +264,7 @@ function deleteOrder(order){
         })
 }
 
-function openEditModal(order) {
+function editOrderModal(order) {
     const modal = document.getElementById("modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");

@@ -26,11 +26,11 @@ public class UserApi {
         ModelAndView modelAndView = new ModelAndView();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         if (userDetails.getRole().equals(ERoles.ADMIN.getTitle())){
-            modelAndView.setViewName("admin-services");
+//            modelAndView.setViewName("admin-services");
 //            modelAndView.setViewName("add-game-form");
 //            modelAndView.setViewName("get-all-games");
 //            modelAndView.setViewName("test");
-//            modelAndView.setViewName("final-category");
+            modelAndView.setViewName("final-category");
 
 //            modelAndView.setViewName("services");
         }
@@ -38,7 +38,6 @@ public class UserApi {
             modelAndView.setViewName("final-category");
         }
         return modelAndView;
-
     }
 
     @GetMapping("/getSignupForm")
