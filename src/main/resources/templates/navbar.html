@@ -1,17 +1,21 @@
-<header class="navbar">
-    <div class="logo">
-        <img th:src="@{/images/logo.png}" alt="Dead PackMan Logo">
-    </div>
-    <nav class="menu">
-        <a href="#">Home</a>
-        <a href="#">Services</a>
-        <a href="#">Support</a>
-        <a href="#">Reviews</a>
+<link rel="stylesheet" th:href="@{/css/navbar.css}">
+<header>
+    <div class="logo">Dead PackMan</div>
+    <nav>
+        <ul id="nav-links" class="nav-links">
+            <li><a id="home-page" href="#">Home</a></li>
+            <li id="dropdown" class="dropdown">
+                <a href="#" id="dropdown-toggle" class="dropdown-toggle">Services</a>
+                <ul id="dropdown-menu" class="dropdown-menu"></ul>
+            </li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Reviews</a></li>
+        </ul>
     </nav>
-    <div class="navbar-right">
-        <a href="#" class="cart">
-            <img th:src="@{/images/logo.png}" alt="Cart">
-        </a>
-        <button class="logout-button">Logout</button>
+    <div class="header-icons">
+        <a href="#" class="account">My Account</a>
+        <a href="#" class="cart">🛒</a>
     </div>
 </header>
+<script th:src="@{/js/navbar.js}"></script>
+

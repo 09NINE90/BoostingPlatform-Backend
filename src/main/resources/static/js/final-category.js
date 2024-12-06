@@ -5,13 +5,14 @@ const servicesContainer = document.querySelector('.services-container');
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const gameId = "b9ab10cc-ba00-45a0-b3c4-315c791dc8f1"; // Замените на реальный ID
+    setNavbar();
+
+    const gameId = document.getElementById('game-id').textContent; // Замените на реальный ID
     const endpoint = `/games/${gameId}`;
 
     fetch(endpoint)
         .then((response) => response.json())
         .then((game) => {
-            console.log("Полученные данные:", JSON.stringify(game));
             initCategories(game);
         })
         .catch((error) => console.error("Ошибка загрузки данных:", error));

@@ -1,0 +1,53 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1c1b29;
+    color: #fff;
+    line-height: 1.6;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+main {
+    flex: 1; /* Заставляет main занимать всё доступное пространство между header и footer */
+    padding: 20px;
+}
+
+/* Main Content */
+main .promo {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+.promo-left, .promo-right {
+    border: 2px solid #4a4a6a;
+    padding: 20px;
+}
+.promo-center img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+.profile-btn {
+    background: linear-gradient(135deg, #9d9dff, #6a6ad8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 25px; /* Полностью закругленные края */
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для кнопки */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.profile-btn:hover {
+    transform: scale(1.05); /* Легкое увеличение кнопки */
+    box-shadow: 0 6px 15px rgba(106, 106, 216, 0.5); /* Увеличенная тень */
+}
+/* Main Content */
+main {
+    flex: 1;
+    padding: 40px 20px;
+}

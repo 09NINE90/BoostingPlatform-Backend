@@ -29,8 +29,8 @@ public class UserApi {
 //            modelAndView.setViewName("admin-services");
 //            modelAndView.setViewName("add-game-form");
 //            modelAndView.setViewName("get-all-games");
-//            modelAndView.setViewName("test");
-            modelAndView.setViewName("final-category");
+            modelAndView.setViewName("main-page");
+//            modelAndView.setViewName("final-category");
 
 //            modelAndView.setViewName("services");
         }

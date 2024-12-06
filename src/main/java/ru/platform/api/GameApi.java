@@ -3,9 +3,12 @@ package ru.platform.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.GameEntity;
+import ru.platform.entity.enums.ERoles;
 import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
 import ru.platform.service.IGameService;
@@ -55,6 +58,14 @@ public class GameApi {
     public ModelAndView getEditGameForm(@PathVariable String gameId){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("edit-game-form");
+        modelAndView.addObject(gameId);
+        return modelAndView;
+    }
+
+    @GetMapping("/getServicesPage/{gameId}")
+    public ModelAndView getServicesPage(@PathVariable String gameId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("final-category");
         modelAndView.addObject(gameId);
         return modelAndView;
     }
