@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/user/mainPage",
+                                        "/orders/addNewOrder",
                                         "/user/createUser",
                                         "/user/getSignupForm",
                                         "/login","/css/**",

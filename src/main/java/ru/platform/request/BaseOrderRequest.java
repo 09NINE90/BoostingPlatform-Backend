@@ -5,6 +5,7 @@ import ru.platform.entity.GameEntity;
 
 @Data
 public class BaseOrderRequest {
+    private String imageUrl;
     private String title;
     private String description;
     private float basePrice;

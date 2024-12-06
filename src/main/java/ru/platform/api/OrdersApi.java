@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
+import ru.platform.service.IMinIOFileService;
 import ru.platform.service.IOrdersService;
 
 import java.util.UUID;
@@ -32,10 +34,18 @@ public class OrdersApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/addNewOrder")
+    @PostMapping(value = "/addNewOrder")
     @Schema(description = "Создание заказа админом")
-    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(@RequestBody BaseOrderRequest request, Authentication authentication){
-        return ResponseEntity.ok(service.addNewBaseOrder(request, authentication));
+    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("price") String price,
+            @RequestParam("selectedGameId") String selectedGameId,
+            @RequestParam("categories") String categories,
+            @RequestParam("image") MultipartFile imageFile,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(service.addNewBaseOrder(title, description, price, selectedGameId, categories, imageFile, authentication));
     }
 
     @DeleteMapping("/deleteBaseOrder")

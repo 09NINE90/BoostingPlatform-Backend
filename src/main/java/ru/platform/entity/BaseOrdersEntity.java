@@ -33,6 +33,11 @@ public class BaseOrdersEntity {
     @Schema(description = "ID заказа для отображения на странице")
     private String secondId;
 
+    @Column(name = "image_url")
+    @Schema(description = "Ссылка на изображение для игры")
+    @Lob
+    private String imageUrl;
+
     @Column(name = "title")
     @Schema(description = "Название заказа")
     private String title;
