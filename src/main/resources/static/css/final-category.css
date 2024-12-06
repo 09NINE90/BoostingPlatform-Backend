@@ -1,4 +1,16 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1c1b29;
+    color: #fff;
+    line-height: 1.6;
+}
+
 body {
+    display: flex;
+    flex-direction: column;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -7,7 +19,9 @@ body {
     padding-inline: 15%;
 }
 
+
 main {
+    flex: 1;
     padding: 20px;
 }
 
@@ -100,32 +114,51 @@ main {
 }
 
 .card {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+    background-color: #2d2c3c;
+    border-radius: 10px;
+    width: 250px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.3s;
 }
-
+.card:hover {
+    transform: scale(1.05);
+}
+.card img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
 .card h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
-    color: #333;
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #ff4c4c;
 }
-
 .card p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #666;
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #ccc;
 }
-
 .card span {
     display: block;
-    margin-top: 10px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    color: #28a745;
+    margin-bottom: 15px;
+    color: #fff;
 }
+.card button {
+    background-color: #ff4c4c;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.card button:hover {
+    background-color: #e04343;
+}
+
+
 

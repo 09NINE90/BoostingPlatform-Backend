@@ -1,28 +1,29 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Boosting Services</title>
     <meta th:name="_csrf" th:content="${_csrf.token}"/>
     <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" th:href="@{/css/final-category.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-<main>
-    <div class="game-header">
-        <h1>Valorant Boosting Services</h1>
-        <p>Повышайте свой ранг и улучшайте навыки с нашими профессиональными услугами.</p>
-    </div>
-    <div class="filters"></div>
-    <div class="category-container" id="categoryContainer"></div>
-    <div class="services-container"></div>
-</main>
+    <div class="navbar" th:include="navbar.html"></div>
+
+    <main>
+        <div id="game-id" th:text="${gameId}" style="display: none"></div>
+        <div class="game-header">
+            <h1>Valorant Boosting Services</h1>
+            <p>Повышайте свой ранг и улучшайте навыки с нашими профессиональными услугами.</p>
+        </div>
+        <div class="filters"></div>
+        <div class="category-container" id="categoryContainer"></div>
+        <div class="services-container"></div>
+    </main>
 
     <script th:src="@{/js/final-category.js}"></script>
-
 </body>
 </html>

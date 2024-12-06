@@ -5,13 +5,14 @@ const servicesContainer = document.querySelector('.services-container');
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const gameId = "b9ab10cc-ba00-45a0-b3c4-315c791dc8f1"; // Замените на реальный ID
+    setNavbar();
+
+    const gameId = document.getElementById('game-id').textContent; // Замените на реальный ID
     const endpoint = `/games/${gameId}`;
 
     fetch(endpoint)
         .then((response) => response.json())
         .then((game) => {
-            console.log("Полученные данные:", JSON.stringify(game));
             initCategories(game);
         })
         .catch((error) => console.error("Ошибка загрузки данных:", error));
@@ -114,6 +115,10 @@ function createCards(baseOrder) {
         const card = document.createElement('div');
         card.classList.add('card'); // Добавляем класс для стилей
 
+        const img = document.createElement('img');
+        img.src = order.imageUrl || 'http://localhost:9000/orders-images/8c8fa318-627b-41d3-884c-c43b677c05f2-kaktus_neon_temnyj_163081_3840x2160.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20241205%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241205T183637Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1d17870300ba93fc0fff0e33f272b77bc453d0e0eb9ecd6861a813d5bfb7e6b1'; // Укажите путь по умолчанию
+        img.alt = order.title || 'Service Image';
+
         const title = document.createElement('h3');
         title.textContent = order.title;
 
@@ -127,6 +132,7 @@ function createCards(baseOrder) {
         gameTitle.textContent = `Game: ${order.game.title}`;
 
         // Добавляем элементы в карточку
+        card.appendChild(img);
         card.appendChild(title);
         card.appendChild(description);
         card.appendChild(price);

@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoriesContainer = document.getElementById('categoriesContainer');
     const addCategoryBtn = document.getElementById('addCategoryBtn');
     const saveGameBtn = document.getElementById('saveGameBtn');
-    const jsonOutput = document.getElementById('jsonOutput');
 
     addCategoryBtn.addEventListener('click', () => addCategory(categoriesContainer));
     saveGameBtn.addEventListener('click', saveGameToJson);
@@ -17,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryInput.placeholder = 'Название категории';
         categoryInput.classList.add('category-name');
 
-        const categoryPercentInput = document.createElement('input');
-        categoryPercentInput.type = 'number';
-        categoryPercentInput.placeholder = 'Процент услуги (%)';
-        categoryPercentInput.classList.add('category-percent');
+        // const categoryPercentInput = document.createElement('input');
+        // categoryPercentInput.type = 'number';
+        // categoryPercentInput.placeholder = 'Процент услуги (%)';
+        // categoryPercentInput.classList.add('category-percent');
 
         const addSubcategoryBtn = document.createElement('button');
         addSubcategoryBtn.type = 'button';
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subcategoriesContainer.classList.add('nested-subcategories');
 
         categoryDiv.appendChild(categoryInput);
-        categoryDiv.appendChild(categoryPercentInput);
+        // categoryDiv.appendChild(categoryPercentInput);
         categoryDiv.appendChild(addSubcategoryBtn);
         categoryDiv.appendChild(deleteCategoryBtn);
         categoryDiv.appendChild(toggleCategoryBtn);
@@ -70,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
         subcategoryInput.placeholder = 'Название подкатегории';
         subcategoryInput.classList.add('subcategory-name');
 
-        const subcategoryPercentInput = document.createElement('input');
-        subcategoryPercentInput.type = 'number';
-        subcategoryPercentInput.placeholder = 'Процент услуги (%)';
-        subcategoryPercentInput.classList.add('subcategory-percent');
+        // const subcategoryPercentInput = document.createElement('input');
+        // subcategoryPercentInput.type = 'number';
+        // subcategoryPercentInput.placeholder = 'Процент услуги (%)';
+        // subcategoryPercentInput.classList.add('subcategory-percent');
 
         const addNestedSubcategoryBtn = document.createElement('button');
         addNestedSubcategoryBtn.type = 'button';
@@ -91,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nestedSubcategoriesContainer.classList.add('nested-subcategories');
 
         subcategoryDiv.appendChild(subcategoryInput);
-        subcategoryDiv.appendChild(subcategoryPercentInput);
+        // subcategoryDiv.appendChild(subcategoryPercentInput);
         subcategoryDiv.appendChild(addNestedSubcategoryBtn);
         subcategoryDiv.appendChild(deleteSubcategoryBtn);
         subcategoryDiv.appendChild(nestedSubcategoriesContainer);
@@ -109,12 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const categories = Array.from(document.querySelectorAll('.category')).map(category => ({
             name: category.querySelector('.category-name').value,
-            percent: parseFloat(category.querySelector('.category-percent').value) || 0,
             subcategories: getSubcategories(category.querySelector('.nested-subcategories'))
         }));
 
         const gameData = { title: gameTitle, description: gameDescription, categories };
-        jsonOutput.textContent = JSON.stringify(gameData, null, 2);
 
         sendDataToServer(gameData);
     }
@@ -122,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function getSubcategories(container) {
         return Array.from(container.children).map(subcategory => ({
             name: subcategory.querySelector('.subcategory-name').value,
-            percent: parseFloat(subcategory.querySelector('.subcategory-percent').value) || 0,
             subcategories: getSubcategories(subcategory.querySelector('.nested-subcategories'))
         }));
     }
@@ -138,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Игра успешно сохранена!');
+                    window.location.href = '/user/mainPage';
                 } else {
                     alert('Ошибка при сохранении игры.');
                 }

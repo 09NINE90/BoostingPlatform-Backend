@@ -61,7 +61,7 @@ function loadContent(section, url, pageNumber) {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({ pageNumber, pageSize }), // Пример для постраничной загрузки
+        body: JSON.stringify({pageNumber, pageSize}), // Пример для постраничной загрузки
     })
         .then(response => {
             if (!response.ok) {
@@ -92,8 +92,12 @@ function renderGames(data, section, url) {
 
     textAddGameBtn.textContent = '+';
     addGameBtn.appendChild(textAddGameBtn);
-    addGameBtn.id ='add-game-btn';
+    addGameBtn.id = 'add-game-btn';
     addGameBtn.classList.add('filter-button')
+
+    addGameBtn.addEventListener('click', () => {
+        window.location.href = '/games/getAddGameForm';
+    })
 
     filtersContent.appendChild(addGameBtn);
     data.games.forEach(game => {
@@ -120,14 +124,27 @@ function renderGames(data, section, url) {
         }
         description.textContent = text;
 
+        const serviceActions = document.createElement('div');
+        serviceActions.classList.add('service-actions');
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button', 'settings-button');
+        editButton.textContent = '⚙️';
+
+        serviceActions.appendChild(editButton)
 
         serviceInfo.appendChild(title);
         serviceInfo.appendChild(description);
 
         // Собираем карточку
         serviceCard.appendChild(serviceInfo);
+        serviceCard.appendChild(serviceActions);
         // Добавляем карточку в контейнер
         servicesContainer.appendChild(serviceCard);
+
+        editButton.addEventListener('click', () => {
+            window.location.href = `/games/getEditGameForm/` + game.id
+        });
 
     });
     renderPagination(data.pageNumber, data.pageTotal, section, url);
@@ -141,7 +158,7 @@ function renderServices(data, section, url) {
 
     textAddGameBtn.textContent = '+';
     addOrderBtn.appendChild(textAddGameBtn);
-    addOrderBtn.id ='add-order-btn'
+    addOrderBtn.id = 'add-order-btn'
     addOrderBtn.classList.add('filter-button')
 
     addOrderBtn.addEventListener('click', () => {
@@ -154,10 +171,9 @@ function renderServices(data, section, url) {
         const serviceCard = document.createElement('div');
         serviceCard.classList.add('service-card');
 
-        // Создаем изображение
-        // const img = document.createElement('img');
-        // img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
-        // img.alt = order.title || 'Service Image';
+        const img = document.createElement('img');
+        img.src = order.imageUrl || 'http://localhost:9000/orders-images/8c8fa318-627b-41d3-884c-c43b677c05f2-kaktus_neon_temnyj_163081_3840x2160.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20241205%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241205T183637Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1d17870300ba93fc0fff0e33f272b77bc453d0e0eb9ecd6861a813d5bfb7e6b1'; // Укажите путь по умолчанию
+        img.alt = order.title || 'Service Image';
 
         // Создаем блок информации
         const serviceInfo = document.createElement('div');
@@ -186,6 +202,7 @@ function renderServices(data, section, url) {
         price.textContent = `${order.basePrice.toFixed(2)}$`;
 
         // Добавляем элементы в блок информации
+        serviceInfo.appendChild(img);
         serviceInfo.appendChild(secondId);
         serviceInfo.appendChild(title);
         serviceInfo.appendChild(description);
@@ -220,7 +237,7 @@ function renderServices(data, section, url) {
 
         // Обработчик клика на кнопку редактирования
         editButton.addEventListener('click', () => {
-            openEditModal(order);
+            editOrderModal(order);
         });
         deleteButton.addEventListener('click', () => {
             deleteOrder(order)
@@ -229,7 +246,7 @@ function renderServices(data, section, url) {
     renderPagination(data.pageNumber, data.pageTotal, section, url);
 }
 
-function deleteOrder(order){
+function deleteOrder(order) {
     fetch(`/orders/deleteBaseOrder`, {
         method: 'DELETE',
         headers: {
@@ -247,7 +264,7 @@ function deleteOrder(order){
         })
 }
 
-function openEditModal(order) {
+function editOrderModal(order) {
     const modal = document.getElementById("modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");
@@ -264,7 +281,7 @@ function openEditModal(order) {
     modal.classList.remove("hidden");
     modal.style.display = "flex";
 
-    saveBtn.addEventListener('click',() => {
+    saveBtn.addEventListener('click', () => {
         order.title = titleInput.value
         order.description = descriptionTextarea.value
         order.basePrice = priceInput.value
@@ -286,7 +303,8 @@ function openEditModal(order) {
     })
 }
 
-function openAddOrderModal(){
+function openAddOrderModal() {
+
     const modal = document.getElementById("add-card-modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");
@@ -332,40 +350,57 @@ function openAddOrderModal(){
     modal.style.display = "flex";
 
     addBtn.addEventListener('click', () => {
-        const selectedOption = gameSelect.selectedOptions[0];
-        const selectedCategories = Array.from(categoryContainer.querySelectorAll('select'))
-            .map(select => select.selectedOptions[0]?.text || '') // Извлекаем текст выбранной опции
-            .filter(name => name) // Убираем пустые строки
-            .join(',');
+        const formData = new FormData();
 
-        console.log(selectedCategories)
-        const newOrder = {
-            title: titleInput.value,
-            description: descriptionTextarea.value,
-            basePrice: priceInput.value,
-            categories: selectedCategories,
-            game: {
-                id: selectedOption.value,
-                title: selectedOption.text
-            }
+        // Получаем данные формы
+        const title = document.getElementById('new-service-title').value;
+        const description = document.getElementById('new-service-description').value;
+        const price = document.getElementById('new-service-price').value;
+        const selectedGameId = document.getElementById('new-service-game').value;
+        const imageFile = document.getElementById('new-service-image').files[0];
+        const categories = JSON.stringify(Array.from(document.querySelectorAll('#category-select-container select'))
+            .map(select => select.value)
+            .filter(Boolean));
+        if (!imageFile) {
+            alert("Please select an image file.");
+            return;
         }
 
-        fetch(`/orders/addNewOrder`, {
+        // Валидируем данные
+        if (!title || !description || !price || !selectedGameId) {
+            alert("All fields are required.");
+            return;
+        }
+
+        // Добавляем данные в FormData
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('price', JSON.stringify(price));
+        formData.append('selectedGameId', JSON.stringify(selectedGameId));
+        formData.append('categories', categories);
+        formData.append('image', imageFile);
+
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
+
+        fetch('/orders/addNewOrder', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': token
             },
-            body: JSON.stringify(newOrder),
+            body: formData,
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok " + response.statusText);
-                }
-                location.reload()
+                if (!response.ok) throw new Error('Failed to add order');
                 return response.json();
             })
-    })
+            .then(data => {
+                console.log('Order added successfully:', data);
+                location.reload();
+            })
+            .catch(error => console.error('Error adding order:', error));
+    });
 }
 
 function createCategorySelect(categories, container) {

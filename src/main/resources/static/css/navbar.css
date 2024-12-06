@@ -1,75 +1,152 @@
-/* Стили для навбара */
-.navbar {
-    display: flex; /* Элементы в строку */
-    justify-content: space-between; /* Логотип слева, меню по центру, корзина и кнопка справа */
-    align-items: center; /* Выравниваем элементы по вертикали */
-    padding: 15px 30px;
-    background-color: black;
-    color: white;
-}
-
-/* ЛОГОТИП */
-.logo {
-    margin-right: auto; /* Отодвигаем логотип к левому краю */
-}
-
-.logo img {
-    width: 120px; /* Размер логотипа */
-    height: auto;
-    cursor: pointer; /* Указатель при наведении */
-}
-
-/* МЕНЮ */
-.menu {
+header {
     display: flex;
-    justify-content: center; /* Центрируем ссылки внутри меню */
-    gap: 20px; /* Отступ между ссылками */
-    position: absolute; /* Абсолютное позиционирование */
-    left: 50%; /* Центрируем относительно страницы */
-    transform: translateX(-50%); /* Корректируем центрирование */
+    justify-content: space-between;
+    align-items: center; /* Центрирует элементы по вертикали */
+    padding: 20px 30px;
+    background: linear-gradient(135deg, #2a293b, #1c1b29);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+header .logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Легкое свечение текста */
 }
 
-.menu a {
+.nav-links {
+    display: flex;
+    align-items: center; /* Центрирует пункты меню по вертикали */
+    list-style: none;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+.nav-links a {
     text-decoration: none;
-    color: white;
+    color: #9d9dff; /* Нежный цвет текста */
+    font-weight: bold;
     font-size: 16px;
-    transition: color 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 20px; /* Закругленные края */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.nav-links a.active, .nav-links a:hover {
+    background-color: #6a6ad8; /* Цвет фона при наведении или активности */
+    color: #fff; /* Цвет текста при наведении */
+    text-shadow: 0 0 10px rgba(106, 106, 216, 0.5); /* Легкое свечение текста */
+}
+.header-icons a {
+    text-decoration: none;
+    color: #fff;
+    margin-left: 15px;
 }
 
-.menu a:hover {
-    color: #007BFF; /* Синий цвет при наведении */
-}
 
-/* КОРЗИНА И КНОПКА */
-.navbar-right {
+
+.nav-links {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-left: auto; /* Сдвигаем вправо */
+    gap: 20px;
+    font-size: 16px;
+    font-weight: bold;
 }
-
-.cart img {
-    width: 35px; /* Размер корзины */
-    height: auto;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.cart img:hover {
-    transform: scale(1.1); /* Увеличение при наведении */
-}
-
-.logout-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
     padding: 8px 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.nav-links a:hover {
+    background-color: #4e4c67;
     border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+    color: #fff;
+}
+/* Dropdown Menu */
+.dropdown {
+    position: relative;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #2a293b;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    height: 50vh;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+    width: 5px; /* Ширина полосы прокрутки */
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: #2a293b; /* Цвет дорожки */
+    border-radius: 5px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #3a3a6e; /* Цвет ползунка */
+    border-radius: 5px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #3a3a6e; /* Цвет ползунка при наведении */
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Submenu */
+.dropdown-submenu {
+    position: relative;
+}
+.submenu {
+    display: none;
+    position: absolute;
+    background-color: #3a3950;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    top: 0;
+    left: 100%;
+    min-width: 200px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+.dropdown-submenu:hover .submenu {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+}
+/* Links Styling in Dropdown */
+.dropdown-menu a,
+.submenu a {
+    color: #ddd;
+    padding: 8px 10px;
+    border-radius: 5px;
+    display: block;
+    text-decoration: none;
     transition: background-color 0.3s ease;
 }
-
-.logout-button:hover {
-    background-color: #0056b3;
+.dropdown-menu a:hover,
+.submenu a:hover {
+    background-color: #57546c;
+    color: #fff;
 }
