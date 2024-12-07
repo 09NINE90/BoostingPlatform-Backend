@@ -12,17 +12,19 @@
 </head>
 <body>
     <div class="navbar" th:include="navbar.html"></div>
+    <div class="main-content">
+        <main>
+            <div id="game-id" th:text="${gameId}" style="display: none"></div>
+            <div class="game-header">
+                <h1>Valorant Boosting Services</h1>
+                <p>Повышайте свой ранг и улучшайте навыки с нашими профессиональными услугами.</p>
+            </div>
+            <div class="filters"></div>
+            <div class="category-container" id="categoryContainer"></div>
+            <div class="services-container"></div>
+        </main>
+    </div>
 
-    <main>
-        <div id="game-id" th:text="${gameId}" style="display: none"></div>
-        <div class="game-header">
-            <h1>Valorant Boosting Services</h1>
-            <p>Повышайте свой ранг и улучшайте навыки с нашими профессиональными услугами.</p>
-        </div>
-        <div class="filters"></div>
-        <div class="category-container" id="categoryContainer"></div>
-        <div class="services-container"></div>
-    </main>
 
     <script th:src="@{/js/final-category.js}"></script>
 </body>

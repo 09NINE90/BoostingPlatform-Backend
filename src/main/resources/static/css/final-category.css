@@ -16,9 +16,11 @@ body {
     padding: 0;
     background-color: #1c1b29;
     color: #fff;
-    padding-inline: 15%;
 }
 
+.main-content {
+    padding-inline: 15%;
+}
 
 main {
     flex: 1;
