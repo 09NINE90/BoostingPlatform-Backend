@@ -51,3 +51,21 @@ main {
     flex: 1;
     padding: 40px 20px;
 }
+
+body::-webkit-scrollbar {
+    width: 8px; /* Ширина полосы прокрутки */
+}
+
+body::-webkit-scrollbar-track {
+    background: #2a293b; /* Цвет дорожки */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #3a3a6e; /* Цвет ползунка */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #3a3a6e; /* Цвет ползунка при наведении */
+}
