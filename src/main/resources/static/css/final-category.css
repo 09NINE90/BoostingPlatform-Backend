@@ -16,9 +16,11 @@ body {
     padding: 0;
     background-color: #1c1b29;
     color: #fff;
-    padding-inline: 15%;
 }
 
+.main-content {
+    padding-inline: 15%;
+}
 
 main {
     flex: 1;
@@ -116,7 +118,7 @@ main {
 .card {
     background-color: #2d2c3c;
     border-radius: 10px;
-    width: 250px;
+    width: 25vh;
     padding: 20px;
     text-align: center;
     color: #fff;
@@ -128,21 +130,20 @@ main {
 .card img {
     width: 100%;
     border-radius: 5px;
-    margin-bottom: 15px;
 }
 .card h3 {
-    font-size: 22px;
+    font-size: 2vh;
     margin-bottom: 10px;
     color: #ff4c4c;
 }
 .card p {
-    font-size: 16px;
+    font-size: 1.5vh;
     margin-bottom: 15px;
     color: #ccc;
 }
 .card span {
     display: block;
-    font-size: 18px;
+    font-size: 2vh;
     font-weight: bold;
     margin-bottom: 15px;
     color: #fff;
@@ -160,5 +161,21 @@ main {
     background-color: #e04343;
 }
 
+body::-webkit-scrollbar {
+    width: 8px; /* Ширина полосы прокрутки */
+}
 
+body::-webkit-scrollbar-track {
+    background: #2a293b; /* Цвет дорожки */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #3a3a6e; /* Цвет ползунка */
+    border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #3a3a6e; /* Цвет ползунка при наведении */
+}
 
