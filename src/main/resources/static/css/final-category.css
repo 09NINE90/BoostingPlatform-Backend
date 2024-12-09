@@ -118,7 +118,7 @@ main {
 .card {
     background-color: #2d2c3c;
     border-radius: 10px;
-    width: 250px;
+    width: 25vh;
     padding: 20px;
     text-align: center;
     color: #fff;
@@ -130,21 +130,20 @@ main {
 .card img {
     width: 100%;
     border-radius: 5px;
-    margin-bottom: 15px;
 }
 .card h3 {
-    font-size: 22px;
+    font-size: 2vh;
     margin-bottom: 10px;
     color: #ff4c4c;
 }
 .card p {
-    font-size: 16px;
+    font-size: 1.5vh;
     margin-bottom: 15px;
     color: #ccc;
 }
 .card span {
     display: block;
-    font-size: 18px;
+    font-size: 2vh;
     font-weight: bold;
     margin-bottom: 15px;
     color: #fff;

@@ -60,9 +60,9 @@
 }
 
 .modal-image img {
-    width: 100%;
+    width: auto;
     max-width: 300px;
-    height: auto;
+    height: 25vh;
     border-radius: 8px;
     margin: 0 auto;
     display: block;

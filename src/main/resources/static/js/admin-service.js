@@ -271,7 +271,9 @@ function editOrderModal(order) {
     const priceInput = modal.querySelector("input[type='number']");
     const saveBtn = modal.querySelector(".save-button");
     const modalTitle = modal.querySelector('h2');
+    const image = modal.querySelector('img')
     // Заполняем поля модального окна данными
+    image.src = order.imageUrl;
     titleInput.value = order.title;
     descriptionTextarea.value = order.description;
     priceInput.value = order.basePrice;
@@ -306,9 +308,6 @@ function editOrderModal(order) {
 function openAddOrderModal() {
 
     const modal = document.getElementById("add-card-modal");
-    const titleInput = modal.querySelector("input[type='text']");
-    const descriptionTextarea = modal.querySelector("textarea");
-    const priceInput = modal.querySelector("input[type='number']");
     const gameSelect = document.getElementById('new-service-game');
     const categoryContainer = document.getElementById('category-select-container');
     const addBtn = document.getElementById("add-new-order-service-button");
