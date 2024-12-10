@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
-import ru.platform.service.IMinIOFileService;
 import ru.platform.service.IOrdersService;
 
 import java.util.UUID;
