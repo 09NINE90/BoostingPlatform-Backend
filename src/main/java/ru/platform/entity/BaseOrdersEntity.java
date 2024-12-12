@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,9 +34,8 @@ public class BaseOrdersEntity {
     @Schema(description = "ID заказа для отображения на странице")
     private String secondId;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на изображение для игры")
-    @Lob
     private String imageUrl;
 
     @Column(name = "title")
@@ -46,9 +46,9 @@ public class BaseOrdersEntity {
     @Schema(description = "Описание заказа")
     private String description;
 
-    @Column(name = "base_price")
+    @Column(name = "base_price", scale = 2)
     @Schema(description = "Базовая стоимость заказа")
-    private float basePrice;
+    private Double basePrice;
 
     @Column(name = "categories")
     private String categories;
@@ -65,4 +65,25 @@ public class BaseOrdersEntity {
     @JoinColumn(name = "game_id")
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServicesOptionsEntity> servicesOptions;
+
+
+    @Override
+    public String toString() {
+        return "BaseOrdersEntity{" +
+                "id=" + id +
+                ", secondId='" + secondId + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", basePrice=" + basePrice +
+                ", categories='" + categories + '\'' +
+                ", createdAt=" + createdAt +
+                ", creator=" + creator +
+                ", game=" + game +
+                ", servicesOptions=" + servicesOptions +
+                '}';
+    }
 }
