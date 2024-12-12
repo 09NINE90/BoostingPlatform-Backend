@@ -44,6 +44,9 @@ dependencies {
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     implementation 'org.freemarker:freemarker:2.3.32'
     implementation 'io.minio:minio:8.5.12'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 }
 
