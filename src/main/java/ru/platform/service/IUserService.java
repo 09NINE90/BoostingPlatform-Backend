@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IUserService {
     List<UserEntity> getAllUsers();
-    void createUser(UserDTO user);
+    UserEntity createUser(UserDTO user);
 }

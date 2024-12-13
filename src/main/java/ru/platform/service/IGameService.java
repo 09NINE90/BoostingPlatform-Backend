@@ -11,4 +11,8 @@ public interface IGameService {
 
     void addNewGame(GameRequest request);
     GameResponse getGameWithCategories(String gameId);
+
+    GameResponse getAllGamesByPage(GameRequest request);
+
+    GameEntity updateGame(GameRequest request) throws Exception;
 }

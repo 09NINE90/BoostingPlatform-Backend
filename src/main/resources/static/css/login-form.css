@@ -86,12 +86,29 @@ body {
     background-color: #e04343;
     transform: scale(1.05);
 }
-.form-container .btn a {
-    color: #fff;
+
+.form-container a {
+    background-color: #1c1b29;
+    color: #ff4c4c;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     text-decoration: none;
-    display: inline-block;
-    width: 100%;
+    box-shadow: 0 0 8px #ff4c4c;
 }
+
+.form-container a:hover {
+    background-color: #e04343;
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: none;
+}
+
 .input-group input {
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }

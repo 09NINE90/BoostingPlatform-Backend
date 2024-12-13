@@ -4,17 +4,22 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.platform.LocalConstants;
 import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.BaseOrdersEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
+import ru.platform.entity.enums.ESortKeys;
 import ru.platform.entity.specification.BaseOrderSpecification;
+import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
 import ru.platform.request.BaseOrderRequest;
 import ru.platform.response.BaseOrderResponse;
+import ru.platform.service.IMinIOFileService;
 import ru.platform.service.IOrdersService;
 import ru.platform.utils.GenerateSecondIdUtil;
 
@@ -36,6 +41,7 @@ public class OrdersService implements IOrdersService {
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
     private final BaseOrderSpecification specification;
+    private final IMinIOFileService minioService;
 
     @Override
     public BaseOrderResponse getAllOrders(BaseOrderRequest request) {
@@ -53,20 +59,26 @@ public class OrdersService implements IOrdersService {
     }
 
     @Override
-    public BaseOrdersEntity addNewBaseOrder(BaseOrderRequest request, Authentication authentication) {
+    public BaseOrdersEntity addNewBaseOrder(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication) {
+        if (imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Image file is required");
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Optional<UserEntity> user = userRepository.findById(userDetails.getId());
-        Optional<GameEntity> game = gameRepository.findById(request.getGame().getId());
+        Optional<GameEntity> game = gameRepository.findById(UUID.fromString(selectedGameId.replace("\"", "")));
+
+        String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
         if (user.isPresent() && game.isPresent()){
             return(baseOrdersRepository.save(BaseOrdersEntity.builder()
-                                .title(request.getTitle())
+                                .title(title.replace("\"", ""))
                                 .creator(user.get())
-                                .description(request.getDescription())
-                                .basePrice(request.getBasePrice())
+                                .description(description.replace("\"", ""))
+                                .basePrice(Float.parseFloat(price.replace("\"", "")))
                                 .createdAt(LocalDate.now())
                                 .game(game.get())
-                                .categories(request.getCategories())
+                                .categories(categories.replace("\"", ""))
+                                .imageUrl(imageUrl)
                                 .secondId(generateSecondIdUtil.getRandomId())
                                 .build()));
         }
@@ -84,6 +96,7 @@ public class OrdersService implements IOrdersService {
                 .basePrice(e.getBasePrice())
                 .title(e.getTitle())
                 .game(e.getGame())
+                .imageUrl(e.getImageUrl())
                 .categories(e.getCategories())
                 .createdAt(e.getCreatedAt())
                 .description(e.getDescription())
@@ -106,7 +119,20 @@ public class OrdersService implements IOrdersService {
     }
 
     private PageRequest getPageRequest(BaseOrderRequest request) {
-        return PageRequest.of(getPageBy(request), getSizeBy(request));
+        return PageRequest.of(getPageBy(request), getSizeBy(request), getSortBy(request));
+    }
+
+    private Sort getSortBy(BaseOrderRequest request) {
+        return getSortBy(request.getSort());
+    }
+
+    private Sort getSortBy(SortFilter sort) {
+        if (sort == null || sort.getKey() == null){
+            sort = new SortFilter(ESortKeys.CREATED_AT, false);
+        }
+        boolean isAsc = sort.getAsc();
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return Sort.by(direction, sort.getKey().getName());
     }
 
     private int getPageBy(BaseOrderRequest request) {

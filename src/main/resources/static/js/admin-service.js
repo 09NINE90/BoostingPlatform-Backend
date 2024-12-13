@@ -3,36 +3,65 @@ let currentPage = 1;
 const pageSize = 10;
 const servicesContainer = document.querySelector('.services');
 const paginationContainer = document.querySelector(".pagination");
-
+const pageName = document.querySelector('#page-name');
+const filtersContent = document.querySelector('.filters');
 
 document.addEventListener('DOMContentLoaded', () => {
-    const addOrderBtn = document.getElementById('add-order-btn');
     const searchBtn = document.getElementById('search-button');
-    const searchInput = document.getElementById('search-input');
+    const sidebarItems = document.querySelectorAll("#sidebar-ul li a");
 
-    addOrderBtn.addEventListener('click', openAddOrderModal);
-    searchBtn.addEventListener('click', () => searchOrder(searchInput));
+    loadContent('services', '/orders/getAllOrders', currentPage);
+    setActiveSidebarItem("#sidebar-ul li:first-child");
 
-    addPageNumber(currentPage)
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = item.textContent.toLowerCase().replace(/\s/g, "-");
+            let url;
+
+            // Определение URL для разных разделов
+            switch (section) {
+                case 'games':
+                    url = '/games/getAllGames';
+                    break;
+                case 'services':
+                    url = '/orders/getAllOrders';
+                    break;
+                // case 'appeals':
+                //     url = '/appeals/getAllAppeals';
+                //     break;
+                default:
+                    console.error(`No URL defined for section: ${section}`);
+                    return;
+            }
+
+            // Установка активного элемента
+            document.querySelectorAll('#sidebar-ul li').forEach(li => li.classList.remove('active'));
+            item.parentElement.classList.add('active');
+
+            // Загрузка контента
+            loadContent(section, url, currentPage);
+        });
+    });
+
 
 });
 
-function searchOrder (searchInput){
-    const request = searchInput.value;
-    console.log(request);
+function setActiveSidebarItem(selector) {
+    document.querySelector(selector).classList.add('active');
 }
 
-function addPageNumber(pageNumber) {
-    const game = {
-        title: '',
-    };
-    fetch('/orders/getAllOrders', {
+function loadContent(section, url, pageNumber) {
+    const mainContent = document.querySelector('.services');
+    mainContent.innerHTML = `<p>Loading ${section}...</p>`; // Показать индикатор загрузки
+    pageName.textContent = section.toUpperCase();
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
         },
-        body: JSON.stringify({game, pageNumber, pageSize }),
+        body: JSON.stringify({pageNumber, pageSize}), // Пример для постраничной загрузки
     })
         .then(response => {
             if (!response.ok) {
@@ -41,92 +70,183 @@ function addPageNumber(pageNumber) {
             return response.json(); // Парсим JSON
         })
         .then(data => {
-            servicesContainer.innerHTML = '';
-            data.baseOrder.forEach(order => {
-                // Создаем карточку
-                const serviceCard = document.createElement('div');
-                serviceCard.classList.add('service-card');
-
-                // Создаем изображение
-                // const img = document.createElement('img');
-                // img.src = order.image || 'images/default.jpg'; // Укажите путь по умолчанию
-                // img.alt = order.title || 'Service Image';
-
-                // Создаем блок информации
-                const serviceInfo = document.createElement('div');
-                serviceInfo.classList.add('service-info');
-
-                const secondId = document.createElement('p');
-                secondId.textContent = order.secondId;
-
-                const title = document.createElement('h3');
-                const maxLength = 30;
-                let text = order.title;
-                if (text.length > maxLength) {
-                    text = text.substring(0, maxLength) + '...';
-                }
-                title.textContent = text;
-
-                const description = document.createElement('p');
-                text = order.description;
-                if (text.length > maxLength) {
-                    text = text.substring(0, maxLength) + '...';
-                }
-                description.textContent = text;
-
-                const price = document.createElement('span');
-                price.classList.add('price');
-                price.textContent = `${order.basePrice.toFixed(2)}$`;
-
-                // Добавляем элементы в блок информации
-                serviceInfo.appendChild(secondId);
-                serviceInfo.appendChild(title);
-                serviceInfo.appendChild(description);
-                serviceInfo.appendChild(price);
-
-                // Создаем блок действий
-                const serviceActions = document.createElement('div');
-                serviceActions.classList.add('service-actions');
-
-                const editButton = document.createElement('button');
-                editButton.classList.add('edit-button', 'settings-button');
-                editButton.textContent = '⚙️';
-
-                // Сохраняем данные из карточки в атрибутах кнопки
-                editButton.dataset.orderTitle = order.title;
-                editButton.dataset.orderDescription = order.description;
-                editButton.dataset.orderPrice = order.basePrice;
-
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('delete-button');
-                deleteButton.textContent = '🗑️';
-
-                // Добавляем кнопки в блок действий
-                serviceActions.appendChild(editButton);
-                serviceActions.appendChild(deleteButton);
-
-                // Собираем карточку
-                serviceCard.appendChild(serviceInfo);
-                serviceCard.appendChild(serviceActions);
-                // Добавляем карточку в контейнер
-                servicesContainer.appendChild(serviceCard);
-
-                // Обработчик клика на кнопку редактирования
-                editButton.addEventListener('click', () => {
-                    openEditModal(order);
-                });
-                deleteButton.addEventListener('click', () => {
-                    deleteOrder(order)
-                });
-            });
-            renderPagination(data.pageNumber, data.pageTotal);
+            mainContent.innerHTML = ''; // Очищаем основной контейнер
+            if (section === 'services') {
+                renderServices(data, section, url);
+            } else if (section === 'games') {
+                renderGames(data, section, url);
+            }
         })
         .catch(error => {
-            console.error("Error fetching services:", error);
+            console.error(`Error loading ${section}:`, error);
+            mainContent.innerHTML = `<p>Error loading ${section}</p>`;
         });
 }
 
-function deleteOrder(order){
+function renderGames(data, section, url) {
+    servicesContainer.innerHTML = '';
+    filtersContent.innerHTML = '';
+
+    const addGameBtn = document.createElement('button');
+    const textAddGameBtn = document.createElement('span');
+
+    textAddGameBtn.textContent = '+';
+    addGameBtn.appendChild(textAddGameBtn);
+    addGameBtn.id = 'add-game-btn';
+    addGameBtn.classList.add('filter-button')
+
+    addGameBtn.addEventListener('click', () => {
+        window.location.href = '/games/getAddGameForm';
+    })
+
+    filtersContent.appendChild(addGameBtn);
+    data.games.forEach(game => {
+
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('service-card');
+
+        const serviceInfo = document.createElement('div');
+        serviceInfo.classList.add('service-info');
+
+        const title = document.createElement('h3');
+
+        const maxLength = 30;
+        let text = game.title;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        title.textContent = text;
+
+        const description = document.createElement('p');
+        text = game.description;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        description.textContent = text;
+
+        const serviceActions = document.createElement('div');
+        serviceActions.classList.add('service-actions');
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button', 'settings-button');
+        editButton.textContent = '⚙️';
+
+        serviceActions.appendChild(editButton)
+
+        serviceInfo.appendChild(title);
+        serviceInfo.appendChild(description);
+
+        // Собираем карточку
+        serviceCard.appendChild(serviceInfo);
+        serviceCard.appendChild(serviceActions);
+        // Добавляем карточку в контейнер
+        servicesContainer.appendChild(serviceCard);
+
+        editButton.addEventListener('click', () => {
+            window.location.href = `/games/getEditGameForm/` + game.id
+        });
+
+    });
+    renderPagination(data.pageNumber, data.pageTotal, section, url);
+}
+
+function renderServices(data, section, url) {
+    servicesContainer.innerHTML = '';
+    filtersContent.innerHTML = '';
+    const addOrderBtn = document.createElement('button');
+    const textAddGameBtn = document.createElement('span');
+
+    textAddGameBtn.textContent = '+';
+    addOrderBtn.appendChild(textAddGameBtn);
+    addOrderBtn.id = 'add-order-btn'
+    addOrderBtn.classList.add('filter-button')
+
+    addOrderBtn.addEventListener('click', () => {
+        openAddOrderModal();
+    });
+
+    filtersContent.appendChild(addOrderBtn);
+    data.baseOrder.forEach(order => {
+        // Создаем карточку
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('service-card');
+
+        const img = document.createElement('img');
+        img.src = order.imageUrl || 'http://localhost:9000/orders-images/8c8fa318-627b-41d3-884c-c43b677c05f2-kaktus_neon_temnyj_163081_3840x2160.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20241205%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241205T183637Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1d17870300ba93fc0fff0e33f272b77bc453d0e0eb9ecd6861a813d5bfb7e6b1'; // Укажите путь по умолчанию
+        img.alt = order.title || 'Service Image';
+
+        // Создаем блок информации
+        const serviceInfo = document.createElement('div');
+        serviceInfo.classList.add('service-info');
+
+        const secondId = document.createElement('p');
+        secondId.textContent = order.secondId;
+
+        const title = document.createElement('h3');
+        const maxLength = 30;
+        let text = order.title;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        title.textContent = text;
+
+        const description = document.createElement('p');
+        text = order.description;
+        if (text.length > maxLength) {
+            text = text.substring(0, maxLength) + '...';
+        }
+        description.textContent = text;
+
+        const price = document.createElement('span');
+        price.classList.add('price');
+        price.textContent = `${order.basePrice.toFixed(2)}$`;
+
+        // Добавляем элементы в блок информации
+        serviceInfo.appendChild(img);
+        serviceInfo.appendChild(secondId);
+        serviceInfo.appendChild(title);
+        serviceInfo.appendChild(description);
+        serviceInfo.appendChild(price);
+
+        // Создаем блок действий
+        const serviceActions = document.createElement('div');
+        serviceActions.classList.add('service-actions');
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button', 'settings-button');
+        editButton.textContent = '⚙️';
+
+        // Сохраняем данные из карточки в атрибутах кнопки
+        editButton.dataset.orderTitle = order.title;
+        editButton.dataset.orderDescription = order.description;
+        editButton.dataset.orderPrice = order.basePrice;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = '🗑️';
+
+        // Добавляем кнопки в блок действий
+        serviceActions.appendChild(editButton);
+        serviceActions.appendChild(deleteButton);
+
+        // Собираем карточку
+        serviceCard.appendChild(serviceInfo);
+        serviceCard.appendChild(serviceActions);
+        // Добавляем карточку в контейнер
+        servicesContainer.appendChild(serviceCard);
+
+        // Обработчик клика на кнопку редактирования
+        editButton.addEventListener('click', () => {
+            editOrderModal(order);
+        });
+        deleteButton.addEventListener('click', () => {
+            deleteOrder(order)
+        });
+    });
+    renderPagination(data.pageNumber, data.pageTotal, section, url);
+}
+
+function deleteOrder(order) {
     fetch(`/orders/deleteBaseOrder`, {
         method: 'DELETE',
         headers: {
@@ -144,14 +264,16 @@ function deleteOrder(order){
         })
 }
 
-function openEditModal(order) {
+function editOrderModal(order) {
     const modal = document.getElementById("modal");
     const titleInput = modal.querySelector("input[type='text']");
     const descriptionTextarea = modal.querySelector("textarea");
     const priceInput = modal.querySelector("input[type='number']");
     const saveBtn = modal.querySelector(".save-button");
     const modalTitle = modal.querySelector('h2');
+    const image = modal.querySelector('img')
     // Заполняем поля модального окна данными
+    image.src = order.imageUrl;
     titleInput.value = order.title;
     descriptionTextarea.value = order.description;
     priceInput.value = order.basePrice;
@@ -161,7 +283,7 @@ function openEditModal(order) {
     modal.classList.remove("hidden");
     modal.style.display = "flex";
 
-    saveBtn.addEventListener('click',() => {
+    saveBtn.addEventListener('click', () => {
         order.title = titleInput.value
         order.description = descriptionTextarea.value
         order.basePrice = priceInput.value
@@ -183,11 +305,9 @@ function openEditModal(order) {
     })
 }
 
-function openAddOrderModal(){
+function openAddOrderModal() {
+
     const modal = document.getElementById("add-card-modal");
-    const titleInput = modal.querySelector("input[type='text']");
-    const descriptionTextarea = modal.querySelector("textarea");
-    const priceInput = modal.querySelector("input[type='number']");
     const gameSelect = document.getElementById('new-service-game');
     const categoryContainer = document.getElementById('category-select-container');
     const addBtn = document.getElementById("add-new-order-service-button");
@@ -229,40 +349,57 @@ function openAddOrderModal(){
     modal.style.display = "flex";
 
     addBtn.addEventListener('click', () => {
-        const selectedOption = gameSelect.selectedOptions[0];
-        const selectedCategories = Array.from(categoryContainer.querySelectorAll('select'))
-            .map(select => select.selectedOptions[0]?.text || '') // Извлекаем текст выбранной опции
-            .filter(name => name) // Убираем пустые строки
-            .join(',');
+        const formData = new FormData();
 
-        console.log(selectedCategories)
-        const newOrder = {
-            title: titleInput.value,
-            description: descriptionTextarea.value,
-            basePrice: priceInput.value,
-            categories: selectedCategories,
-            game: {
-                id: selectedOption.value,
-                title: selectedOption.text
-            }
+        // Получаем данные формы
+        const title = document.getElementById('new-service-title').value;
+        const description = document.getElementById('new-service-description').value;
+        const price = document.getElementById('new-service-price').value;
+        const selectedGameId = document.getElementById('new-service-game').value;
+        const imageFile = document.getElementById('new-service-image').files[0];
+        const categories = JSON.stringify(Array.from(document.querySelectorAll('#category-select-container select'))
+            .map(select => select.value)
+            .filter(Boolean));
+        if (!imageFile) {
+            alert("Please select an image file.");
+            return;
         }
 
-        fetch(`/orders/addNewOrder`, {
+        // Валидируем данные
+        if (!title || !description || !price || !selectedGameId) {
+            alert("All fields are required.");
+            return;
+        }
+
+        // Добавляем данные в FormData
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('price', JSON.stringify(price));
+        formData.append('selectedGameId', JSON.stringify(selectedGameId));
+        formData.append('categories', categories);
+        formData.append('image', imageFile);
+
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
+
+        fetch('/orders/addNewOrder', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': token
             },
-            body: JSON.stringify(newOrder),
+            body: formData,
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok " + response.statusText);
-                }
-                location.reload()
+                if (!response.ok) throw new Error('Failed to add order');
                 return response.json();
             })
-    })
+            .then(data => {
+                console.log('Order added successfully:', data);
+                location.reload();
+            })
+            .catch(error => console.error('Error adding order:', error));
+    });
 }
 
 function createCategorySelect(categories, container) {

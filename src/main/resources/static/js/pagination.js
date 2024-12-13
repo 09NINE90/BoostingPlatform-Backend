@@ -1,4 +1,4 @@
-function renderPagination(currentPage, totalPages) {
+function renderPagination(currentPage, totalPages, section = '', url = '') {
     paginationContainer.innerHTML = ''; // Очищаем пагинацию
 
     // Кнопка "Prev"
@@ -11,7 +11,13 @@ function renderPagination(currentPage, totalPages) {
         e.preventDefault();
         if (currentPage > 1) {
             currentPage--;
-            addPageNumber(currentPage);
+            if (section === ''){
+                addPageNumber(currentPage);
+            }
+            else
+            {
+                loadContent(section, url, currentPage);
+            }
         }
     });
     paginationContainer.appendChild(prevLink);
@@ -31,7 +37,13 @@ function renderPagination(currentPage, totalPages) {
             e.preventDefault();
             if (currentPage !== i) {
                 currentPage = i;
-                addPageNumber(currentPage);
+                if (section === ''){
+                    addPageNumber(currentPage);
+                }
+                else
+                {
+                    loadContent(section, url, currentPage);
+                }
             }
         });
         paginationContainer.appendChild(pageLink);
@@ -47,7 +59,13 @@ function renderPagination(currentPage, totalPages) {
         e.preventDefault();
         if (currentPage < totalPages) {
             currentPage++;
-            addPageNumber(currentPage);
+            if (section === ''){
+                addPageNumber(currentPage);
+            }
+            else
+            {
+                loadContent(section, url, currentPage);
+            }
         }
     });
     paginationContainer.appendChild(nextLink);
