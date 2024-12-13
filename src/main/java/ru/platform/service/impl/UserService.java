@@ -27,8 +27,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void createUser(UserDTO user) {
-        userRepository.save(UserEntity.builder()
+    public UserEntity createUser(UserDTO user) {
+        return userRepository.save(UserEntity.builder()
                 .username(user.getUsername())
                 .roles(ERoles.CUSTOMER.getTitle())
                 .password(encoder.encode(user.getPassword()))

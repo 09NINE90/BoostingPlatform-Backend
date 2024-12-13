@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.platform.dto.UserDTO;
 import ru.platform.request.AuthRequest;
+import ru.platform.service.IUserService;
 import ru.platform.utils.JwtUtil;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -30,7 +32,21 @@ public class AuthApi {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/login")
+    @Autowired
+    private IUserService service;
+
+
+    @PostMapping("/signUp")
+    public ResponseEntity<?> userSave(@RequestBody UserDTO user){
+        try {
+            return ResponseEntity.ok(service.createUser(user));
+        }
+        catch (AuthenticationException e){
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    @PostMapping("/signIn")
     public ResponseEntity<String> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
