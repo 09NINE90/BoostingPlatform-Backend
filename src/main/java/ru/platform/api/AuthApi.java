@@ -47,7 +47,7 @@ public class AuthApi {
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
@@ -67,7 +67,10 @@ public class AuthApi {
             cookie.setMaxAge(60 * 60 * 24); // Время жизни cookie (1 день)
             response.addCookie(cookie);
 
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(Map.of(
+                    "roles", roles
+            ));
+
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
