@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,9 +19,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "base_orders", schema = "dev")
+@Table(name = "services", schema = "dev")
 @Schema(description = "Объект в котором хранятся заказы, созданные админом платформы")
-public class BaseOrdersEntity {
+public class ServicesEntity {
 
     @Id
     @Column(name = "id")
@@ -48,7 +47,7 @@ public class BaseOrdersEntity {
 
     @Column(name = "base_price", scale = 2)
     @Schema(description = "Базовая стоимость заказа")
-    private Double basePrice;
+    private Float basePrice;
 
     @Column(name = "categories")
     private String categories;
@@ -66,10 +65,6 @@ public class BaseOrdersEntity {
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ServicesOptionsEntity> servicesOptions;
-
-
     @Override
     public String toString() {
         return "BaseOrdersEntity{" +
@@ -83,7 +78,6 @@ public class BaseOrdersEntity {
                 ", createdAt=" + createdAt +
                 ", creator=" + creator +
                 ", game=" + game +
-                ", servicesOptions=" + servicesOptions +
                 '}';
     }
 }

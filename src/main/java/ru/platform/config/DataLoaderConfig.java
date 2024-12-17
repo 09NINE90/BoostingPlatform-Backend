@@ -20,9 +20,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DataLoaderConfig implements CommandLineRunner {
 
-    private final UserRepository repository;
-    private final PasswordEncoder encoder;
-
     @Override
     public void run(java.lang.String... args) {
 //        repository.save(UserEntity.builder()
