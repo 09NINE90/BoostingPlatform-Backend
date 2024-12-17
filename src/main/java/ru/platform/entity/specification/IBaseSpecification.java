@@ -3,8 +3,8 @@ package ru.platform.entity.specification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
-import ru.platform.entity.BaseOrdersEntity;
-import ru.platform.entity.BaseOrdersEntity_;
+import ru.platform.entity.ServicesEntity;
+import ru.platform.entity.ServicesEntity_;
 import ru.platform.entity.GameEntity;
 
 import java.time.LocalDate;
@@ -229,7 +229,7 @@ public interface IBaseSpecification<T, U>  {
     default Specification<T> gameFilter(String gameId){
         return (root, query, criteriaBuilder) -> {
             // Access the game entity using the Join
-            Join<BaseOrdersEntity, GameEntity> gameJoin = root.join(BaseOrdersEntity_.GAME);
+            Join<ServicesEntity, GameEntity> gameJoin = root.join(ServicesEntity_.GAME);
             return criteriaBuilder.equal(gameJoin.get("title"), gameId);
         };
     }

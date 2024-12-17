@@ -65,7 +65,7 @@ public class OrdersByCustomersEntity {
 
     @ManyToOne
     @JoinColumn(name = "base_order_id")
-    private BaseOrdersEntity baseOrder;
+    private ServicesEntity baseOrder;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.platform.LocalConstants;
 import ru.platform.dto.CustomUserDetails;
-import ru.platform.entity.BaseOrdersEntity;
+import ru.platform.entity.ServicesEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
 import ru.platform.entity.enums.ESortKeys;
 import ru.platform.entity.specification.BaseOrderSpecification;
 import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
-import ru.platform.request.BaseOrderRequest;
-import ru.platform.response.BaseOrderResponse;
+import ru.platform.request.ServicesRequest;
+import ru.platform.response.ServicesResponse;
 import ru.platform.service.IMinIOFileService;
 import ru.platform.service.IOrdersService;
 import ru.platform.utils.GenerateSecondIdUtil;
@@ -36,7 +36,7 @@ public class OrdersService implements IOrdersService {
 
     private final OrdersByCustomersRepository ordersByCustomersRepository;
     private final OrdersPerWeekRepository ordersPerWeekRepository;
-    private final BaseOrdersRepository baseOrdersRepository;
+    private final ServicesRepository servicesRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
@@ -44,22 +44,22 @@ public class OrdersService implements IOrdersService {
     private final IMinIOFileService minioService;
 
     @Override
-    public BaseOrderResponse getAllOrders(BaseOrderRequest request) {
+    public ServicesResponse getAllOrders(ServicesRequest request) {
         return mapToResponse(getBaseOrderPageFunc().apply(request));
     }
 
     @Override
-    public void saveEditingBaseOrder(BaseOrdersEntity request) {
-        BaseOrdersEntity existingOrder = baseOrdersRepository.findById(request.getId())
+    public void saveEditingBaseOrder(ServicesEntity request) {
+        ServicesEntity existingOrder = servicesRepository.findById(request.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
         existingOrder.setTitle(request.getTitle());
         existingOrder.setDescription(request.getDescription());
         existingOrder.setBasePrice(request.getBasePrice());
-        baseOrdersRepository.save(existingOrder);
+        servicesRepository.save(existingOrder);
     }
 
     @Override
-    public BaseOrdersEntity addNewBaseOrder(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication) {
+    public ServicesEntity addNewService(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication) {
         if (imageFile.isEmpty()) {
             throw new IllegalArgumentException("Image file is required");
         }
@@ -70,7 +70,7 @@ public class OrdersService implements IOrdersService {
         String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
         if (user.isPresent() && game.isPresent()){
-            return(baseOrdersRepository.save(BaseOrdersEntity.builder()
+            return(servicesRepository.save(ServicesEntity.builder()
                                 .title(title.replace("\"", ""))
                                 .creator(user.get())
                                 .description(description.replace("\"", ""))
@@ -87,11 +87,11 @@ public class OrdersService implements IOrdersService {
 
     @Override
     public void deleteBaseOrder(UUID id) {
-        baseOrdersRepository.deleteById(id);
+        servicesRepository.deleteById(id);
     }
 
-    private BaseOrdersEntity mapBaseOrderFrom(BaseOrdersEntity e){
-        return BaseOrdersEntity.builder()
+    private ServicesEntity mapBaseOrderFrom(ServicesEntity e){
+        return ServicesEntity.builder()
                 .id(e.getId())
                 .basePrice(e.getBasePrice())
                 .title(e.getTitle())
@@ -104,9 +104,9 @@ public class OrdersService implements IOrdersService {
                 .build();
     }
 
-    private BaseOrderResponse mapToResponse(Page<BaseOrdersEntity> entities){
-        List<BaseOrdersEntity> mappedOrders = entities.stream().map(this::mapBaseOrderFrom).collect(Collectors.toList());
-        return BaseOrderResponse.builder()
+    private ServicesResponse mapToResponse(Page<ServicesEntity> entities){
+        List<ServicesEntity> mappedOrders = entities.stream().map(this::mapBaseOrderFrom).collect(Collectors.toList());
+        return ServicesResponse.builder()
                 .baseOrder(mappedOrders)
                 .pageNumber(entities.getNumber() + 1)
                 .pageSize(entities.getSize())
@@ -114,15 +114,15 @@ public class OrdersService implements IOrdersService {
                 .recordTotal(entities.getTotalElements())
                 .build();
     }
-    private Function<BaseOrderRequest, Page<BaseOrdersEntity>> getBaseOrderPageFunc(){
-        return request -> baseOrdersRepository.findAll(specification.getFilter(request), getPageRequest(request));
+    private Function<ServicesRequest, Page<ServicesEntity>> getBaseOrderPageFunc(){
+        return request -> servicesRepository.findAll(specification.getFilter(request), getPageRequest(request));
     }
 
-    private PageRequest getPageRequest(BaseOrderRequest request) {
+    private PageRequest getPageRequest(ServicesRequest request) {
         return PageRequest.of(getPageBy(request), getSizeBy(request), getSortBy(request));
     }
 
-    private Sort getSortBy(BaseOrderRequest request) {
+    private Sort getSortBy(ServicesRequest request) {
         return getSortBy(request.getSort());
     }
 
@@ -135,7 +135,7 @@ public class OrdersService implements IOrdersService {
         return Sort.by(direction, sort.getKey().getName());
     }
 
-    private int getPageBy(BaseOrderRequest request) {
+    private int getPageBy(ServicesRequest request) {
         return getPageBy(request.getPageNumber());
     }
 
@@ -143,7 +143,7 @@ public class OrdersService implements IOrdersService {
         return pageNumber == null || pageNumber <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_NUMBER : pageNumber - 1;
     }
 
-    private int getSizeBy(BaseOrderRequest request) {
+    private int getSizeBy(ServicesRequest request) {
         return getSizeBy(request.getPageSize());
     }
 
