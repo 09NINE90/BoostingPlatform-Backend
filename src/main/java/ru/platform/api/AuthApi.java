@@ -61,13 +61,15 @@ public class AuthApi {
             String token = jwtUtil.generateToken(authRequest.getUsername(), roles);
 
             Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true); // Недоступен через JS
-            cookie.setSecure(true); // Доступен только по HTTPS
+            cookie.setHttpOnly(false); // Недоступен через JS
+            cookie.setSecure(false); // Доступен только по HTTPS
             cookie.setPath("/"); // Для всех запросов
             cookie.setMaxAge(60 * 60 * 24); // Время жизни cookie (1 день)
             response.addCookie(cookie);
 
             return ResponseEntity.ok(Map.of(
+                    "username", userDetails.getUsername(),
+                    "token", token,
                     "roles", roles
             ));
 
@@ -80,8 +82,8 @@ public class AuthApi {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         try {
             Cookie cookie = new Cookie("token", null);
-            cookie.setHttpOnly(true); // Сделаем cookie недоступной для JS
-            cookie.setSecure(true);   // Сделаем cookie доступной только по HTTPS
+            cookie.setHttpOnly(false); // Сделаем cookie недоступной для JS
+            cookie.setSecure(false);   // Сделаем cookie доступной только по HTTPS
             cookie.setPath("/");      // Для всех запросов
             cookie.setMaxAge(0);      // Убираем cookie
             response.addCookie(cookie);
@@ -115,7 +117,8 @@ public class AuthApi {
             // Возвращаем данные пользователя
             return ResponseEntity.ok(Map.of(
                     "username", username,
-                    "roles", roles
+                    "roles", roles,
+                    "token", token
             ));
         }
 
