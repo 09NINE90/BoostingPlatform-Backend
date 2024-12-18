@@ -1,5 +1,8 @@
 package ru.platform.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ERoles {
     ADMIN ("ADMIN"),
     CUSTOMER ("CUSTOMER"),
@@ -7,12 +10,9 @@ public enum ERoles {
     USER ("USER"),
     MANAGER ("MANAGER");
 
-    private String title;
+    private final String title;
     ERoles(String title) {
         this.title = title;
     }
 
-    public String getTitle() {
-        return title;
-    }
 }

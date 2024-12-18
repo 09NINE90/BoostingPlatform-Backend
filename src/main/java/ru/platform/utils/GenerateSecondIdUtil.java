@@ -9,9 +9,7 @@ import java.util.Random;
 public class GenerateSecondIdUtil {
 
     public String getRandomId(){
-        String readyId = String.valueOf(generateId().insert(4,"-")).toUpperCase(Locale.ROOT);
-
-        return readyId;
+        return String.valueOf(generateId().insert(4,"-")).toUpperCase(Locale.ROOT);
     }
 
     private StringBuilder generateId(){
