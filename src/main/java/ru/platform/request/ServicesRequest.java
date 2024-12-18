@@ -5,7 +5,7 @@ import ru.platform.entity.GameEntity;
 import ru.platform.inner.SortFilter;
 
 @Data
-public class BaseOrderRequest {
+public class ServicesRequest {
     private String imageUrl;
     private String title;
     private String description;

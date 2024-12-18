@@ -3,16 +3,16 @@ package ru.platform.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import ru.platform.entity.BaseOrdersEntity;
+import ru.platform.entity.ServicesEntity;
 
 import java.util.List;
 
 @Data
 @Builder
-public class BaseOrderResponse {
+public class ServicesResponse {
 
     @JsonProperty("baseOrder")
-    private List<BaseOrdersEntity> baseOrder;
+    private List<ServicesEntity> baseOrder;
     @JsonProperty("pageNumber")
     private int pageNumber;
     @JsonProperty("pageSize")

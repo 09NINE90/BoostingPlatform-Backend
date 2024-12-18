@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.platform.entity.BaseOrdersEntity;
-import ru.platform.request.BaseOrderRequest;
-import ru.platform.response.BaseOrderResponse;
+import ru.platform.entity.ServicesEntity;
+import ru.platform.request.ServicesRequest;
+import ru.platform.response.ServicesResponse;
 import ru.platform.service.IOrdersService;
 
 import java.util.UUID;
@@ -22,20 +22,20 @@ public class OrdersApi {
 
     @PostMapping("/getAllOrders")
     @Schema(description = "Получение всех заказов, созданных админом")
-    public ResponseEntity<BaseOrderResponse> getAllOrders(@RequestBody BaseOrderRequest request){
+    public ResponseEntity<ServicesResponse> getAllOrders(@RequestBody ServicesRequest request){
         return ResponseEntity.ok(service.getAllOrders(request));
     }
 
     @PostMapping("/saveEditingBaseOrder")
     @Schema(description = "Изменение заказа, созданного админом")
-    public ResponseEntity<Void> saveEditingBaseOrder(@RequestBody BaseOrdersEntity request){
+    public ResponseEntity<Void> saveEditingBaseOrder(@RequestBody ServicesEntity request){
         service.saveEditingBaseOrder(request);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/addNewOrder")
     @Schema(description = "Создание заказа админом")
-    public ResponseEntity<BaseOrdersEntity> addNewBaseOrder(
+    public ResponseEntity<ServicesEntity> addNewBaseOrder(
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("price") String price,
@@ -44,7 +44,7 @@ public class OrdersApi {
             @RequestParam("image") MultipartFile imageFile,
             Authentication authentication) {
 
-        return ResponseEntity.ok(service.addNewBaseOrder(title, description, price, selectedGameId, categories, imageFile, authentication));
+        return ResponseEntity.ok(service.addNewService(title, description, price, selectedGameId, categories, imageFile, authentication));
     }
 
     @DeleteMapping("/deleteBaseOrder")
