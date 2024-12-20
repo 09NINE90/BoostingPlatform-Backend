@@ -35,7 +35,7 @@ public class GameApi {
         }
     }
 
-    @PostMapping("/getAllGames")
+    @PostMapping("/getAllGamesByPage")
     public ResponseEntity<GameResponse> getAllGames(@RequestBody GameRequest request){
         return ResponseEntity.ok(service.getAllGamesByPage(request));
     }

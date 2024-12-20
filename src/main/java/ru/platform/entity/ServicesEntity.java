@@ -28,43 +28,33 @@ public class ServicesEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Schema(description = "ID заказа")
     private UUID id;
-
     @Column(name = "second_id")
     @Schema(description = "ID заказа для отображения на странице")
     private String secondId;
-
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на изображение для игры")
     private String imageUrl;
-
     @Column(name = "title")
     @Schema(description = "Название заказа")
     private String title;
-
     @Column(name = "description")
     @Schema(description = "Описание заказа")
     private String description;
-
     @Column(name = "base_price", scale = 2)
     @Schema(description = "Базовая стоимость заказа")
     private Float basePrice;
-
     @Column(name = "categories")
     private String categories;
-
     @Column(name = "created_at")
     @Schema(description = "Дата создания заказа на платформе")
     private LocalDate createdAt;
-
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private UserEntity creator;
-
     @ManyToOne
     @JoinColumn(name = "game_id")
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
-
     @Override
     public String toString() {
         return "BaseOrdersEntity{" +

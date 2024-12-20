@@ -12,6 +12,5 @@ public enum ESortKeys {
     CREATED_AT("createdAt");
 
     private final String name;
-
     ESortKeys(String name){this.name = name;}
 }

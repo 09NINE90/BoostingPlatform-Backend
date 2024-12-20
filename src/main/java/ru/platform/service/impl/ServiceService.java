@@ -14,13 +14,13 @@ import ru.platform.entity.ServicesEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
 import ru.platform.entity.enums.ESortKeys;
-import ru.platform.entity.specification.BaseOrderSpecification;
+import ru.platform.entity.specification.ServiceSpecification;
 import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
 import ru.platform.request.ServicesRequest;
 import ru.platform.response.ServicesResponse;
 import ru.platform.service.IMinIOFileService;
-import ru.platform.service.IOrdersService;
+import ru.platform.service.IServiceService;
 import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.time.LocalDate;
@@ -32,26 +32,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrdersService implements IOrdersService {
+public class ServiceService implements IServiceService {
 
-    private final OrdersByCustomersRepository ordersByCustomersRepository;
-    private final OrdersPerWeekRepository ordersPerWeekRepository;
     private final ServicesRepository servicesRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
-    private final BaseOrderSpecification specification;
+    private final ServiceSpecification specification;
     private final IMinIOFileService minioService;
 
     @Override
-    public ServicesResponse getAllOrders(ServicesRequest request) {
-        return mapToResponse(getBaseOrderPageFunc().apply(request));
+    public ServicesResponse getAllServices(ServicesRequest request) {
+        return mapToResponse(getServicePageFunc().apply(request));
     }
 
     @Override
-    public void saveEditingBaseOrder(ServicesEntity request) {
+    public void saveEditingService(ServicesEntity request) {
         ServicesEntity existingOrder = servicesRepository.findById(request.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Service not found"));
         existingOrder.setTitle(request.getTitle());
         existingOrder.setDescription(request.getDescription());
         existingOrder.setBasePrice(request.getBasePrice());
@@ -86,11 +84,11 @@ public class OrdersService implements IOrdersService {
     }
 
     @Override
-    public void deleteBaseOrder(UUID id) {
+    public void deleteService(UUID id) {
         servicesRepository.deleteById(id);
     }
 
-    private ServicesEntity mapBaseOrderFrom(ServicesEntity e){
+    private ServicesEntity mapServiceFrom(ServicesEntity e){
         return ServicesEntity.builder()
                 .id(e.getId())
                 .basePrice(e.getBasePrice())
@@ -105,16 +103,16 @@ public class OrdersService implements IOrdersService {
     }
 
     private ServicesResponse mapToResponse(Page<ServicesEntity> entities){
-        List<ServicesEntity> mappedOrders = entities.stream().map(this::mapBaseOrderFrom).collect(Collectors.toList());
+        List<ServicesEntity> mappedService = entities.stream().map(this::mapServiceFrom).collect(Collectors.toList());
         return ServicesResponse.builder()
-                .baseOrder(mappedOrders)
+                .services(mappedService)
                 .pageNumber(entities.getNumber() + 1)
                 .pageSize(entities.getSize())
                 .pageTotal(entities.getTotalPages())
                 .recordTotal(entities.getTotalElements())
                 .build();
     }
-    private Function<ServicesRequest, Page<ServicesEntity>> getBaseOrderPageFunc(){
+    private Function<ServicesRequest, Page<ServicesEntity>> getServicePageFunc(){
         return request -> servicesRepository.findAll(specification.getFilter(request), getPageRequest(request));
     }
 

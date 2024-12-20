@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 
 @Service
 @RequiredArgsConstructor
-public class BaseOrderSpecification implements IBaseSpecification<ServicesEntity, ServicesRequest> {
+public class ServiceSpecification implements IBaseSpecification<ServicesEntity, ServicesRequest> {
 
     @Override
     public Set<Specification<ServicesEntity>> prepareSpecificationSet(ServicesRequest request) {

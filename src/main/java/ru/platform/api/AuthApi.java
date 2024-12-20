@@ -68,7 +68,6 @@ public class AuthApi {
             response.addCookie(cookie);
 
             return ResponseEntity.ok(Map.of(
-                    "username", userDetails.getUsername(),
                     "token", token,
                     "roles", roles
             ));
@@ -111,18 +110,16 @@ public class AuthApi {
 
         // Проверка валидности токена
         if (token != null && jwtUtil.validateToken(token)) {
-            String username = jwtUtil.extractUsername(token);
             List<String> roles = jwtUtil.extractRoles(token);
 
             // Возвращаем данные пользователя
             return ResponseEntity.ok(Map.of(
-                    "username", username,
                     "roles", roles,
                     "token", token
             ));
         }
 
         // Если токен отсутствует или невалиден
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        return ResponseEntity.ok(false);
     }
 }

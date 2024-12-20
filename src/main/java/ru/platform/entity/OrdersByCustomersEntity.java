@@ -32,45 +32,34 @@ public class OrdersByCustomersEntity {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @Column(name = "second_id")
     private String secondId;
-
     @Column(name = "description")
     @Schema(description = "Описание созданого заказа")
     private String description;
-
     @Column(name = "price")
     @Schema(description = "Предложенная стоимость заказа")
     private float price;
-
     @Column(name = "status")
     @Schema(description = "Предложенная стоимость заказа")
     private String status;
-
     @Column(name = "platform")
     @Schema(description = "Платформа выполнения (ПК, PS, Xbox)")
     private String platform;
-
     @Column(name = "is_self_play")
     @Schema(description = "Заказ выполняется в одиночку или с клиентом")
     private boolean isSelfPlay;
-
     @Column(name = "tome_to_start")
     @Schema(description = "Время за которое нужно начать выполнение заказа")
     private String timeToStart;
-
     @Column(name = "created_at")
     private LocalDate createdAt;
-
     @ManyToOne
     @JoinColumn(name = "base_order_id")
     private ServicesEntity baseOrder;
-
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private UserEntity customer;
-
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private UserEntity worker;
