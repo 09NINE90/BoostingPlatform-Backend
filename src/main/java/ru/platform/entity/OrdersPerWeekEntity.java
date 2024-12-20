@@ -26,22 +26,16 @@ public class OrdersPerWeekEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
-
     @Column(name = "orders_count_per_peek")
     private int ordersCountPerWeek;
-
     @Column(name = "count_days_of_week")
     private Short countDaysOfWeek;
-
     @Column(name = "last_date")
     private Date lastDate;
-
     @Column(name = "week_start")
     private Date weekStart;
-
     @Column(name = "week_end")
     private Date weekEnd;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;

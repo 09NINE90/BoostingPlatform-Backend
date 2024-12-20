@@ -16,18 +16,14 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "name")
     private String name;
-
     @ManyToOne
     @JoinColumn(name = "game_id")
     private GameEntity game;
-
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private CategoryEntity parent;
-
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryEntity> subcategories;
-
 }

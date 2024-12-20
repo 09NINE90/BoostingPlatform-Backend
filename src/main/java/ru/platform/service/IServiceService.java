@@ -8,9 +8,9 @@ import ru.platform.response.ServicesResponse;
 
 import java.util.UUID;
 
-public interface IOrdersService {
-    ServicesResponse getAllOrders(ServicesRequest request);
-    void saveEditingBaseOrder(ServicesEntity request);
-    void deleteBaseOrder(UUID id);
+public interface IServiceService {
+    ServicesResponse getAllServices(ServicesRequest request);
+    void saveEditingService(ServicesEntity request);
+    void deleteService(UUID id);
     ServicesEntity addNewService(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication);
 }

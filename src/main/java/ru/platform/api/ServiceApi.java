@@ -9,33 +9,33 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.platform.entity.ServicesEntity;
 import ru.platform.request.ServicesRequest;
 import ru.platform.response.ServicesResponse;
-import ru.platform.service.IOrdersService;
+import ru.platform.service.IServiceService;
 
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
-public class OrdersApi {
+@RequestMapping("/services")
+public class ServiceApi {
 
-    private final IOrdersService service;
+    private final IServiceService service;
 
-    @PostMapping("/getAllOrders")
+    @PostMapping("/getAllServices")
     @Schema(description = "Получение всех заказов, созданных админом")
-    public ResponseEntity<ServicesResponse> getAllOrders(@RequestBody ServicesRequest request){
-        return ResponseEntity.ok(service.getAllOrders(request));
+    public ResponseEntity<ServicesResponse> getAllServices(@RequestBody ServicesRequest request){
+        return ResponseEntity.ok(service.getAllServices(request));
     }
 
-    @PostMapping("/saveEditingBaseOrder")
+    @PostMapping("/saveEditingService")
     @Schema(description = "Изменение заказа, созданного админом")
-    public ResponseEntity<Void> saveEditingBaseOrder(@RequestBody ServicesEntity request){
-        service.saveEditingBaseOrder(request);
+    public ResponseEntity<Void> saveEditingService(@RequestBody ServicesEntity request){
+        service.saveEditingService(request);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/addNewOrder")
+    @PostMapping(value = "/addNewService")
     @Schema(description = "Создание заказа админом")
-    public ResponseEntity<ServicesEntity> addNewBaseOrder(
+    public ResponseEntity<ServicesEntity> addNewService(
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("price") String price,
@@ -43,14 +43,13 @@ public class OrdersApi {
             @RequestParam("categories") String categories,
             @RequestParam("image") MultipartFile imageFile,
             Authentication authentication) {
-
         return ResponseEntity.ok(service.addNewService(title, description, price, selectedGameId, categories, imageFile, authentication));
     }
 
-    @DeleteMapping("/deleteBaseOrder")
+    @DeleteMapping("/deleteService")
     @Schema(description = "Удаление заказа, созданного админом")
-    public ResponseEntity<Void> deleteBaseOrder(@RequestBody UUID id){
-        service.deleteBaseOrder(id);
+    public ResponseEntity<Void> deleteService(@RequestBody UUID id){
+        service.deleteService(id);
         return ResponseEntity.noContent().build();
     }
 

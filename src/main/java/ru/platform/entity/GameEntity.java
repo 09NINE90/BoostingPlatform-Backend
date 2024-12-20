@@ -26,20 +26,16 @@ public class GameEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Schema(description = "ID игры")
     private UUID id;
-
     @Column(name = "title")
     @JsonProperty("title")
     @Schema(description = "Название игры")
     private String title;
-
     @Column(name = "description")
     @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
     @JsonIgnore
     private List<CategoryEntity> categories;
-
 }

@@ -98,7 +98,7 @@ public class MinIOFileService implements IMinIOFileService {
                             .object(objectName)
                             .build());
         } catch (Exception e) {
-            log.error("Ошибка получения URL тайла: " + e.getMessage());
+            log.error("Ошибка получения URL тайла: {}", e.getMessage());
             return null;
         }
     }
