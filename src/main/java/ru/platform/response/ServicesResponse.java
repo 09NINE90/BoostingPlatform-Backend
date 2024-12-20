@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 public class ServicesResponse {
 
-    @JsonProperty("baseOrder")
-    private List<ServicesEntity> baseOrder;
+    @JsonProperty("services")
+    private List<ServicesEntity> services;
     @JsonProperty("pageNumber")
     private int pageNumber;
     @JsonProperty("pageSize")
@@ -26,7 +26,7 @@ public class ServicesResponse {
     @Override
     public String toString() {
         return "BaseOrderResponse{" +
-                "baseOrder=" + baseOrder +
+                "baseOrder=" + services +
                 ", pageNumber=" + pageNumber +
                 ", pageSize=" + pageSize +
                 ", pageTotal=" + pageTotal +
