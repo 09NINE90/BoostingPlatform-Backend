@@ -1,9 +1,12 @@
 package ru.platform.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.platform.entity.GameEntity;
 import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
@@ -19,8 +22,12 @@ public class GameApi {
     private final IGameService service;
 
     @PostMapping("/addNewGame")
-    public void addNewGame(@RequestBody GameRequest request){
-        service.addNewGame(request);
+    @Schema(description = "Добавление игры админом")
+    public ResponseEntity<?> addNewGame(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("game") GameRequest request,
+            Authentication authentication){
+        return ResponseEntity.ok(service.addNewGame(request, file, authentication));
     }
 
     @PutMapping("/editGame")
@@ -36,12 +43,12 @@ public class GameApi {
     }
 
     @PostMapping("/getAllGamesByPage")
-    public ResponseEntity<GameResponse> getAllGames(@RequestBody GameRequest request){
+    public ResponseEntity<GameResponse> getAllGames(@RequestBody GameRequest request) {
         return ResponseEntity.ok(service.getAllGamesByPage(request));
     }
 
     @GetMapping("/getAllGames")
-    public List<GameEntity> getAllGames(){
+    public List<GameEntity> getAllGames() {
         return service.getAllGames();
     }
 

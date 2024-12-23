@@ -30,10 +30,16 @@ public class GameEntity {
     @JsonProperty("title")
     @Schema(description = "Название игры")
     private String title;
+    @Column(name = "image_url", columnDefinition="TEXT")
+    @Schema(description = "Ссылка на изображение для игры")
+    private String imageUrl;
     @Column(name = "description")
     @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private UserEntity creator;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
     @JsonIgnore

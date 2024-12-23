@@ -4,15 +4,21 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.platform.LocalConstants;
+import ru.platform.dto.CustomUserDetails;
 import ru.platform.entity.CategoryEntity;
 import ru.platform.entity.GameEntity;
+import ru.platform.entity.UserEntity;
 import ru.platform.repository.GameRepository;
+import ru.platform.repository.UserRepository;
 import ru.platform.request.CategoryRequest;
 import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
 import ru.platform.service.IGameService;
+import ru.platform.service.IMinIOFileService;
 
 import java.util.*;
 import java.util.function.Function;
@@ -23,6 +29,8 @@ import java.util.stream.Collectors;
 public class GameService implements IGameService {
 
     private final GameRepository repository;
+    private final UserRepository userRepository;
+    private final IMinIOFileService minioService;
 
     @Override
     public List<GameEntity> getAllGames() {
@@ -36,19 +44,34 @@ public class GameService implements IGameService {
 
     @Override
     @Transactional
-    public void addNewGame(GameRequest request) {
-        GameEntity gameEntity = GameEntity.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .categories(new ArrayList<>()) // Пустой список для избежания ошибок
-                .build();
+    public GameEntity addNewGame(GameRequest request, MultipartFile imageFile, Authentication authentication) {
+        if (imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Image file is required");
+        }
 
-        repository.save(gameEntity);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Optional<UserEntity> user = userRepository.findById(userDetails.getId());
 
-        List<CategoryEntity> categoryEntities = processCategoryHierarchy(request.getCategories(), null);
-        gameEntity.setCategories(categoryEntities);
+        String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
-        repository.save(gameEntity);
+        if (user.isPresent()){
+            GameEntity gameEntity = GameEntity.builder()
+                    .title(request.getTitle())
+                    .description(request.getDescription())
+                    .categories(new ArrayList<>())
+                    .imageUrl(imageUrl)
+                    .creator(user.get())
+                    .build();
+            repository.save(gameEntity);
+
+            List<CategoryEntity> categoryEntities = processCategoryHierarchy(request.getCategories(), null);
+            gameEntity.setCategories(categoryEntities);
+
+            return repository.save(gameEntity);
+        }
+
+
+        return new GameEntity();
     }
 
     @Override
@@ -111,6 +134,7 @@ public class GameService implements IGameService {
         return GameEntity.builder()
                 .id(e.getId())
                 .title(e.getTitle())
+                .imageUrl(e.getImageUrl())
                 .categories(e.getCategories())
                 .description(e.getDescription())
                 .build();
