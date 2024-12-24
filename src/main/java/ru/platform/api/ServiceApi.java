@@ -36,14 +36,10 @@ public class ServiceApi {
     @PostMapping(value = "/addNewService")
     @Schema(description = "Создание заказа админом")
     public ResponseEntity<ServicesEntity> addNewService(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("price") String price,
-            @RequestParam("selectedGameId") String selectedGameId,
-            @RequestParam("categories") String categories,
-            @RequestParam("image") MultipartFile imageFile,
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("services") ServicesRequest services,
             Authentication authentication) {
-        return ResponseEntity.ok(service.addNewService(title, description, price, selectedGameId, categories, imageFile, authentication));
+        return ResponseEntity.ok(service.addNewService(services, file, authentication));
     }
 
     @DeleteMapping("/deleteService")

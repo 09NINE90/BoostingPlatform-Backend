@@ -27,7 +27,7 @@ public interface IBaseSpecification<T, U>  {
     List<BiConsumer<Set<Specification<T>>, U>> getSpecificationConsumerList();
 
     default Set<Specification<T>> prepareSpecificationSet(U request, Predicate<U> activateFunction) {
-        Set<Specification<T>> specificationSet = new HashSet();
+        Set<Specification<T>> specificationSet = new HashSet<>();
         if (activateFunction.test(request)) {
             this.getSpecificationConsumerList().forEach((c) -> {
                 c.accept(specificationSet, request);

@@ -12,5 +12,5 @@ public interface IServiceService {
     ServicesResponse getAllServices(ServicesRequest request);
     void saveEditingService(ServicesEntity request);
     void deleteService(UUID id);
-    ServicesEntity addNewService(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication);
+    ServicesEntity addNewService(ServicesRequest request, MultipartFile imageFile, Authentication authentication);
 }

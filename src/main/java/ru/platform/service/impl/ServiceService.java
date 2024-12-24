@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.platform.LocalConstants;
 import ru.platform.dto.CustomUserDetails;
+import ru.platform.entity.OptionsEntity;
 import ru.platform.entity.ServicesEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
@@ -24,6 +25,7 @@ import ru.platform.service.IServiceService;
 import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,6 +41,7 @@ public class ServiceService implements IServiceService {
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
     private final ServiceSpecification specification;
+    private final OptionsRepository optionsRepository;
     private final IMinIOFileService minioService;
 
     @Override
@@ -57,28 +60,38 @@ public class ServiceService implements IServiceService {
     }
 
     @Override
-    public ServicesEntity addNewService(String title, String description, String price, String selectedGameId, String categories, MultipartFile imageFile, Authentication authentication) {
+    public ServicesEntity addNewService(ServicesRequest request, MultipartFile imageFile, Authentication authentication) {
         if (imageFile.isEmpty()) {
             throw new IllegalArgumentException("Image file is required");
         }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Optional<UserEntity> user = userRepository.findById(userDetails.getId());
-        Optional<GameEntity> game = gameRepository.findById(UUID.fromString(selectedGameId.replace("\"", "")));
+        Optional<GameEntity> game = gameRepository.findById(UUID.fromString(request.getGameId().replace("\"", "")));
 
         String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
         if (user.isPresent() && game.isPresent()){
-            return(servicesRepository.save(ServicesEntity.builder()
-                                .title(title.replace("\"", ""))
-                                .creator(user.get())
-                                .description(description.replace("\"", ""))
-                                .basePrice(Float.parseFloat(price.replace("\"", "")))
-                                .createdAt(LocalDate.now())
-                                .game(game.get())
-                                .categories(categories.replace("\"", ""))
-                                .imageUrl(imageUrl)
-                                .secondId(generateSecondIdUtil.getRandomId())
-                                .build()));
+            ServicesEntity service = ServicesEntity.builder()
+                    .title(request.getTitle().replace("\"", ""))
+                    .creator(user.get())
+                    .description(request.getDescription().replace("\"", ""))
+                    .basePrice(request.getPrice())
+                    .createdAt(LocalDate.now())
+                    .game(game.get())
+                    .categories(request.getCategories().replace("\"", ""))
+                    .imageUrl(imageUrl)
+                    .secondId(generateSecondIdUtil.getRandomId())
+                    .build();
+            servicesRepository.save(service);
+            List<OptionsEntity> options = new ArrayList<>();
+            for (OptionsEntity option : request.getOptions()){
+                option.setService(service);
+                option.setOptions(option.getOptions().replace("\n", "").replace("\r", ""));
+                options.add(option);
+            }
+            optionsRepository.saveAll(options);
+
+            return service;
         }
         return null;
     }

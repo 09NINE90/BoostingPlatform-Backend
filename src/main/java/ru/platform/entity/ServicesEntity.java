@@ -55,19 +55,4 @@ public class ServicesEntity {
     @JoinColumn(name = "game_id")
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
-    @Override
-    public String toString() {
-        return "BaseOrdersEntity{" +
-                "id=" + id +
-                ", secondId='" + secondId + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", basePrice=" + basePrice +
-                ", categories='" + categories + '\'' +
-                ", createdAt=" + createdAt +
-                ", creator=" + creator +
-                ", game=" + game +
-                '}';
-    }
 }
