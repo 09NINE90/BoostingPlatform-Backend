@@ -1,6 +1,8 @@
 server:
   port: 6969
 spring:
+  application:
+    name: boosting_platform_java
   servlet:
     multipart:
       max-file-size: 1GB
