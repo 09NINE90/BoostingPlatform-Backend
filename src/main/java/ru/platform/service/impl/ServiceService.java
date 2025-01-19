@@ -2,6 +2,7 @@ package ru.platform.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import ru.platform.entity.specification.ServiceSpecification;
 import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
 import ru.platform.request.ServicesRequest;
+import ru.platform.response.OptionResponse;
 import ru.platform.response.ServicesResponse;
 import ru.platform.service.IMinIOFileService;
 import ru.platform.service.IServiceService;
@@ -70,7 +72,7 @@ public class ServiceService implements IServiceService {
 
         String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
-        if (user.isPresent() && game.isPresent()){
+        if (user.isPresent() && game.isPresent()) {
             ServicesEntity service = ServicesEntity.builder()
                     .title(request.getTitle().replace("\"", ""))
                     .creator(user.get())
@@ -84,7 +86,7 @@ public class ServiceService implements IServiceService {
                     .build();
             servicesRepository.save(service);
             List<OptionsEntity> options = new ArrayList<>();
-            for (OptionsEntity option : request.getOptions()){
+            for (OptionsEntity option : request.getOptions()) {
                 option.setService(service);
                 option.setOptions(option.getOptions().replace("\n", "").replace("\r", ""));
                 options.add(option);
@@ -97,11 +99,51 @@ public class ServiceService implements IServiceService {
     }
 
     @Override
+    public List<OptionResponse> getOptionsByServicesId(UUID serviceId) {
+        Optional<ServicesEntity> service = servicesRepository.findById(serviceId);
+        if (service.isPresent()) {
+            List<OptionResponse> responses = new ArrayList<>();
+            List<OptionsEntity> options = optionsRepository.findAllByService(service.get());
+            for (OptionsEntity option : options) {
+                String[] parts = option.getOptions().split(",");
+
+                OptionResponse response = getOptionResponse(option, parts);
+
+                responses.add(response);
+            }
+            return responses;
+        }
+        throw new EntityNotFoundException();
+    }
+
+    @NotNull
+    private OptionResponse getOptionResponse(OptionsEntity option, String[] parts) {
+        List<String> values = new ArrayList<>();
+        List<Double> prices = new ArrayList<>();
+
+        for (String part : parts) {
+            String[] split = part.split("-");
+            if (split.length == 2) {
+                values.add(split[0].trim()); // добавляем значение
+                prices.add(Double.parseDouble(split[1].trim())); // добавляем число
+            }
+        }
+
+        OptionResponse response = new OptionResponse();
+        response.setId(option.getId());
+        response.setTitle(option.getTitle());
+        response.setType(option.getType());
+        response.setOptions(values);
+        response.setPrices(prices);
+        return response;
+    }
+
+    @Override
     public void deleteService(UUID id) {
         servicesRepository.deleteById(id);
     }
 
-    private ServicesEntity mapServiceFrom(ServicesEntity e){
+    private ServicesEntity mapServiceFrom(ServicesEntity e) {
         return ServicesEntity.builder()
                 .id(e.getId())
                 .basePrice(e.getBasePrice())
@@ -115,7 +157,7 @@ public class ServiceService implements IServiceService {
                 .build();
     }
 
-    private ServicesResponse mapToResponse(Page<ServicesEntity> entities){
+    private ServicesResponse mapToResponse(Page<ServicesEntity> entities) {
         List<ServicesEntity> mappedService = entities.stream().map(this::mapServiceFrom).collect(Collectors.toList());
         return ServicesResponse.builder()
                 .services(mappedService)
@@ -125,7 +167,8 @@ public class ServiceService implements IServiceService {
                 .recordTotal(entities.getTotalElements())
                 .build();
     }
-    private Function<ServicesRequest, Page<ServicesEntity>> getServicePageFunc(){
+
+    private Function<ServicesRequest, Page<ServicesEntity>> getServicePageFunc() {
         return request -> servicesRepository.findAll(specification.getFilter(request), getPageRequest(request));
     }
 
@@ -138,7 +181,7 @@ public class ServiceService implements IServiceService {
     }
 
     private Sort getSortBy(SortFilter sort) {
-        if (sort == null || sort.getKey() == null){
+        if (sort == null || sort.getKey() == null) {
             sort = new SortFilter(ESortKeys.CREATED_AT, false);
         }
         boolean isAsc = sort.getAsc();
@@ -159,6 +202,6 @@ public class ServiceService implements IServiceService {
     }
 
     private int getSizeBy(Integer pageSize) {
-        return pageSize == null || pageSize <=0 ? LocalConstants.Variables.DEFAULT_PAGE_SIZE : pageSize;
+        return pageSize == null || pageSize <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_SIZE : pageSize;
     }
 }

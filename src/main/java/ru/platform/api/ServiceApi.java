@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.platform.entity.ServicesEntity;
 import ru.platform.request.ServicesRequest;
+import ru.platform.response.OptionResponse;
 import ru.platform.response.ServicesResponse;
 import ru.platform.service.IServiceService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,13 +35,18 @@ public class ServiceApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/addNewService")
+    @PostMapping("/addNewService")
     @Schema(description = "Создание заказа админом")
     public ResponseEntity<ServicesEntity> addNewService(
             @RequestPart("file") MultipartFile file,
             @RequestPart("services") ServicesRequest services,
             Authentication authentication) {
         return ResponseEntity.ok(service.addNewService(services, file, authentication));
+    }
+
+    @PostMapping("/getOptionsByServicesId/{serviceId}")
+    public ResponseEntity<List<OptionResponse>> getOptionsByServicesId(@PathVariable("serviceId") UUID serviceId){
+        return ResponseEntity.ok(service.getOptionsByServicesId(serviceId));
     }
 
     @DeleteMapping("/deleteService")

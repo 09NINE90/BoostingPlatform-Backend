@@ -33,7 +33,7 @@ public class GameEntity {
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на изображение для игры")
     private String imageUrl;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
@@ -44,4 +44,11 @@ public class GameEntity {
     @JoinColumn(name = "game_id")
     @JsonIgnore
     private List<CategoryEntity> categories;
+    @Override
+    public String toString() {
+        return "GameEntity{" +
+                "id=" + id +
+                ", name='" + title + '\'' +
+                '}';
+    }
 }

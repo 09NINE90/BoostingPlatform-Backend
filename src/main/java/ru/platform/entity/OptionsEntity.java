@@ -24,13 +24,17 @@ public class OptionsEntity {
     @Schema(description = "ID опции")
     private UUID id;
 
+    @Column(name = "title")
+    @Schema(description = "Заголовок опции")
+    private String title;
+
     @Column(name = "type")
     @Schema(description = "Тип опции (select, slider, checkbox ...)")
-    String type;
+    private String type;
 
     @Column(name = "options", columnDefinition="TEXT")
     @Schema(description = "Опции (названия-стоимость)")
-    String options;
+    private String options;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)

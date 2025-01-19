@@ -37,7 +37,7 @@ public class ServicesEntity {
     @Column(name = "title")
     @Schema(description = "Название заказа")
     private String title;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition="TEXT")
     @Schema(description = "Описание заказа")
     private String description;
     @Column(name = "base_price", scale = 2)
