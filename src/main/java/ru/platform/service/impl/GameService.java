@@ -204,7 +204,6 @@ public class GameService implements IGameService {
                 .map(this::toCategoryDTO)
                 .collect(Collectors.toList());
 
-        // Создаем DTO
         return GameResponse.builder()
                 .id(game.getId().toString())
                 .title(game.getTitle())

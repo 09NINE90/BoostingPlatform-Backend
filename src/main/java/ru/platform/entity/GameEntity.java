@@ -9,9 +9,6 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Объект в котором хранятся игры для бустинга
- */
 @Entity
 @Builder
 @Data

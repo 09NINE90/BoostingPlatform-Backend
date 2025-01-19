@@ -10,10 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/**
- * Объект в котором хранятся заказы,
- * созданные админом платформы
- */
 @Entity
 @Builder
 @Data
@@ -21,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "services", schema = "dev")
 @Schema(description = "Объект в котором хранятся заказы, созданные админом платформы")
-public class ServicesEntity {
+public class OrderServicesEntity {
 
     @Id
     @Column(name = "id")
