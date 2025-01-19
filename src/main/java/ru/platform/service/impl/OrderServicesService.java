@@ -2,7 +2,6 @@ package ru.platform.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,23 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.platform.LocalConstants;
 import ru.platform.dto.CustomUserDetails;
-import ru.platform.entity.OptionsEntity;
-import ru.platform.entity.ServicesEntity;
+import ru.platform.entity.OrderServicesEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
 import ru.platform.entity.enums.ESortKeys;
-import ru.platform.entity.specification.ServiceSpecification;
+import ru.platform.entity.specification.OrderServicesSpecification;
 import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
-import ru.platform.request.ServicesRequest;
-import ru.platform.response.OptionResponse;
-import ru.platform.response.ServicesResponse;
+import ru.platform.request.OrderServicesRequest;
+import ru.platform.response.OrderServicesResponse;
 import ru.platform.service.IMinIOFileService;
-import ru.platform.service.IServiceService;
+import ru.platform.service.IOrderServicesService;
 import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,33 +32,32 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ServiceService implements IServiceService {
+public class OrderServicesService implements IOrderServicesService {
 
-    private final ServicesRepository servicesRepository;
+    private final OrderServicesRepository orderServicesRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final GenerateSecondIdUtil generateSecondIdUtil;
-    private final ServiceSpecification specification;
-    private final OptionsRepository optionsRepository;
+    private final OrderServicesSpecification specification;
     private final IMinIOFileService minioService;
 
     @Override
-    public ServicesResponse getAllServices(ServicesRequest request) {
+    public OrderServicesResponse getAllServices(OrderServicesRequest request) {
         return mapToResponse(getServicePageFunc().apply(request));
     }
 
     @Override
-    public void saveEditingService(ServicesEntity request) {
-        ServicesEntity existingOrder = servicesRepository.findById(request.getId())
+    public void saveEditingService(OrderServicesEntity request) {
+        OrderServicesEntity existingOrder = orderServicesRepository.findById(request.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Service not found"));
         existingOrder.setTitle(request.getTitle());
         existingOrder.setDescription(request.getDescription());
         existingOrder.setBasePrice(request.getBasePrice());
-        servicesRepository.save(existingOrder);
+        orderServicesRepository.save(existingOrder);
     }
 
     @Override
-    public ServicesEntity addNewService(ServicesRequest request, MultipartFile imageFile, Authentication authentication) {
+    public OrderServicesEntity addNewService(OrderServicesRequest request, MultipartFile imageFile, Authentication authentication) {
         if (imageFile.isEmpty()) {
             throw new IllegalArgumentException("Image file is required");
         }
@@ -73,7 +68,7 @@ public class ServiceService implements IServiceService {
         String imageUrl = minioService.uploadBaseOrderImage(imageFile);
 
         if (user.isPresent() && game.isPresent()) {
-            ServicesEntity service = ServicesEntity.builder()
+            OrderServicesEntity service = OrderServicesEntity.builder()
                     .title(request.getTitle().replace("\"", ""))
                     .creator(user.get())
                     .description(request.getDescription().replace("\"", ""))
@@ -84,67 +79,19 @@ public class ServiceService implements IServiceService {
                     .imageUrl(imageUrl)
                     .secondId(generateSecondIdUtil.getRandomId())
                     .build();
-            servicesRepository.save(service);
-            List<OptionsEntity> options = new ArrayList<>();
-            for (OptionsEntity option : request.getOptions()) {
-                option.setService(service);
-                option.setOptions(option.getOptions().replace("\n", "").replace("\r", ""));
-                options.add(option);
-            }
-            optionsRepository.saveAll(options);
-
+            orderServicesRepository.save(service);
             return service;
         }
         return null;
     }
 
     @Override
-    public List<OptionResponse> getOptionsByServicesId(UUID serviceId) {
-        Optional<ServicesEntity> service = servicesRepository.findById(serviceId);
-        if (service.isPresent()) {
-            List<OptionResponse> responses = new ArrayList<>();
-            List<OptionsEntity> options = optionsRepository.findAllByService(service.get());
-            for (OptionsEntity option : options) {
-                String[] parts = option.getOptions().split(",");
-
-                OptionResponse response = getOptionResponse(option, parts);
-
-                responses.add(response);
-            }
-            return responses;
-        }
-        throw new EntityNotFoundException();
-    }
-
-    @NotNull
-    private OptionResponse getOptionResponse(OptionsEntity option, String[] parts) {
-        List<String> values = new ArrayList<>();
-        List<Double> prices = new ArrayList<>();
-
-        for (String part : parts) {
-            String[] split = part.split("-");
-            if (split.length == 2) {
-                values.add(split[0].trim()); // добавляем значение
-                prices.add(Double.parseDouble(split[1].trim())); // добавляем число
-            }
-        }
-
-        OptionResponse response = new OptionResponse();
-        response.setId(option.getId());
-        response.setTitle(option.getTitle());
-        response.setType(option.getType());
-        response.setOptions(values);
-        response.setPrices(prices);
-        return response;
-    }
-
-    @Override
     public void deleteService(UUID id) {
-        servicesRepository.deleteById(id);
+        orderServicesRepository.deleteById(id);
     }
 
-    private ServicesEntity mapServiceFrom(ServicesEntity e) {
-        return ServicesEntity.builder()
+    private OrderServicesEntity mapServiceFrom(OrderServicesEntity e) {
+        return OrderServicesEntity.builder()
                 .id(e.getId())
                 .basePrice(e.getBasePrice())
                 .title(e.getTitle())
@@ -157,9 +104,9 @@ public class ServiceService implements IServiceService {
                 .build();
     }
 
-    private ServicesResponse mapToResponse(Page<ServicesEntity> entities) {
-        List<ServicesEntity> mappedService = entities.stream().map(this::mapServiceFrom).collect(Collectors.toList());
-        return ServicesResponse.builder()
+    private OrderServicesResponse mapToResponse(Page<OrderServicesEntity> entities) {
+        List<OrderServicesEntity> mappedService = entities.stream().map(this::mapServiceFrom).collect(Collectors.toList());
+        return OrderServicesResponse.builder()
                 .services(mappedService)
                 .pageNumber(entities.getNumber() + 1)
                 .pageSize(entities.getSize())
@@ -168,15 +115,15 @@ public class ServiceService implements IServiceService {
                 .build();
     }
 
-    private Function<ServicesRequest, Page<ServicesEntity>> getServicePageFunc() {
-        return request -> servicesRepository.findAll(specification.getFilter(request), getPageRequest(request));
+    private Function<OrderServicesRequest, Page<OrderServicesEntity>> getServicePageFunc() {
+        return request -> orderServicesRepository.findAll(specification.getFilter(request), getPageRequest(request));
     }
 
-    private PageRequest getPageRequest(ServicesRequest request) {
+    private PageRequest getPageRequest(OrderServicesRequest request) {
         return PageRequest.of(getPageBy(request), getSizeBy(request), getSortBy(request));
     }
 
-    private Sort getSortBy(ServicesRequest request) {
+    private Sort getSortBy(OrderServicesRequest request) {
         return getSortBy(request.getSort());
     }
 
@@ -189,7 +136,7 @@ public class ServiceService implements IServiceService {
         return Sort.by(direction, sort.getKey().getName());
     }
 
-    private int getPageBy(ServicesRequest request) {
+    private int getPageBy(OrderServicesRequest request) {
         return getPageBy(request.getPageNumber());
     }
 
@@ -197,7 +144,7 @@ public class ServiceService implements IServiceService {
         return pageNumber == null || pageNumber <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_NUMBER : pageNumber - 1;
     }
 
-    private int getSizeBy(ServicesRequest request) {
+    private int getSizeBy(OrderServicesRequest request) {
         return getSizeBy(request.getPageSize());
     }
 

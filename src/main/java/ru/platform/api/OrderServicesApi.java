@@ -6,47 +6,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.platform.entity.ServicesEntity;
-import ru.platform.request.ServicesRequest;
-import ru.platform.response.OptionResponse;
-import ru.platform.response.ServicesResponse;
-import ru.platform.service.IServiceService;
+import ru.platform.entity.OrderServicesEntity;
+import ru.platform.request.OrderServicesRequest;
+import ru.platform.response.OrderServicesResponse;
+import ru.platform.service.IOrderServicesService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/services")
-public class ServiceApi {
+public class OrderServicesApi {
 
-    private final IServiceService service;
+    private final IOrderServicesService service;
 
     @PostMapping("/getAllServices")
     @Schema(description = "Получение всех заказов, созданных админом")
-    public ResponseEntity<ServicesResponse> getAllServices(@RequestBody ServicesRequest request){
+    public ResponseEntity<OrderServicesResponse> getAllServices(@RequestBody OrderServicesRequest request){
         return ResponseEntity.ok(service.getAllServices(request));
     }
 
     @PostMapping("/saveEditingService")
     @Schema(description = "Изменение заказа, созданного админом")
-    public ResponseEntity<Void> saveEditingService(@RequestBody ServicesEntity request){
+    public ResponseEntity<Void> saveEditingService(@RequestBody OrderServicesEntity request){
         service.saveEditingService(request);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/addNewService")
     @Schema(description = "Создание заказа админом")
-    public ResponseEntity<ServicesEntity> addNewService(
+    public ResponseEntity<OrderServicesEntity> addNewService(
             @RequestPart("file") MultipartFile file,
-            @RequestPart("services") ServicesRequest services,
+            @RequestPart("services") OrderServicesRequest services,
             Authentication authentication) {
         return ResponseEntity.ok(service.addNewService(services, file, authentication));
-    }
-
-    @PostMapping("/getOptionsByServicesId/{serviceId}")
-    public ResponseEntity<List<OptionResponse>> getOptionsByServicesId(@PathVariable("serviceId") UUID serviceId){
-        return ResponseEntity.ok(service.getOptionsByServicesId(serviceId));
     }
 
     @DeleteMapping("/deleteService")
