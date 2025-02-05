@@ -35,7 +35,7 @@ public class SecurityConfig {
                                 "/swagger-ui/index.html",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/**",
+                                "/boosting-platform/**",
                                 "/actuator/**",
                                 "/api/auth/signUp",
                                 "/api/auth/logout",

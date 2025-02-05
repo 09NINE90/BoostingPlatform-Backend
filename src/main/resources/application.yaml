@@ -25,6 +25,12 @@ spring:
     url: ${MINIO_URL:http://localhost:9000}
     access-key: ${USERNAME_MINIO:minio}
     secret-key: ${PASSWORD_MINIO:minio123}
+
+springdoc:
+  api-docs:
+    path: '/boosting-platform/api-docs'
+    enabled: true
+
 management:
   endpoint:
     shutdown:
