@@ -25,6 +25,10 @@ spring:
     url: ${MINIO_URL:http://localhost:9000}
     access-key: ${USERNAME_MINIO:minio}
     secret-key: ${PASSWORD_MINIO:minio123}
+  jwt:
+    secret-key: ${JWT_SECRET_KEY:key-key}
+  frontend:
+    host: ${FRONTEND_HOST}
 
 springdoc:
   api-docs:
