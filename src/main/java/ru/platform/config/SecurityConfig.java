@@ -70,7 +70,6 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        System.out.println(String.format("http://%s:5173", FRONTEND_HOST));
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin(String.format("http://%s:5173", FRONTEND_HOST));
         configuration.addAllowedMethod("*");
