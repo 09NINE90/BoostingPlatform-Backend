@@ -1,13 +1,16 @@
 package ru.platform.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.entity.options_entity.OptionEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -51,4 +54,8 @@ public class OrderServicesEntity {
     @JoinColumn(name = "game_id")
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<OptionEntity> options;
+
 }
