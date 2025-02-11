@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +25,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @Override
     public AuthResponse trySignup(AuthRequest authRequest, HttpServletResponse response) {
@@ -60,6 +58,21 @@ public class AuthService implements IAuthService {
 
     @Override
     public ResponseEntity<?> checkAuthentication(HttpServletRequest request) {
+        String token = checkToken(request);
+
+        if (token != null && jwtUtil.validateToken(token)) {
+            List<String> roles = jwtUtil.extractRoles(token);
+
+            return ResponseEntity.ok(Map.of(
+                    "roles", roles,
+                    "token", token
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+    }
+
+    public static String checkToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
 
@@ -71,16 +84,6 @@ public class AuthService implements IAuthService {
                 }
             }
         }
-
-        if (token != null && jwtUtil.validateToken(token)) {
-            List<String> roles = jwtUtil.extractRoles(token);
-
-            return ResponseEntity.ok(Map.of(
-                    "roles", roles,
-                    "token", token
-            ));
-        }
-
-        return ResponseEntity.ofNullable(false);
+        return token;
     }
 }

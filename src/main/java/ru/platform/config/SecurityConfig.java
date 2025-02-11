@@ -1,5 +1,6 @@
 package ru.platform.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,12 +27,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Value("${spring.frontend.host}")
+    private String FRONTEND_HOST;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signIn",
+                                "/swagger-ui/index.html",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/boosting-platform/**",
+                                "/actuator/**",
                                 "/api/auth/signUp",
                                 "/api/auth/logout",
                                 "/api/auth/me").permitAll()
@@ -62,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOrigin(String.format("http://%s:5173", FRONTEND_HOST));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

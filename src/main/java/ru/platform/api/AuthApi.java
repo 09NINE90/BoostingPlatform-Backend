@@ -41,7 +41,7 @@ public class AuthApi {
         try {
             authResponse = authService.trySignup(authRequest, response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }
         return ResponseEntity.ok(Map.of(
                 "token", authResponse.getToken(),
@@ -55,7 +55,7 @@ public class AuthApi {
             authService.setTokenCookie(null, response);
             return ResponseEntity.ok("Logged out successfully");
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ERROR!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR!");
         }
     }
 

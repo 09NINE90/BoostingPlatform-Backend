@@ -14,9 +14,11 @@ import ru.platform.entity.OrderServicesEntity;
 import ru.platform.entity.GameEntity;
 import ru.platform.entity.UserEntity;
 import ru.platform.entity.enums.ESortKeys;
+import ru.platform.entity.options_entity.OptionEntity;
 import ru.platform.entity.specification.OrderServicesSpecification;
 import ru.platform.inner.SortFilter;
 import ru.platform.repository.*;
+import ru.platform.request.CreateOrderServicesRequest;
 import ru.platform.request.OrderServicesRequest;
 import ru.platform.response.OrderServicesResponse;
 import ru.platform.service.IMinIOFileService;
@@ -40,6 +42,7 @@ public class OrderServicesService implements IOrderServicesService {
     private final GenerateSecondIdUtil generateSecondIdUtil;
     private final OrderServicesSpecification specification;
     private final IMinIOFileService minioService;
+    private final OptionRepository optionRepository;
 
     @Override
     public OrderServicesResponse getAllServices(OrderServicesRequest request) {
@@ -80,6 +83,40 @@ public class OrderServicesService implements IOrderServicesService {
                     .secondId(generateSecondIdUtil.getRandomId())
                     .build();
             orderServicesRepository.save(service);
+            return service;
+        }
+        return null;
+    }
+
+    public OrderServicesEntity addNewService(CreateOrderServicesRequest request, Authentication authentication) {
+//        if (imageFile.isEmpty()) {
+//            throw new IllegalArgumentException("Image file is required");
+//        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Optional<UserEntity> user = userRepository.findById(userDetails.getId());
+        Optional<GameEntity> game = gameRepository.findById(UUID.fromString(request.getGameId().replace("\"", "")));
+
+//        String imageUrl = minioService.uploadBaseOrderImage(imageFile);
+
+        if (user.isPresent() && game.isPresent()) {
+            OrderServicesEntity service = OrderServicesEntity.builder()
+                    .title(request.getTitle().replace("\"", ""))
+                    .creator(user.get())
+                    .description(request.getDescription().replace("\"", ""))
+                    .basePrice(request.getPrice())
+                    .createdAt(LocalDate.now())
+                    .game(game.get())
+                    .categories(request.getCategories().replace("\"", ""))
+                    .imageUrl(request.getImageUrl().replace("\"", ""))
+                    .secondId(generateSecondIdUtil.getRandomId())
+                    .options(request.getOptions())
+                    .build();
+            orderServicesRepository.save(service);
+            for (OptionEntity option : request.getOptions()) {
+                option.setService(service);
+                optionRepository.save(option);
+            }
             return service;
         }
         return null;
