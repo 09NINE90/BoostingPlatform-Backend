@@ -35,7 +35,7 @@ public class AuthApi {
 
     @PostMapping("/signIn")
     public ResponseEntity<?> login(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
-        AuthResponse authResponse = new AuthResponse();
+        AuthResponse authResponse;
         try {
             authResponse = authService.trySignup(signInRequest, response);
         } catch (AuthenticationException e) {
