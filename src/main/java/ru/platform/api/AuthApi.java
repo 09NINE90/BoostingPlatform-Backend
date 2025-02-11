@@ -2,13 +2,13 @@ package ru.platform.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.dto.UserDTO;
-import ru.platform.request.AuthRequest;
+import ru.platform.request.SignInRequest;
 import ru.platform.response.AuthResponse;
 import ru.platform.service.IAuthService;
 import ru.platform.service.IUserService;
@@ -16,14 +16,12 @@ import ru.platform.service.IUserService;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthApi {
 
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private IAuthService authService;
+    private final IUserService userService;
+    private final IAuthService authService;
 
     @PostMapping("/signUp")
     public ResponseEntity<?> userSave(@RequestBody UserDTO user){
@@ -36,10 +34,10 @@ public class AuthApi {
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        AuthResponse authResponse = new AuthResponse();
+    public ResponseEntity<?> login(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
+        AuthResponse authResponse;
         try {
-            authResponse = authService.trySignup(authRequest, response);
+            authResponse = authService.trySignup(signInRequest, response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }

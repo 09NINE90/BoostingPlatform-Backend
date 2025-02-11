@@ -1,11 +1,14 @@
 package ru.platform.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.platform.dto.UserDTO;
 import ru.platform.entity.UserEntity;
+import ru.platform.entity.UserProfileEntity;
 import ru.platform.entity.enums.ERoles;
+import ru.platform.repository.UserProfileRepository;
 import ru.platform.repository.UserRepository;
 import ru.platform.service.IUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
@@ -18,6 +21,7 @@ import java.util.List;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder encoder;
     private final GenerateSecondIdUtil randomId;
 
@@ -28,14 +32,25 @@ public class UserService implements IUserService {
 
     @Override
     public UserEntity createUser(UserDTO user) {
-        return userRepository.save(UserEntity.builder()
+
+        UserEntity userEntity = UserEntity.builder()
                 .username(user.getUsername())
-                .roles(ERoles.CUSTOMER.getTitle())
                 .password(encoder.encode(user.getPassword()))
+                .roles(ERoles.CUSTOMER.getTitle())
+                .build();
+        UserProfileEntity profileEntity = UserProfileEntity.builder()
                 .nickname(user.getNickname())
                 .createdAt(LocalDate.now())
-                .ordersCount(0)
+                .lastActivityAt(LocalDate.now())
                 .secondId(randomId.getRandomId())
-                .build());
+                .user(userEntity)
+                .build();
+
+        userEntity.setProfile(profileEntity);
+
+        userRepository.save(userEntity);
+        userProfileRepository.save(profileEntity);
+
+        return userEntity;
     }
 }

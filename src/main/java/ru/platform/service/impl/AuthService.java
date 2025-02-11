@@ -4,7 +4,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.platform.request.AuthRequest;
+import ru.platform.request.SignInRequest;
 import ru.platform.response.AuthResponse;
 import ru.platform.service.IAuthService;
 import ru.platform.utils.JwtUtil;
@@ -29,9 +28,9 @@ public class AuthService implements IAuthService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public AuthResponse trySignup(AuthRequest authRequest, HttpServletResponse response) {
+    public AuthResponse trySignup(SignInRequest signInRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -39,7 +38,7 @@ public class AuthService implements IAuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        String token = jwtUtil.generateToken(authRequest.getUsername(), roles);
+        String token = jwtUtil.generateToken(signInRequest.getUsername(), roles);
 
         setTokenCookie(token, response);
 

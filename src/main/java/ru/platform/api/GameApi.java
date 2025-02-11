@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.platform.config.custom_annotation.RoleRequired;
 import ru.platform.entity.GameEntity;
 import ru.platform.request.GameRequest;
 import ru.platform.response.GameResponse;
@@ -25,10 +26,11 @@ public class GameApi {
     @Schema(
             description = "Создание объекта игры"
     )
+    @RoleRequired({"ROLE_ADMIN"})
     public ResponseEntity<?> addNewGame(
             @RequestPart("file") MultipartFile file,
             @RequestPart("game") GameRequest request,
-            Authentication authentication){
+            Authentication authentication) {
         return ResponseEntity.ok(service.addNewGame(request, file, authentication));
     }
 
@@ -36,6 +38,7 @@ public class GameApi {
     @Schema(
             description = "Редактирование объекта игры"
     )
+    @RoleRequired({"ROLE_ADMIN"})
     public ResponseEntity<?> editNewGame(@RequestBody GameRequest request) {
         try {
             GameEntity updatedGame = service.updateGame(request);

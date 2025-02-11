@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.platform.config.custom_annotation.RoleRequired;
 import ru.platform.entity.OrderServicesEntity;
 import ru.platform.request.CreateOrderServicesRequest;
 import ru.platform.request.OrderServicesRequest;
@@ -42,6 +43,7 @@ public class OrderServicesApi {
     @Schema(
             description = "Создание заказа админом"
     )
+    @RoleRequired({"ROLE_ADMIN"})
     public ResponseEntity<OrderServicesEntity> addNewService(
             @RequestPart("file") MultipartFile file,
             @RequestPart("services") OrderServicesRequest services,
@@ -50,7 +52,10 @@ public class OrderServicesApi {
     }
 
     @PostMapping("/addNewService2")
-    @Schema(description = "Создание заказа админом")
+    @Schema(
+            description = "Создание сервиса по заказу"
+    )
+    @RoleRequired({"ROLE_ADMIN"})
     public ResponseEntity<OrderServicesEntity> addNewService2(
             @RequestBody CreateOrderServicesRequest services,
             Authentication authentication) {
