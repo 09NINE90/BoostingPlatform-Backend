@@ -16,7 +16,7 @@ import java.util.List;
 public class JwtUtil {
 
     @Value("${spring.jwt.secret-key}")
-    private static String SECRET_KEY;
+    private static String SECRET_KEY = "ajscqSVPNj4GNzF+Ln2H6yaE2etWGExa618+TDP96ZE=";
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
