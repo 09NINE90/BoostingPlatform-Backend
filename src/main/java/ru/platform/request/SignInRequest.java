@@ -3,7 +3,7 @@ package ru.platform.request;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class SignInRequest {
     private String username;
     private String password;
 }

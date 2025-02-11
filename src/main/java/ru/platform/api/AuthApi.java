@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.dto.UserDTO;
-import ru.platform.request.AuthRequest;
+import ru.platform.request.SignInRequest;
 import ru.platform.response.AuthResponse;
 import ru.platform.service.IAuthService;
 import ru.platform.service.IUserService;
@@ -36,10 +36,10 @@ public class AuthApi {
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
         AuthResponse authResponse = new AuthResponse();
         try {
-            authResponse = authService.trySignup(authRequest, response);
+            authResponse = authService.trySignup(signInRequest, response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }
