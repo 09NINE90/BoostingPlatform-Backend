@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,8 @@ public class GameApi {
     @Schema(
             description = "Создание объекта игры"
     )
-    public ResponseEntity<?> addNewGame(
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+        public ResponseEntity<?> addNewGame(
             @RequestPart("file") MultipartFile file,
             @RequestPart("game") GameRequest request,
             Authentication authentication){
@@ -36,6 +38,7 @@ public class GameApi {
     @Schema(
             description = "Редактирование объекта игры"
     )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> editNewGame(@RequestBody GameRequest request) {
         try {
             GameEntity updatedGame = service.updateGame(request);
