@@ -2,6 +2,7 @@ package ru.platform.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,12 @@ import ru.platform.service.IUserService;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthApi {
 
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private IAuthService authService;
+    private final IUserService userService;
+    private final IAuthService authService;
 
     @PostMapping("/signUp")
     public ResponseEntity<?> userSave(@RequestBody UserDTO user){
