@@ -49,6 +49,14 @@ public class OrderServicesApi {
         return ResponseEntity.ok(service.addNewService(services, file, authentication));
     }
 
+    @PostMapping("/addNewService2")
+    @Schema(description = "Создание заказа админом")
+    public ResponseEntity<OrderServicesEntity> addNewService2(
+            @RequestBody CreateOrderServicesRequest services,
+            Authentication authentication) {
+        return ResponseEntity.ok(service.addNewService(services, authentication));
+    }
+
     @DeleteMapping("/deleteService")
     @Schema(
             description = "Удаление заказа, созданного админом"
