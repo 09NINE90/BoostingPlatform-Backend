@@ -22,7 +22,9 @@ public class GameApi {
     private final IGameService service;
 
     @PostMapping("/addNewGame")
-    @Schema(description = "Добавление игры админом")
+    @Schema(
+            description = "Создание объекта игры"
+    )
     public ResponseEntity<?> addNewGame(
             @RequestPart("file") MultipartFile file,
             @RequestPart("game") GameRequest request,
@@ -31,6 +33,9 @@ public class GameApi {
     }
 
     @PutMapping("/editGame")
+    @Schema(
+            description = "Редактирование объекта игры"
+    )
     public ResponseEntity<?> editNewGame(@RequestBody GameRequest request) {
         try {
             GameEntity updatedGame = service.updateGame(request);
@@ -43,16 +48,25 @@ public class GameApi {
     }
 
     @PostMapping("/getAllGamesByPage")
+    @Schema(
+            description = "Получение списка игр постранично"
+    )
     public ResponseEntity<GameResponse> getAllGames(@RequestBody GameRequest request) {
         return ResponseEntity.ok(service.getAllGamesByPage(request));
     }
 
     @GetMapping("/getAllGames")
+    @Schema(
+            description = "Получть список всех игр"
+    )
     public List<GameEntity> getAllGames() {
         return service.getAllGames();
     }
 
     @GetMapping("/{gameId}")
+    @Schema(
+            description = "Получить игру по ID"
+    )
     public ResponseEntity<GameResponse> getGameWithCategories(@PathVariable String gameId) {
         return ResponseEntity.ok(service.getGameWithCategories(gameId));
     }
