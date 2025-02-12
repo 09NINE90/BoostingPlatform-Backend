@@ -9,9 +9,6 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Объект в котором хранятся игры для бустинга
- */
 @Entity
 @Builder
 @Data
@@ -30,12 +27,25 @@ public class GameEntity {
     @JsonProperty("title")
     @Schema(description = "Название игры")
     private String title;
-    @Column(name = "description")
+    @Column(name = "image_url", columnDefinition="TEXT")
+    @Schema(description = "Ссылка на изображение для игры")
+    private String imageUrl;
+    @Column(name = "description", columnDefinition="TEXT")
     @JsonProperty("description")
     @Schema(description = "Описание игры")
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private UserEntity creator;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
     @JsonIgnore
     private List<CategoryEntity> categories;
+    @Override
+    public String toString() {
+        return "GameEntity{" +
+                "id=" + id +
+                ", name='" + title + '\'' +
+                '}';
+    }
 }

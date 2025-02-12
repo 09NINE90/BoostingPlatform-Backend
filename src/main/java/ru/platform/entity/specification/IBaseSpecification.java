@@ -3,8 +3,8 @@ package ru.platform.entity.specification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
-import ru.platform.entity.ServicesEntity;
-import ru.platform.entity.ServicesEntity_;
+import ru.platform.entity.OrderServicesEntity;
+import ru.platform.entity.OrderServicesEntity_;
 import ru.platform.entity.GameEntity;
 
 import java.time.LocalDate;
@@ -27,7 +27,7 @@ public interface IBaseSpecification<T, U>  {
     List<BiConsumer<Set<Specification<T>>, U>> getSpecificationConsumerList();
 
     default Set<Specification<T>> prepareSpecificationSet(U request, Predicate<U> activateFunction) {
-        Set<Specification<T>> specificationSet = new HashSet();
+        Set<Specification<T>> specificationSet = new HashSet<>();
         if (activateFunction.test(request)) {
             this.getSpecificationConsumerList().forEach((c) -> {
                 c.accept(specificationSet, request);
@@ -228,8 +228,7 @@ public interface IBaseSpecification<T, U>  {
 
     default Specification<T> gameFilter(String gameId){
         return (root, query, criteriaBuilder) -> {
-            // Access the game entity using the Join
-            Join<ServicesEntity, GameEntity> gameJoin = root.join(ServicesEntity_.GAME);
+            Join<OrderServicesEntity, GameEntity> gameJoin = root.join(OrderServicesEntity_.GAME);
             return criteriaBuilder.equal(gameJoin.get("title"), gameId);
         };
     }

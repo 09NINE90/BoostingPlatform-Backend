@@ -9,6 +9,7 @@ import java.util.UUID;
 public class GameRequest {
     private UUID id;
     private String title;
+    private String imageUrl;
     private String description;
     private List<CategoryRequest> categories;
     private int pageNumber;

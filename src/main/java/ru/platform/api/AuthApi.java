@@ -1,45 +1,32 @@
 package ru.platform.api;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.dto.UserDTO;
-import ru.platform.request.AuthRequest;
+import ru.platform.request.SignInRequest;
+import ru.platform.response.AuthResponse;
+import ru.platform.service.IAuthService;
 import ru.platform.service.IUserService;
-import ru.platform.utils.JwtUtil;
-import org.springframework.security.core.GrantedAuthority;
 
-
-import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthApi {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private IUserService service;
-
+    private final IUserService userService;
+    private final IAuthService authService;
 
     @PostMapping("/signUp")
     public ResponseEntity<?> userSave(@RequestBody UserDTO user){
         try {
-            return ResponseEntity.ok(service.createUser(user));
+            return ResponseEntity.ok(userService.createUser(user));
         }
         catch (AuthenticationException e){
             return ResponseEntity.badRequest().body(e);
@@ -47,79 +34,31 @@ public class AuthApi {
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
+        AuthResponse authResponse;
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList();
-
-            String token = jwtUtil.generateToken(authRequest.getUsername(), roles);
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(false); // Недоступен через JS
-            cookie.setSecure(false); // Доступен только по HTTPS
-            cookie.setPath("/"); // Для всех запросов
-            cookie.setMaxAge(60 * 60 * 24); // Время жизни cookie (1 день)
-            response.addCookie(cookie);
-
-            return ResponseEntity.ok(Map.of(
-                    "token", token,
-                    "roles", roles
-            ));
-
+            authResponse = authService.trySignup(signInRequest, response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }
+        return ResponseEntity.ok(Map.of(
+                "token", authResponse.getToken(),
+                "roles", authResponse.getRoles()
+        ));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         try {
-            Cookie cookie = new Cookie("token", null);
-            cookie.setHttpOnly(false); // Сделаем cookie недоступной для JS
-            cookie.setSecure(false);   // Сделаем cookie доступной только по HTTPS
-            cookie.setPath("/");      // Для всех запросов
-            cookie.setMaxAge(0);      // Убираем cookie
-            response.addCookie(cookie);
-
+            authService.setTokenCookie(null, response);
             return ResponseEntity.ok("Logged out successfully");
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ERROR!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR!");
         }
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String token = null;
-
-        // Извлечение токена из куки
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        // Проверка валидности токена
-        if (token != null && jwtUtil.validateToken(token)) {
-            List<String> roles = jwtUtil.extractRoles(token);
-
-            // Возвращаем данные пользователя
-            return ResponseEntity.ok(Map.of(
-                    "roles", roles,
-                    "token", token
-            ));
-        }
-
-        // Если токен отсутствует или невалиден
-        return ResponseEntity.ok(false);
+        return authService.checkAuthentication(request);
     }
 }

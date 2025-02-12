@@ -53,17 +53,7 @@ public class MinIOFileService implements IMinIOFileService {
     public String uploadBaseOrderImage(MultipartFile imageFile) {
         try {
             String bucketName = "orders-images";
-            String fileName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
-            createBucketWithPolicy(bucketName);
-            minIOConfig.minioClient().putObject(
-                    PutObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
-                            .contentType(imageFile.getContentType())
-                            .build()
-            );
-            return getPresignedUrl(bucketName, fileName);
+            return uploadImage(imageFile, bucketName);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file", e);
         }
@@ -73,20 +63,24 @@ public class MinIOFileService implements IMinIOFileService {
     public String uploadGameImage(MultipartFile imageFile) {
         try {
             String bucketName = "games-images";
-            String fileName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
-            createBucketWithPolicy(bucketName);
-            minIOConfig.minioClient().putObject(
-                    PutObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
-                            .contentType(imageFile.getContentType())
-                            .build()
-            );
-            return getPresignedUrl(bucketName, fileName);
+            return uploadImage(imageFile, bucketName);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file", e);
         }
+    }
+
+    private String uploadImage(MultipartFile imageFile, String bucketName) throws Exception {
+        String fileName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
+        createBucketWithPolicy(bucketName);
+        minIOConfig.minioClient().putObject(
+                PutObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
+                        .contentType(imageFile.getContentType())
+                        .build()
+        );
+        return getPresignedUrl(bucketName, fileName);
     }
 
     public String getPresignedUrl(String bucketName, String objectName) {

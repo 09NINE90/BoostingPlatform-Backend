@@ -10,13 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-    private String roles;
-    private long secondId;
     private String nickname;
     private String username;
     private String password;
-    private String rating;
-    private int ordersCount;
-    private LocalDate createdAt;
-    private LocalDate lastActivityAt;
 }
