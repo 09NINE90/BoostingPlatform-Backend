@@ -22,10 +22,10 @@ public class JwtUtil {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -41,15 +41,15 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public List<String> extractRoles(String token) {
+    public String extractRoles(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        List<String> roles = claims.get("roles", List.class);
-        return roles != null ? roles : List.of(); // Возвращаем пустой список, если роли отсутствуют
+        String role = claims.get("role", String.class);
+        return role != null ? role : ""; // Возвращаем пустой список, если роли отсутствуют
     }
 
 

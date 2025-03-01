@@ -15,8 +15,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Boosting platform")
-                        .version("1.0")
-                        .description("My swagger!"))
+                        .version("1.0"))
                 .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("BearerAuth",

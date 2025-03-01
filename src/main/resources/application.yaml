@@ -27,8 +27,6 @@ spring:
     secret-key: ${PASSWORD_MINIO:minio123}
   jwt:
     secret-key: ${JWT_SECRET_KEY:key-key}
-  frontend:
-    host: ${FRONTEND_HOST}
 
 springdoc:
   api-docs:
