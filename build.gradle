@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.9'
     implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.2'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+    implementation 'org.flywaydb:flyway-core:11.3.4'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.hibernate:hibernate-jpamodelgen:6.6.4.Final'
@@ -44,6 +45,7 @@ dependencies {
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.3.4'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
