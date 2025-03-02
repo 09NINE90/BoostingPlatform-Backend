@@ -15,9 +15,9 @@ public class GameMapper implements IGameMapper {
     @Override
     public GameListRsDto<GameMainPageRsDto> toGameListRs(List<GameEntity> allGames) {
         List<GameMainPageRsDto> games = new ArrayList<>();
-        allGames.forEach(e -> {
-            games.add(new GameMainPageRsDto(e.getId().toString(), e.getTitle()));
-        });
+        allGames.forEach(e ->
+            games.add(new GameMainPageRsDto(e.getId().toString(), e.getTitle()))
+        );
         return new GameListRsDto<>(games);
     }
 }

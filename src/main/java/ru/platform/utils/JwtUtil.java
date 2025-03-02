@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtUtil {

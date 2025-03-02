@@ -29,9 +29,9 @@ public interface IBaseSpecificationUtil<T, U>  {
     default Set<Specification<T>> prepareSpecificationSet(U request, Predicate<U> activateFunction) {
         Set<Specification<T>> specificationSet = new HashSet<>();
         if (activateFunction.test(request)) {
-            this.getSpecificationConsumerList().forEach((c) -> {
-                c.accept(specificationSet, request);
-            });
+            this.getSpecificationConsumerList().forEach((c) ->
+                c.accept(specificationSet, request)
+            );
         }
 
         return specificationSet;
