@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS dev.user (
+CREATE TABLE IF NOT EXISTS users (
     id          uuid            NOT NULL,
     "password"  varchar(255)    NULL,
     roles       varchar(255)    NULL,

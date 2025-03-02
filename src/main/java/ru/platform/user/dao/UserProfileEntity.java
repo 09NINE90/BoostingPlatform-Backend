@@ -16,7 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_profile", schema = "dev")
+@Table(name = "user_profile")
 @Schema(description = "Объект дополнительных данных пользователя")
 public class UserProfileEntity {
 

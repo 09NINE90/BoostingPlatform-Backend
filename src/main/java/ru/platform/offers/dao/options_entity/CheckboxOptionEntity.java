@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "checkbox_option", schema = "dev")
+@Table(name = "checkbox_option")
 public class CheckboxOptionEntity {
 
     @Id

@@ -1,4 +1,4 @@
-CREATE TABLE dev.offers (
+CREATE TABLE IF NOT EXISTS offers (
     id          uuid            NOT NULL,
     price       DECIMAL(10, 2)  NOT NULL,
     categories  varchar(255)    NOT NULL,
@@ -10,6 +10,6 @@ CREATE TABLE dev.offers (
     creator_id  uuid            NOT NULL,
     game_id     uuid            NOT NULL,
     CONSTRAINT offers_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_offers_creator FOREIGN KEY (creator_id) REFERENCES dev."user"(id),
-    CONSTRAINT fk_offers_game FOREIGN KEY (game_id) REFERENCES dev.game(id)
+    CONSTRAINT fk_offers_creator FOREIGN KEY (creator_id) REFERENCES users(id),
+    CONSTRAINT fk_offers_game FOREIGN KEY (game_id) REFERENCES game(id)
 );

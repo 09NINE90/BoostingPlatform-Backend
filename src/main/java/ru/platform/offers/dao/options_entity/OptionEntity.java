@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "option", schema = "dev")
+@Table(name = "option")
 public class OptionEntity {
 
     @Id

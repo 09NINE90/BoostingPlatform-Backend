@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "slider_step", schema = "dev")
+@Table(name = "slider_step")
 public class SliderStepEntity {
 
     @Id

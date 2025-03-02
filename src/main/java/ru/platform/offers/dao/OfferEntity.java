@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "offers", schema = "dev")
+@Table(name = "offers")
 @Schema(description = "Объект в котором хранятся заказы, созданные админом платформы")
 public class OfferEntity {
 

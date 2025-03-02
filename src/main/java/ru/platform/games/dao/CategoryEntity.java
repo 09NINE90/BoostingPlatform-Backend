@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "games_categories", schema = "dev")
+@Table(name = "games_categories")
 public class CategoryEntity {
 
     @Id

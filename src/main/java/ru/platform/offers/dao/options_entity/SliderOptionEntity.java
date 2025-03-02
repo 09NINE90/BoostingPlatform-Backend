@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "slider_option", schema = "dev")
+@Table(name = "slider_option")
 public class SliderOptionEntity {
 
     @Id
