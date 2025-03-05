@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "option_dependency", schema = "dev")
+@Table(name = "option_dependency")
 public class OptionDependencyEntity {
 
     @Id

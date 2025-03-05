@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "games", schema = "dev")
+@Table(name = "game")
 @Schema(description = "Объект в котором хранятся игры для бустинга")
 public class GameEntity {
 

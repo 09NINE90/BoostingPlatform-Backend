@@ -1,12 +1,10 @@
 package ru.platform.offers.dao.options_entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.platform.offers.dao.OfferEntity;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "option", schema = "dev")
+@Table(name = "option")
 public class OptionEntity {
 
     @Id
