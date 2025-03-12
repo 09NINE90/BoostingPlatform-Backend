@@ -41,7 +41,7 @@ public class MailService implements IMailService {
     private void sendRegistrationEmail(UserEntity user, Properties properties){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-        helper.setSubject("Confirmation Email");
+        helper.setSubject("Confirmation registration");
         helper.setTo(user.getUsername());
         String emailContent = getRegistrationEmailContent(user);
         helper.setText(emailContent, true);
@@ -62,7 +62,7 @@ public class MailService implements IMailService {
     private void sendPasswordRecoveryEmail(UserEntity user, Properties properties){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-        helper.setSubject("Password recovery Email");
+        helper.setSubject("Password recovery");
         helper.setTo(user.getUsername());
         String emailContent = getPasswordRecoveryEmailContent(user);
         helper.setText(emailContent, true);
