@@ -33,6 +33,14 @@ public class UserEntity {
     @Schema(description = "Пароль пользователя")
     private String password;
 
+    @Column(name = "confirmation_code")
+    @Schema(description = "Пароль пользователя")
+    private String confirmationCode;
+
+    @Column(name = "enabled")
+    @Schema(description = "Пароль пользователя")
+    private boolean enabled;
+
     @Column(name = "roles")
     private String roles;
 
