@@ -26,12 +26,32 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USERNAME_MAIL:razumofftraining@gmail.com}
+    password: ${PASSWORD_MAIL:ksboyinvxgenjlss}
+    properties:
+      mail:
+        debug: false
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   minio:
     url: ${MINIO_URL:http://localhost:9000}
     access-key: ${USERNAME_MINIO:minio}
     secret-key: ${PASSWORD_MINIO:minio123}
   jwt:
     secret-key: ${JWT_SECRET_KEY:key-key}
+
+  freemarker:
+    template-loader-path: classpath:/templates/
+    suffix: .ftl
+    charset: UTF-8
+    check-template-location: true
 
 springdoc:
   api-docs:
