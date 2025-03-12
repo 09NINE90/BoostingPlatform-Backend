@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum MailType {
-    REGISTRATION
+    REGISTRATION,
+    PASSWORD_RECOVERY
 }
