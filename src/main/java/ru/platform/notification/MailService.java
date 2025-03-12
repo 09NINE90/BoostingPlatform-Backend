@@ -26,6 +26,7 @@ public class MailService implements IMailService {
     public void sendMail(UserEntity user, MailType type, Properties properties) {
         switch (type) {
             case REGISTRATION -> sendRegistrationEmail(user, properties);
+            case PASSWORD_RECOVERY -> sendPasswordRecoveryEmail(user, properties);
             default -> {}
         }
     }
@@ -53,6 +54,27 @@ public class MailService implements IMailService {
         Map<String, Object> model = new HashMap<>();
         model.put("confirmationCode", user.getConfirmationCode());
         configuration.getTemplate("registration.html")
+                .process(model,stringWriter);
+        return stringWriter.getBuffer().toString();
+    }
+
+    @SneakyThrows
+    private void sendPasswordRecoveryEmail(UserEntity user, Properties properties){
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+        helper.setSubject("Password recovery Email");
+        helper.setTo(user.getUsername());
+        String emailContent = getPasswordRecoveryEmailContent(user);
+        helper.setText(emailContent, true);
+        javaMailSender.send(mimeMessage);
+    }
+
+    @SneakyThrows
+    private String getPasswordRecoveryEmailContent(UserEntity user){
+        StringWriter stringWriter = new StringWriter();
+        Map<String, Object> model = new HashMap<>();
+        model.put("confirmationCode", user.getConfirmationCode());
+        configuration.getTemplate("recoveryPassword.html")
                 .process(model,stringWriter);
         return stringWriter.getBuffer().toString();
     }

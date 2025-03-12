@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Schema(description = "Подтверждение регистрации пользователя")
-public class SignupRsDto {
+public class ConfirmationRsDto {
 
-    @Schema(description = "Сообщение с подтвержением отправки письма на посту полльзователю")
+    @Schema(description = "Сообщение с подтвержением отправки письма на почту полльзователю")
     private String confirmation;
 
 }
