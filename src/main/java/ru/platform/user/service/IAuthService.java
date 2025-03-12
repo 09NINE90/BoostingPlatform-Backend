@@ -1,8 +1,8 @@
 package ru.platform.user.service;
 
 import ru.platform.user.dto.request.LoginUserRqDto;
-import ru.platform.user.dto.response.AuthResponse;
+import ru.platform.user.dto.response.AuthRsDto;
 
 public interface IAuthService {
-    AuthResponse trySignup(LoginUserRqDto userRqDto);
+    AuthRsDto trySignup(LoginUserRqDto userRqDto);
 }
