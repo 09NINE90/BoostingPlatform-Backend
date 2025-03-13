@@ -8,12 +8,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.platform.exception.PlatformException;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
 import ru.platform.utils.JwtUtil;
+
+import java.util.Optional;
+
+import static ru.platform.exception.ErrorType.*;
+import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 
 @Slf4j
 @Service
@@ -24,23 +30,31 @@ public class AuthService implements IAuthService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+    private final static String LOG_PREFIX = "AuthService: {}, Email: {}";
+
     @Override
     public AuthRsDto trySignup(LoginUserRqDto userRqDto) {
         checkConfirmationEmail(userRqDto);
         try {
             return userAuthorization(userRqDto);
         }catch (Exception e) {
-            log.error("Failed authorization attempt. User {}", userRqDto.getUsername(), e);
-            throw new RuntimeException("Failed authorization attempt");
+            log.error(LOG_PREFIX, UNAUTHORIZED_ERROR.getDescription(), userRqDto.getUsername());
+            throw new PlatformException(UNAUTHORIZED_ERROR);
         }
     }
 
     private void checkConfirmationEmail(LoginUserRqDto userRqDto){
-        UserEntity user = userRepository.findByUsername(userRqDto.getUsername());
-        if (!user.isEnabled()){
-            log.error("Email has not been verified. User {}", userRqDto.getUsername());
-            throw new RuntimeException("Email has not been verified ");
+        Optional<UserEntity> user = userRepository.findByUsername(userRqDto.getUsername());
+        if(user.isPresent()){
+            if (!user.get().isEnabled()){
+                log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription(), userRqDto.getUsername());
+                throw new PlatformException(EMAIL_VERIFIED_ERROR);
+            }
+        } else {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription(), userRqDto.getUsername());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
+
     }
 
     private AuthRsDto userAuthorization(LoginUserRqDto userRqDto){

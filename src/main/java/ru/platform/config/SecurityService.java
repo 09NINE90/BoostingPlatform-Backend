@@ -9,6 +9,8 @@ import ru.platform.user.dto.detail.CustomUserDetails;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class SecurityService implements UserDetailsService {
 
@@ -17,10 +19,10 @@ public class SecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity foundUser = userRepository.findByUsername(username);
-        if (foundUser == null) {
+        Optional<UserEntity> foundUser = userRepository.findByUsername(username);
+        if (foundUser.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
-        return new CustomUserDetails(foundUser);
+        return new CustomUserDetails(foundUser.orElse(null));
     }
 }

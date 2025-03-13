@@ -1,10 +1,10 @@
 package ru.platform.user.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.platform.exception.PlatformException;
 import ru.platform.notification.IMailService;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
@@ -20,9 +20,12 @@ import ru.platform.user.service.IUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Random;
 
 import static ru.platform.LocalConstants.Message.*;
+import static ru.platform.exception.ErrorType.EMAIL_VERIFIED_ERROR;
+import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
 import static ru.platform.user.UserRolesType.ROLE_CUSTOMER;
@@ -38,6 +41,8 @@ public class UserService implements IUserService {
     private final GenerateSecondIdUtil randomId;
     private final IAuthService authService;
     private final IMailService mailService;
+
+    private final static String LOG_PREFIX = "UserService: {}";
 
     @Override
     public ConfirmationRsDto createUser(SignupUserRqDto user) {
@@ -74,70 +79,78 @@ public class UserService implements IUserService {
 
     @Override
     public AuthRsDto checkConfirmationSignUp(ConfirmationEmailRqDto confirmation) {
-        try {
-            UserEntity user = userRepository.findByUsername(confirmation.getEmail());
+        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+        if (user.isPresent()) {
             String code = confirmation.getConfirmationCode();
-
-            if (user.getConfirmationCode().equals(code)) {
-                user.setEnabled(true);
-                userRepository.save(user);
+            if (user.get().getConfirmationCode().equals(code)) {
+                user.get().setEnabled(true);
+                userRepository.save(user.get());
                 return authService.trySignup(new LoginUserRqDto(
                         confirmation.getEmail(),
                         confirmation.getPassword()
                 ));
+            } else {
+                log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription());
+                throw new PlatformException(EMAIL_VERIFIED_ERROR);
             }
-        } catch (Exception e) {
-            throw new EntityNotFoundException(USER_NOT_FOUND);
+        } else {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
-
-        return null;
     }
 
     @Override
     public ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation) {
-        try {
-            UserEntity user = userRepository.findByUsername(confirmation.getEmail());
+        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+
+        if (user.isPresent()) {
             String confirmationCode = generateConfirmationCode();
 
-            user.setConfirmationCode(confirmationCode);
-            userRepository.save(user);
-            mailService.sendMail(user, PASSWORD_RECOVERY);
+            user.get().setConfirmationCode(confirmationCode);
+            userRepository.save(user.get());
+            mailService.sendMail(user.orElse(null), PASSWORD_RECOVERY);
 
             return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
-        } catch (Exception e) {
-            throw new EntityNotFoundException(USER_NOT_FOUND);
+        } else {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
+
     }
 
     @Override
     public ConfirmationRsDto confirmPasswordRecovery(ConfirmationEmailRqDto confirmation) {
-        try {
-            UserEntity user = userRepository.findByUsername(confirmation.getEmail());
+        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+        if (user.isPresent()) {
             String code = confirmation.getConfirmationCode();
 
-            if (user.getConfirmationCode().equals(code)) {
+            if (user.get().getConfirmationCode().equals(code)) {
                 return new ConfirmationRsDto(SUCCESS_PASSWORD_RECOVERY);
+            } else {
+                log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription());
+                throw new PlatformException(EMAIL_VERIFIED_ERROR);
             }
-        } catch (Exception e) {
-            throw new EntityNotFoundException(USER_NOT_FOUND);
+        } else {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
-
-        return null;
     }
 
     @Override
     public AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation) {
-        try {
-            UserEntity user = userRepository.findByUsername(confirmation.getEmail());
-            user.setPassword(encoder.encode(confirmation.getPassword()));
-            userRepository.save(user);
+        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+
+        if (user.isPresent()) {
+            user.get().setPassword(encoder.encode(confirmation.getPassword()));
+            userRepository.save(user.get());
 
             return authService.trySignup(new LoginUserRqDto(
                     confirmation.getEmail(),
                     confirmation.getPassword()
             ));
-        } catch (Exception e) {
-            throw new EntityNotFoundException(USER_NOT_FOUND);
+        } else {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
     }
 
