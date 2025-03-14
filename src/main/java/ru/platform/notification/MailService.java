@@ -52,7 +52,7 @@ public class MailService implements IMailService {
     private String getRegistrationEmailContent(UserEntity user){
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        model.put("confirmationCode", user.getConfirmationCode());
+        model.put("confirmationToken", user.getConfirmationToken());
         configuration.getTemplate("registration.html")
                 .process(model,stringWriter);
         return stringWriter.getBuffer().toString();
@@ -73,7 +73,7 @@ public class MailService implements IMailService {
     private String getPasswordRecoveryEmailContent(UserEntity user){
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        model.put("confirmationCode", user.getConfirmationCode());
+        model.put("confirmationToken", user.getConfirmationToken());
         configuration.getTemplate("recoveryPassword.html")
                 .process(model,stringWriter);
         return stringWriter.getBuffer().toString();

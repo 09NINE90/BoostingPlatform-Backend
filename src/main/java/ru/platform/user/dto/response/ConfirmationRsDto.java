@@ -12,4 +12,10 @@ public class ConfirmationRsDto {
     @Schema(description = "Сообщение с подтвержением отправки письма на почту полльзователю")
     private String confirmation;
 
+    @Schema(description = "Почта пользоавателя")
+    private String username;
+
+    public ConfirmationRsDto(String confirmation) {
+        this.confirmation = confirmation;
+    }
 }

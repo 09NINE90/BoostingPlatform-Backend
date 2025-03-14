@@ -13,6 +13,12 @@ public enum ErrorType {
     EMAIL_VERIFIED_ERROR(
             "Email has not been verified"
     ),
+    USER_EXISTS_ERROR(
+            "User already exists"
+    ),
+    DATE_CONVERSION_ERROR(
+            "Date conversion error"
+    ),
     NOT_FOUND_ERROR(
             "Data could not be found in the database table"
     );
