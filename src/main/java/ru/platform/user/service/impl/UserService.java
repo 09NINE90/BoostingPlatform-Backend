@@ -18,14 +18,17 @@ import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
+import ru.platform.utils.JwtUtil;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
 import static ru.platform.LocalConstants.Message.*;
-import static ru.platform.exception.ErrorType.EMAIL_VERIFIED_ERROR;
-import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
+import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
+import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
 import static ru.platform.user.UserRolesType.ROLE_CUSTOMER;
@@ -41,18 +44,21 @@ public class UserService implements IUserService {
     private final GenerateSecondIdUtil randomId;
     private final IAuthService authService;
     private final IMailService mailService;
+    private final JwtUtil jwtUtil;
 
     private final static String LOG_PREFIX = "UserService: {}";
 
     @Override
     public ConfirmationRsDto createUser(SignupUserRqDto user) {
-        String confirmationCode = generateConfirmationCode();
+        checkUserExists(user.getUsername());
+
+        String token = jwtUtil.generateConfirmationToken(user.getUsername(), user.getPassword());
 
         UserEntity userEntity = UserEntity.builder()
                 .username(user.getUsername())
                 .password(encoder.encode(user.getPassword()))
                 .roles(ROLE_CUSTOMER.name())
-                .confirmationCode(confirmationCode)
+                .confirmationToken(token)
                 .enabled(false)
                 .build();
         UserProfileEntity profileEntity = UserProfileEntity.builder()
@@ -73,22 +79,24 @@ public class UserService implements IUserService {
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }
 
-    private String generateConfirmationCode() {
-        return String.valueOf(new Random().nextInt(999999));
+    private void checkUserExists(String username) {
+        Optional<UserEntity> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            throw new PlatformException(USER_EXISTS_ERROR);
+        }
     }
 
     @Override
-    public AuthRsDto checkConfirmationSignUp(ConfirmationEmailRqDto confirmation) {
-        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+    public AuthRsDto checkConfirmationSignUp(String confirmationToken) {
+        String username = jwtUtil.extractUsername(confirmationToken);
+        Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            String code = confirmation.getConfirmationCode();
-            if (user.get().getConfirmationCode().equals(code)) {
+            String password = jwtUtil.extractUserPassword(confirmationToken);
+
+            if (isCurrentToken(user.get(), confirmationToken)) {
                 user.get().setEnabled(true);
                 userRepository.save(user.get());
-                return authService.trySignup(new LoginUserRqDto(
-                        confirmation.getEmail(),
-                        confirmation.getPassword()
-                ));
+                return authService.trySignup(new LoginUserRqDto(username, password));
             } else {
                 log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription());
                 throw new PlatformException(EMAIL_VERIFIED_ERROR);
@@ -104,11 +112,11 @@ public class UserService implements IUserService {
         Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
 
         if (user.isPresent()) {
-            String confirmationCode = generateConfirmationCode();
+            String confirmationToken = jwtUtil.generateConfirmationToken(user.get().getUsername(), EMPTY_STRING);
 
-            user.get().setConfirmationCode(confirmationCode);
+            user.get().setConfirmationToken(confirmationToken);
             userRepository.save(user.get());
-            mailService.sendMail(user.orElse(null), PASSWORD_RECOVERY);
+            mailService.sendMail(user.get(), PASSWORD_RECOVERY);
 
             return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
         } else {
@@ -119,13 +127,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ConfirmationRsDto confirmPasswordRecovery(ConfirmationEmailRqDto confirmation) {
-        Optional<UserEntity> user = userRepository.findByUsername(confirmation.getEmail());
+    public ConfirmationRsDto confirmPasswordRecovery(String confirmationToken) {
+        String username = jwtUtil.extractUsername(confirmationToken);
+        Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            String code = confirmation.getConfirmationCode();
-
-            if (user.get().getConfirmationCode().equals(code)) {
-                return new ConfirmationRsDto(SUCCESS_PASSWORD_RECOVERY);
+            if (isCurrentToken(user.get(), confirmationToken)) {
+                return new ConfirmationRsDto(SUCCESS_PASSWORD_RECOVERY, username);
             } else {
                 log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription());
                 throw new PlatformException(EMAIL_VERIFIED_ERROR);
@@ -134,6 +141,19 @@ public class UserService implements IUserService {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription());
             throw new PlatformException(NOT_FOUND_ERROR);
         }
+    }
+
+    private boolean isCurrentToken(UserEntity user, String confirmationToken) {
+        if (!user.getConfirmationToken().equals(confirmationToken)) {
+            return false;
+        }
+        LocalDateTime dateOfTokenStart = jwtUtil.extractDateStart(confirmationToken);
+        if (dateOfTokenStart == null) {
+            return false;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(dateOfTokenStart, now);
+        return duration.toMinutes() <= 10;
     }
 
     @Override

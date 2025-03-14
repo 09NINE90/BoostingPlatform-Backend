@@ -27,10 +27,10 @@ public class AuthApi {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/confirmSignUp")
+    @GetMapping("/confirmSignUp/{confirmationToken}")
     @Schema(description = "Подтверждение регистрации пользователя")
-    public ResponseEntity<AuthRsDto> confirmSignUp(@RequestBody ConfirmationEmailRqDto confirmation) {
-        AuthRsDto result = userService.checkConfirmationSignUp(confirmation);
+    public ResponseEntity<AuthRsDto> confirmSignUp(@PathVariable String confirmationToken) {
+        AuthRsDto result = userService.checkConfirmationSignUp(confirmationToken);
         return ResponseEntity.ok(result);
     }
 
@@ -47,10 +47,10 @@ public class AuthApi {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/confirmPasswordRecovery")
+    @GetMapping("/confirmPasswordRecovery/{confirmationToken}")
     @Schema(description = "Подтверждение кода для смены пароля")
-    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@RequestBody ConfirmationEmailRqDto confirmation){
-        ConfirmationRsDto result = userService.confirmPasswordRecovery(confirmation);
+    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@PathVariable String confirmationToken){
+        ConfirmationRsDto result = userService.confirmPasswordRecovery(confirmationToken);
         return ResponseEntity.ok(result);
     }
 

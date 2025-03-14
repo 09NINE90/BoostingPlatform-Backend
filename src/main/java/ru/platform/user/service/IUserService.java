@@ -11,13 +11,13 @@ public interface IUserService {
     ConfirmationRsDto createUser(SignupUserRqDto user);
 
     @Schema(description = "Подтверждение регистрации пользователя")
-    AuthRsDto checkConfirmationSignUp(ConfirmationEmailRqDto confirmation);
+    AuthRsDto checkConfirmationSignUp(String confirmationToken);
 
     @Schema(description = "Запрос кода для восстановления пароля")
     ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation);
 
     @Schema(description = "Подтверждение кода для смены пароля")
-    ConfirmationRsDto confirmPasswordRecovery(ConfirmationEmailRqDto confirmation);
+    ConfirmationRsDto confirmPasswordRecovery(String confirmationToken);
 
     @Schema(description = "Запрос на смену пароля")
     AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation);

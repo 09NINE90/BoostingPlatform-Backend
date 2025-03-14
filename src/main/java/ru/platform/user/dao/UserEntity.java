@@ -33,9 +33,9 @@ public class UserEntity {
     @Schema(description = "Пароль пользователя")
     private String password;
 
-    @Column(name = "confirmation_code")
+    @Column(name = "confirmation_token")
     @Schema(description = "Пароль пользователя")
-    private String confirmationCode;
+    private String confirmationToken;
 
     @Column(name = "enabled")
     @Schema(description = "Пароль пользователя")
