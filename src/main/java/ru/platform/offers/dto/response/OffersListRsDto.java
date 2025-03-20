@@ -1,5 +1,6 @@
 package ru.platform.offers.dto.response;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OffersListRsDto<T> {
 
-    @Schema(description = "Список предложений")
+    @ArraySchema(schema = @Schema(description = "Список предложений"))
     List<T> offers;
     @Schema(description = "Всего страниц", example = "5")
     private int pageTotal;

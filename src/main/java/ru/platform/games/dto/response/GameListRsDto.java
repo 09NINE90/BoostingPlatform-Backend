@@ -1,5 +1,6 @@
 package ru.platform.games.dto.response;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GameListRsDto<T> {
 
-    @Schema(description = "Список игр для ответа фронту")
+    @ArraySchema(schema = @Schema(description = "Список игр для ответа фронту"))
     private List<T> games;
 
 }
