@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_USER_ROLE;
+import static ru.platform.LocalConstants.Variables.DEFAULT_USER_TOKEN;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,9 +16,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Объект для передачи фронту токена и роли пользователя")
 public class AuthRsDto {
 
-    @Schema(description = "Токен пользователя")
+    @Schema(description = "Токен пользователя", example = DEFAULT_USER_TOKEN)
     private String token;
-    @Schema(description = "Роль пользователя", example = "ROLE_CUSTOMER")
+    @Schema(description = "Роль пользователя", example = DEFAULT_USER_ROLE)
     private String role;
 
 }

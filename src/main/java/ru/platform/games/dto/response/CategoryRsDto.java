@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 public class CategoryRsDto {
 
-    @Schema(description = "Название категории")
+    @Schema(description = "Название категории", example = "PVP")
     private String name;
 
 }

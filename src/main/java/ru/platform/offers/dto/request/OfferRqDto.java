@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import ru.platform.offers.sorting.SortFilter;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
+
 @Data
 public class OfferRqDto {
 
-    @Schema(description = "Идентификатор игры, к которой относится предложение")
+    @Schema(description = "Идентификатор игры, к которой относится предложение", example = DEFAULT_UUID)
     private String gameId;
-    @Schema(description = "Название категорий игры, к которым относится предложение")
+    @Schema(description = "Название категорий игры, к которым относится предложение", example = "PVP, PVE")
     private String category;
     @Schema(description = "Поле для указания сортировки")
     private SortFilter sort;
