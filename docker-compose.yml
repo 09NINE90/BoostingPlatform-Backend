@@ -42,7 +42,7 @@ services:
 
   db:
    image: postgres:17.4-alpine
-   container_name: platform-db-postgres
+   container_name: platform-db
    environment:
     POSTGRES_USER: "postgres"
     POSTGRES_PASSWORD: "@P05tGreSQL!"
@@ -50,7 +50,6 @@ services:
     LANG: "en_US.utf8"
    volumes:
     - postgresdata:/var/lib/postgresql/data
-    - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
    ports:
     - "5432:5432"
    healthcheck:
