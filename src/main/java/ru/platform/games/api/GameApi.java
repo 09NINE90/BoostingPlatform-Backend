@@ -21,7 +21,7 @@ public class GameApi {
     private final IGameService service;
 
     @GetMapping("/getAllGames")
-    @Operation(summary = "Получть список всех игр, отсортированных по рейтингу")
+    @Operation(summary = "Получить список всех игр, отсортированных по рейтингу")
     public ResponseEntity<GameListRsDto<GameMainPageRsDto>> getAllGames() {
         return ResponseEntity.ok(service.getAllGames());
     }

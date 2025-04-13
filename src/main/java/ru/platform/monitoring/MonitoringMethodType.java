@@ -14,6 +14,10 @@ public enum MonitoringMethodType {
             "creation user",
             "Создание пользователя: /api/auth/signUp"
     ),
+    ALL_GAMES(
+            "all games",
+            "Получить список всех игр, отсортированных по рейтингу: /api/games/getAllGames"
+    ),
     OFFERS_WITH_FILTERS(
             "offers with filters",
             "Получение предложений с сортировкой, фильтрами и пагинацией: /api/offer/getOffersByRequest"
