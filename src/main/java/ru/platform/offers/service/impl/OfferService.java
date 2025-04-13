@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
 import ru.platform.offers.dto.request.OfferRqDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
@@ -32,6 +34,7 @@ public class OfferService implements IOfferService {
     private final String LOG_PREFIX = "OfferService: ";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.OFFERS_BY_GAME_ID)
     public OffersListRsDto<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
         try {
             List<OfferEntity> offersByGame = offerRepository.findAllByGameId(gameId);
@@ -46,6 +49,7 @@ public class OfferService implements IOfferService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.OFFERS_WITH_FILTERS)
     public OffersListRsDto<OffersByGameIdRsDto> getOffersByRequest(OfferRqDto request) {
         return mapToResponse(getServicePageFunc().apply(request));
     }
