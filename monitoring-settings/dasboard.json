@@ -118,7 +118,7 @@
         "x": 0,
         "y": 1
       },
-      "id": 151,
+      "id": 153,
       "options": {
         "legend": {
           "calcs": [],
@@ -137,7 +137,120 @@
         {
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(offers_by_game_id_seconds_sum[30m]) \r\n/ \r\nrate(offers_by_game_id_seconds_count[30m])",
+          "expr": "rate(authorization_user_seconds_sum{instance=\"$instance\"}[10m])\r\n/\r\nrate(authorization_user_seconds_count{instance=\"$instance\"}[10m])\r\n",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Авторизация",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "\r\nrate(creation_user_seconds_sum{instance=\"$instance\"}[10m])\r\n/\r\nrate(creation_user_seconds_count{instance=\"$instance\"}[10m])",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Создание аккаунта",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Пользователи",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 151,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "rate(offers_by_game_id_seconds_sum{instance=\"$instance\"}[30m]) / rate(offers_by_game_id_seconds_count[30m])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "Предложения по ID игры",
@@ -151,8 +264,8 @@
             "uid": "PBFA97CFB590B2093"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "rate(offers_with_filters_seconds_sum[30m]) \r\n/ \r\nrate(offers_with_filters_seconds_count[30m])",
+          "editorMode": "builder",
+          "expr": "rate(offers_with_filters_seconds_sum{instance=\"$instance\"}[30m]) / rate(offers_with_filters_seconds_count[30m])",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -176,7 +289,7 @@
       },
       "id": 150,
       "panels": [],
-      "title": "Количество",
+      "title": "Количество запросов",
       "type": "row"
     },
     {
@@ -987,12 +1100,10 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
           "expr": "sum(rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", status=~\"5..\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "HTTP - 5xx",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -3682,12 +3793,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "JVM (Micrometer)",
   "uid": "deirzkv18n75sb",
-  "version": 2
+  "version": 6
 }
