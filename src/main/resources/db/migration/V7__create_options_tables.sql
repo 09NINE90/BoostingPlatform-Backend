@@ -5,6 +5,8 @@ CREATE TABLE offer_options (
    title VARCHAR(255) NOT NULL,
    type VARCHAR(50) NOT NULL,
    multiple BOOLEAN NOT NULL DEFAULT FALSE,
+   slider_price_change DECIMAL(10, 2),
+   time_change INTEGER,
    min INTEGER,
    max INTEGER,
    step INTEGER,

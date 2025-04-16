@@ -39,6 +39,12 @@ public class OfferOptionEntity {
     @Column(name = "multiple")
     private boolean multiple;
 
+    @Column(name = "slider_price_change")
+    private Double sliderPriceChange;
+
+    @Column(name = "time_change")
+    private Integer timeChange;
+
     @Column(name = "min")
     private Integer min;
 

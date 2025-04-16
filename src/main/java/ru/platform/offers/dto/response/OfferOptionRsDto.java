@@ -32,6 +32,8 @@ public class OfferOptionRsDto {
     @Schema(description = "Флаг множественного выбора", example = "false")
     private boolean multiple;
 
+    private Double sliderPriceChange;
+
     @Schema(description = "Минимальное значение (для SLIDER)", example = "1")
     private Integer min;
 

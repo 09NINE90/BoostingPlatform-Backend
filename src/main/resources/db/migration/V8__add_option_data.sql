@@ -119,7 +119,7 @@ VALUES (
        );
 
 -- Подподопция для VPN (Test 3 level)
-INSERT INTO offer_options (id, offer_id, option_id, title, type, multiple, min, max, step, parent_item_id)
+INSERT INTO offer_options (id, offer_id, option_id, title, type, multiple, slider_price_change, time_change, min, max, step, parent_item_id)
 VALUES (
            '40eebc99-9c0b-4ef8-bb6d-6bb9bd380a21',
            'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
@@ -127,14 +127,16 @@ VALUES (
            'Level 3 options',
            'SLIDER',
            false,
-           20,
+           1.2,
+        0,
+        1,
            60,
            5,
            '28eebc99-9c0b-4ef8-bb6d-6bb9bd380a19' -- родительский item (vpn)
        );
 
 -- 3. Опция Raid Time (slider)
-INSERT INTO offer_options (id, offer_id, option_id, title, type, multiple, min, max, step, parent_item_id)
+INSERT INTO offer_options (id, offer_id, option_id, title, type, multiple, slider_price_change, time_change, min, max, step, parent_item_id)
 VALUES (
            '51eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
            'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
@@ -142,7 +144,9 @@ VALUES (
            'Raid Time',
            'SLIDER',
            false,
-           20,
+           2.0,
+        0,
+        10,
            60,
            5,
            null
