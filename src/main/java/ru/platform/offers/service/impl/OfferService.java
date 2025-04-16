@@ -13,7 +13,7 @@ import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
 import ru.platform.offers.mapper.IOfferMapper;
 import ru.platform.offers.dao.OfferEntity;
-import ru.platform.offers.repository.OfferRepository;
+import ru.platform.offers.dao.repository.OfferRepository;
 import ru.platform.offers.dao.specification.OfferSpecification;
 import ru.platform.offers.service.IOfferService;
 

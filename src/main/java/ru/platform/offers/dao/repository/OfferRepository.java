@@ -1,4 +1,4 @@
-package ru.platform.offers.repository;
+package ru.platform.offers.dao.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

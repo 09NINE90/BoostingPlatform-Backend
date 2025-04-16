@@ -11,6 +11,8 @@ public class LocalConstants {
         public static final String GAME_TAG_DESCRIPTION = "Получение игр для клментов";
         public static final String CATEGORY_TAG_NAME = "Категории игр";
         public static final String CATEGORY_TAG_DESCRIPTION = "Получение категорий игр";
+        public static final String OFFER_OPTION_TAG_NAME = "Опции предложения";
+        public static final String OFFER_OPTION_TAG_DESCRIPTION = "Получение опций предложений для клиентов";
     }
 
     public static class Variables {

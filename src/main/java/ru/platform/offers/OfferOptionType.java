@@ -3,9 +3,9 @@ package ru.platform.offers;
 import lombok.Getter;
 
 @Getter
-public enum OfferOptionTypes {
-    SLIDER,
+public enum OfferOptionType {
+    BUTTONS,
+    SELECT,
     CHECKBOX,
-    SELECTOR,
-    RADIO_BUTTON
+    SLIDER
 }
