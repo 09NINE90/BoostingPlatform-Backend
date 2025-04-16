@@ -37,6 +37,10 @@ public enum MonitoringMethodType {
     OFFERS_BY_GAME_ID(
             "offers by game id",
             "Получение предложений по идентификатору игры: /api/offer/getOffersByGameId/{gameId}"
+    ),
+    OFFER_OPTIONS(
+            "offer option",
+            "Получение опций предложения по его идентификатору: /api/offer/option/byOfferId/{offerId}"
     );
 
     private final String name;
