@@ -52,7 +52,7 @@ public class MonitoringAspect {
                     "status", status
             ).increment();
 
-            if ("error".equals(status)) {
+            if (status.equals("error")) {
                 meterRegistry.counter("method.errors",
                         "description", monitoring.name().getDescription(),
                         "username", username,
@@ -63,5 +63,4 @@ public class MonitoringAspect {
         }
 
     }
-
 }

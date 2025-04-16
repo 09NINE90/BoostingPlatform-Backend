@@ -41,110 +41,53 @@
   "links": [],
   "panels": [
     {
-      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 1,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
         "y": 0
       },
-      "id": 152,
-      "panels": [],
-      "title": "Среднее время выполнения запросов",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 1
-      },
-      "id": 153,
+      "id": 154,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
       "pluginVersion": "11.6.0",
       "targets": [
-        {
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "rate(authorization_user_seconds_sum{instance=\"$instance\"}[10m])\r\n/\r\nrate(authorization_user_seconds_count{instance=\"$instance\"}[10m])\r\n",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "legendFormat": "Авторизация",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        },
         {
           "datasource": {
             "type": "prometheus",
@@ -152,132 +95,28 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "\r\nrate(creation_user_seconds_sum{instance=\"$instance\"}[10m])\r\n/\r\nrate(creation_user_seconds_count{instance=\"$instance\"}[10m])",
+          "expr": "round(\r\nsum by(class) (\r\n    increase(method_calls_total[$count_request_on_time])\r\n), 0.1\r\n)",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Создание аккаунта",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
-        }
-      ],
-      "title": "Пользователи",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
-        "y": 1
-      },
-      "id": 151,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.0",
-      "targets": [
-        {
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "rate(offers_by_game_id_seconds_sum{instance=\"$instance\"}[30m]) / rate(offers_by_game_id_seconds_count[30m])",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "legendFormat": "Предложения по ID игры",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A",
           "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "rate(offers_with_filters_seconds_sum{instance=\"$instance\"}[30m]) / rate(offers_with_filters_seconds_count[30m])",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "Предложения с фильтрами",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
         }
       ],
-      "title": "Предложения",
-      "type": "timeseries"
+      "title": "Количество запросов к сервисам  за $count_request_on_time",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "Time",
+            "mode": "inner"
+          }
+        }
+      ],
+      "type": "stat"
     },
     {
       "collapsed": false,
@@ -287,9 +126,9 @@
         "x": 0,
         "y": 8
       },
-      "id": 150,
+      "id": 152,
       "panels": [],
-      "title": "Количество запросов",
+      "title": " Предложения",
       "type": "row"
     },
     {
@@ -341,10 +180,6 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -355,119 +190,6 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 9
-      },
-      "id": 148,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.0",
-      "targets": [
-        {
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum(authorization_user_seconds_count{instance=\"$instance\"})",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "legendFormat": "Авторизация",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum(creation_user_seconds_count{instance=\"$instance\"})",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "Регистрация",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
-        }
-      ],
-      "title": "Пользователи",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
         "y": 9
       },
       "id": 149,
@@ -515,8 +237,97 @@
           "useBackend": false
         }
       ],
-      "title": "Предложения",
+      "title": "Количество запросов",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 6,
+        "y": 9
+      },
+      "id": 151,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by(class)(\r\n  rate(offers_by_game_id_seconds_sum{instance=\"$instance\"}[10m]) /\r\n  rate(offers_by_game_id_seconds_count{instance=\"$instance\"}[10m])\r\n)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Предложения по ID игры",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "avg by(class)(\r\n  rate(offers_with_filters_seconds_sum{instance=\"$instance\"}[10m]) /\r\n  rate(offers_with_filters_seconds_count{instance=\"$instance\"}[10m])\r\n)",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Предложения с фильтрами",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Среднее время выполнения запроса",
+      "transparent": true,
+      "type": "gauge"
     },
     {
       "collapsed": false,
@@ -525,6 +336,219 @@
         "w": 24,
         "x": 0,
         "y": 16
+      },
+      "id": 150,
+      "panels": [],
+      "title": "Пользователи",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 17
+      },
+      "id": 148,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum(authorization_user_seconds_count{instance=\"$instance\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Авторизация",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum(creation_user_seconds_count{instance=\"$instance\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Регистрация",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Количество запросов",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 6,
+        "y": 17
+      },
+      "id": 153,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "avg by(method)(\r\n  rate(authorization_user_seconds_sum{instance=\"$instance\"}[10m]) /\r\n  rate(authorization_user_seconds_count{instance=\"$instance\"}[10m])\r\n)",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Авторизация",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "avg by(class)(\r\n  rate(creation_user_seconds_sum{instance=\"$instance\"}[10m]) /\r\n  rate(creation_user_seconds_count{instance=\"$instance\"}[10m])\r\n)",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Регистрация",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Среднее время выполнения запроса",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
       },
       "id": 139,
       "panels": [],
@@ -570,7 +594,7 @@
         "h": 3,
         "w": 6,
         "x": 0,
-        "y": 17
+        "y": 25
       },
       "id": 63,
       "maxDataPoints": 100,
@@ -648,7 +672,7 @@
         "h": 3,
         "w": 6,
         "x": 6,
-        "y": 17
+        "y": 25
       },
       "id": 92,
       "maxDataPoints": 100,
@@ -733,7 +757,7 @@
         "h": 3,
         "w": 6,
         "x": 12,
-        "y": 17
+        "y": 25
       },
       "id": 65,
       "maxDataPoints": 100,
@@ -827,7 +851,7 @@
         "h": 3,
         "w": 6,
         "x": 18,
-        "y": 17
+        "y": 25
       },
       "id": 75,
       "maxDataPoints": 100,
@@ -872,7 +896,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 28
       },
       "id": 140,
       "panels": [],
@@ -944,7 +968,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 21
+        "y": 29
       },
       "id": 111,
       "options": {
@@ -1075,7 +1099,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 21
+        "y": 29
       },
       "id": 112,
       "options": {
@@ -1175,7 +1199,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 21
+        "y": 29
       },
       "id": 113,
       "options": {
@@ -1289,7 +1313,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 21
+        "y": 29
       },
       "id": 119,
       "options": {
@@ -1314,11 +1338,13 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
+          "editorMode": "code",
           "expr": "tomcat_threads_busy_threads{application=\"$application\", instance=\"$instance\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "TOMCAT - BSY",
+          "range": true,
           "refId": "A"
         },
         {
@@ -1391,7 +1417,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 36
       },
       "id": 141,
       "panels": [],
@@ -1463,7 +1489,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 29
+        "y": 37
       },
       "id": 24,
       "options": {
@@ -1590,7 +1616,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 29
+        "y": 37
       },
       "id": 25,
       "options": {
@@ -1718,7 +1744,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 29
+        "y": 37
       },
       "id": 26,
       "options": {
@@ -1845,7 +1871,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 29
+        "y": 37
       },
       "id": 86,
       "options": {
@@ -1923,7 +1949,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 44
       },
       "id": 142,
       "panels": [],
@@ -1997,7 +2023,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 37
+        "y": 45
       },
       "id": 106,
       "options": {
@@ -2126,7 +2152,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 37
+        "y": 45
       },
       "id": 93,
       "options": {
@@ -2241,7 +2267,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 37
+        "y": 45
       },
       "id": 32,
       "options": {
@@ -2472,7 +2498,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 37
+        "y": 45
       },
       "id": 124,
       "options": {
@@ -2576,7 +2602,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 44
+        "y": 52
       },
       "id": 138,
       "options": {
@@ -2754,7 +2780,7 @@
         "h": 7,
         "w": 12,
         "x": 6,
-        "y": 44
+        "y": 52
       },
       "id": 91,
       "options": {
@@ -2860,7 +2886,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 44
+        "y": 52
       },
       "id": 61,
       "options": {
@@ -2919,7 +2945,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 59
       },
       "id": 143,
       "panels": [],
@@ -2940,7 +2966,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "id": 3,
       "maxPerRow": 3,
@@ -3003,7 +3029,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 59
+        "y": 67
       },
       "id": 144,
       "panels": [],
@@ -3023,7 +3049,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 68
       },
       "id": 78,
       "maxPerRow": 3,
@@ -3086,7 +3112,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 74
+        "y": 82
       },
       "id": 145,
       "panels": [],
@@ -3158,7 +3184,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 75
+        "y": 83
       },
       "id": 98,
       "options": {
@@ -3257,7 +3283,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 75
+        "y": 83
       },
       "id": 101,
       "options": {
@@ -3370,7 +3396,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 75
+        "y": 83
       },
       "id": 99,
       "options": {
@@ -3422,7 +3448,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 82
+        "y": 90
       },
       "id": 146,
       "panels": [],
@@ -3494,7 +3520,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 83
+        "y": 91
       },
       "id": 37,
       "options": {
@@ -3593,7 +3619,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 83
+        "y": 91
       },
       "id": 38,
       "options": {
@@ -3636,7 +3662,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 90
+        "y": 98
       },
       "id": 147,
       "panels": [],
@@ -3656,7 +3682,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 99
       },
       "id": 131,
       "maxPerRow": 3,
@@ -3789,6 +3815,43 @@
         "regex": "",
         "sort": 1,
         "type": "query"
+      },
+      {
+        "current": {
+          "text": "1m",
+          "value": "1m"
+        },
+        "label": "count_request_on_time",
+        "name": "count_request_on_time",
+        "options": [
+          {
+            "selected": true,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "15m",
+            "value": "15m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          }
+        ],
+        "query": "1m, 5m, 10m, 15m, 30m",
+        "type": "custom"
       }
     ]
   },

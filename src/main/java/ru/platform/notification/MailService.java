@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.user.dao.UserEntity;
 
 import java.io.StringWriter;
@@ -38,6 +40,7 @@ public class MailService implements IMailService {
     }
 
     @SneakyThrows
+    @PlatformMonitoring(name = MonitoringMethodType.SEND_REGISTRATION_MAIL)
     private void sendRegistrationEmail(UserEntity user, Properties properties){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
@@ -59,6 +62,7 @@ public class MailService implements IMailService {
     }
 
     @SneakyThrows
+    @PlatformMonitoring(name = MonitoringMethodType.SEND_RECOVERY_PASSWORD_MAIL)
     private void sendPasswordRecoveryEmail(UserEntity user, Properties properties){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
