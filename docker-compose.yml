@@ -61,7 +61,8 @@ services:
 
   backend:
     build: .
-    container_name: backend
+    image: platform-backend
+    container_name: platform-backend
     environment:
         PASSWORD_DB: "@P05tGreSQL!"
         USERNAME_DB: "postgres"
@@ -81,6 +82,15 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  frontend:
+   image: platform-frontend
+   container_name: platform-frontend
+   build: C:/Users/alraz/WebstormProjects/BoostingPlatformFrontEnd/
+   ports:
+    - "5173:5173"
+   depends_on:
+    - backend
 
 volumes:
   grafanadata:
