@@ -1,6 +1,5 @@
 package ru.platform.offers.service;
 
-import ru.platform.offers.dao.OfferEntity;
 import ru.platform.offers.dto.request.OfferRqDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;

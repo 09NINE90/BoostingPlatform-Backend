@@ -60,7 +60,7 @@ services:
 
 
   backend:
-    build: .
+    build: https://github.com/09NINE90/BoostingPlatform-Backend.git#features/add-options-to-offer
     container_name: backend
     environment:
         PASSWORD_DB: "@P05tGreSQL!"
@@ -85,7 +85,7 @@ services:
   frontend:
    image: platform-frontend
    container_name: platform-frontend
-   build: C:/Users/alraz/WebstormProjects/BoostingPlatformFrontEnd/
+   build: https://github.com/09NINE90/BoostingPlatformFrontEnd.git#testOption
    ports:
     - "5173:5173"
    depends_on:

@@ -34,18 +34,25 @@ public class OfferMapper implements IOfferMapper {
 
     @Override
     public OfferSectionItemRsDto toOfferSectionItemRsDto(SectionItemEntity sectionItemEntity) {
-        return OfferSectionItemRsDto.builder()
-                .title(sectionItemEntity.getTitle())
-                .type(sectionItemEntity.getType())
-                .description(sectionItemEntity.getDescription())
-                .items(sectionItemEntity.getItems().stream().map(this::toOfferSectionItemRsDto).toList())
-                .relatedOffer(OfferSectionItemRsDto.RelatedOfferDto.builder()
-                        .title(sectionItemEntity.getTitle())
-                        .imageUrl(sectionItemEntity.getImageUrl())
-                        .price(sectionItemEntity.getPrice())
-                        .offerId(sectionItemEntity.getRelatedOfferId() == null ? null : sectionItemEntity.getRelatedOfferId().toString())
-                        .build())
-                .build();
+        if (!sectionItemEntity.getItems().isEmpty()) {
+            return OfferSectionItemRsDto.builder()
+                    .title(sectionItemEntity.getTitle())
+                    .type(sectionItemEntity.getType())
+                    .description(sectionItemEntity.getDescription())
+                    .items(sectionItemEntity.getItems().stream().map(this::toOfferSectionItemRsDto).toList())
+                    .relatedOffer(OfferSectionItemRsDto.RelatedOfferDto.builder()
+                            .title(sectionItemEntity.getTitle())
+                            .imageUrl(sectionItemEntity.getImageUrl())
+                            .price(sectionItemEntity.getPrice())
+                            .offerId(sectionItemEntity.getRelatedOfferId() == null ? null : sectionItemEntity.getRelatedOfferId().toString())
+                            .build())
+                    .build();
+        }
+        else {
+            return OfferSectionItemRsDto.builder()
+                    .description(sectionItemEntity.getDescription())
+                    .build();
+        }
     }
 
 }
