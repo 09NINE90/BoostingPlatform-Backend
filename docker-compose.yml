@@ -60,7 +60,7 @@ services:
 
 
   backend:
-    build: https://github.com/09NINE90/BoostingPlatform-Backend.git#features/add-options-to-offer
+    build: https://github.com/09NINE90/BoostingPlatform-Backend.git#test/docker-test
     container_name: backend
     environment:
         PASSWORD_DB: "@P05tGreSQL!"
