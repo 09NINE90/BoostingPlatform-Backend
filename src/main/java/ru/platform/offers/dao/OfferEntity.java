@@ -65,4 +65,8 @@ public class OfferEntity {
 
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OfferOptionEntity> options = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "offer_id")
+    private List<OfferSectionEntity> sections;
 }

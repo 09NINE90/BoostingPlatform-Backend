@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.platform.offers.OfferOptionType;
+import ru.platform.offers.enumz.OfferOptionType;
 
 import java.util.ArrayList;
 import java.util.List;

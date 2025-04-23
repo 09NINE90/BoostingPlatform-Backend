@@ -1,4 +1,4 @@
-package ru.platform.offers;
+package ru.platform.offers.enumz;
 
 import lombok.Getter;
 
