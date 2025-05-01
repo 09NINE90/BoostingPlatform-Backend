@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.platform.offers.dao.OfferEntity;
 import ru.platform.offers.dto.request.OfferRqDto;
+import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
 import ru.platform.offers.service.IOfferService;
@@ -36,4 +38,8 @@ public class OfferApi {
         return ResponseEntity.ok(service.getOffersByRequest(request));
     }
 
+    @GetMapping("/{offerId}")
+    public ResponseEntity<OfferByIdRsDto> findOfferById(@PathVariable UUID offerId) {
+        return ResponseEntity.ok(service.getOfferById(offerId));
+    }
 }

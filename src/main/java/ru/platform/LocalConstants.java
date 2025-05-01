@@ -11,6 +11,8 @@ public class LocalConstants {
         public static final String GAME_TAG_DESCRIPTION = "Получение игр для клментов";
         public static final String CATEGORY_TAG_NAME = "Категории игр";
         public static final String CATEGORY_TAG_DESCRIPTION = "Получение категорий игр";
+        public static final String OFFER_OPTION_TAG_NAME = "Опции предложения";
+        public static final String OFFER_OPTION_TAG_DESCRIPTION = "Получение опций предложений для клиентов";
     }
 
     public static class Variables {
@@ -26,6 +28,7 @@ public class LocalConstants {
         public static final String DEFAULT_USER_NICKNAME = "userNickname";
         public static final String DEFAULT_USER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFt";
         public static final String DEFAULT_UUID = "70b82203-0f41-47e1-b11c-0fb96f8f9204";
+        public static final String DEFAULT_SECOND_UUID = "ABCD-123";
         public static final String DEFAULT_IMAGE_LINK = "https://bb82cdcce70076216efdbdfb864e275d.jpg";
     }
 
