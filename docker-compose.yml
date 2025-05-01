@@ -1,0 +1,99 @@
+services:
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    ports:
+      - "9080:9080"
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./monitoring-settings/promtail-config.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    privileged: true
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring-settings/loki-config.yaml:/etc/loki/local-config.yaml
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring-settings/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheusdata:/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring-settings/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafanadata:/var/lib/grafana
+
+  db:
+   image: postgres:17.4-alpine
+   container_name: platform-db
+   environment:
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "@P05tGreSQL!"
+    POSTGRES_DB: "boosting_platform"
+    LANG: "en_US.utf8"
+   volumes:
+    - postgresdata:/var/lib/postgresql/data
+   ports:
+    - "5434:5432"
+   healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+    interval: 5s
+    timeout: 5s
+    retries: 5
+
+
+  backend:
+    build: https://github.com/09NINE90/BoostingPlatform-Backend.git#test/docker-test
+    container_name: backend
+    environment:
+        PASSWORD_DB: "@P05tGreSQL!"
+        USERNAME_DB: "postgres"
+        JWT_SECRET_KEY: "ajscqSVPNj4GNzF+Ln2H6yaE2etWGExa618+TDP96ZE="
+        URL_DB: "jdbc:postgresql://db:5432/boosting_platform"
+    ports:
+      - "6969:6969"
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+    depends_on:
+      db:
+          condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:6969/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+   image: platform-frontend
+   container_name: platform-frontend
+   build: https://github.com/09NINE90/BoostingPlatformFrontEnd.git#testOption
+   ports:
+    - "5173:5173"
+   depends_on:
+     backend:
+       condition: service_healthy
+
+volumes:
+  grafanadata:
+  prometheusdata:
+  lokidata:
+  postgresdata:

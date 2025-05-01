@@ -5,13 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
 import ru.platform.offers.dto.request.OfferRqDto;
+import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
 import ru.platform.offers.mapper.IOfferMapper;
 import ru.platform.offers.dao.OfferEntity;
-import ru.platform.offers.repository.OfferRepository;
+import ru.platform.offers.dao.repository.OfferRepository;
 import ru.platform.offers.dao.specification.OfferSpecification;
 import ru.platform.offers.service.IOfferService;
 
@@ -32,6 +35,7 @@ public class OfferService implements IOfferService {
     private final String LOG_PREFIX = "OfferService: ";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.OFFERS_BY_GAME_ID)
     public OffersListRsDto<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
         try {
             List<OfferEntity> offersByGame = offerRepository.findAllByGameId(gameId);
@@ -46,6 +50,7 @@ public class OfferService implements IOfferService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.OFFERS_WITH_FILTERS)
     public OffersListRsDto<OffersByGameIdRsDto> getOffersByRequest(OfferRqDto request) {
         return mapToResponse(getServicePageFunc().apply(request));
     }
@@ -74,6 +79,25 @@ public class OfferService implements IOfferService {
             throw new EntityNotFoundException("Error when searching for offers with sorting, filters, and pagination", e);
         }
 
+    }
+
+    @Override
+    public OfferByIdRsDto getOfferById(UUID offerId) {
+        OfferEntity offerEntity = offerRepository.findById(offerId).orElse(null);
+        if (offerEntity == null) return null;
+
+        return OfferByIdRsDto.builder()
+                .offerId(offerEntity.getId().toString())
+                .gameId(offerEntity.getGame().getId().toString())
+                .secondId(offerEntity.getSecondId())
+                .gameName(offerEntity.getGame().getTitle())
+                .title(offerEntity.getTitle())
+                .description(offerEntity.getDescription())
+                .imageUrl(offerEntity.getImageUrl())
+                .categories(offerEntity.getCategories())
+                .price(offerEntity.getPrice().doubleValue())
+                .sections(offerEntity.getSections().stream().map(offerMapper::toOfferSectionRsDto).toList())
+                .build();
     }
 
 }

@@ -26,4 +26,4 @@ public class PlatformException extends RuntimeException {
         this.errorType = errorType;
         this.httpStatus = httpStatus;
     }
-}
+}   

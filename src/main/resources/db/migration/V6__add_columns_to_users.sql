@@ -1,3 +1,0 @@
-ALTER TABLE users
-    ADD COLUMN confirmation_code VARCHAR(10) NULL,
-    ADD COLUMN enabled BOOLEAN NOT NULL DEFAULT FALSE;

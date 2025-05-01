@@ -9,7 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.user.dao.UserEntity;
+import ru.platform.user.dto.detail.CustomUserDetails;
 import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.repository.UserRepository;
@@ -17,6 +20,7 @@ import ru.platform.user.service.IAuthService;
 import ru.platform.utils.JwtUtil;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
@@ -33,6 +37,7 @@ public class AuthService implements IAuthService {
     private final static String LOG_PREFIX = "AuthService: {}, Email: {}";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.AUTHORIZATION_USER)
     public AuthRsDto trySignup(LoginUserRqDto userRqDto) {
         checkConfirmationEmail(userRqDto);
         try {
@@ -61,8 +66,10 @@ public class AuthService implements IAuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userRqDto.getUsername(), userRqDto.getPassword())
         );
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        UUID userId = userDetails.getId();
         String role = getRole(authentication);
-        String token = jwtUtil.generateToken(userRqDto.getUsername(), role);
+        String token = jwtUtil.generateToken(userId.toString(), userRqDto.getUsername(), role);
         log.info("User {} signed up", userRqDto.getUsername());
         return new AuthRsDto(token, role);
     }

@@ -5,8 +5,11 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -26,9 +29,10 @@ public class JwtUtil {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String id, String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", id)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -37,6 +41,7 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+        if (token == null) return "UNAUTHORIZED";
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -46,6 +51,7 @@ public class JwtUtil {
     }
 
     public String extractRoles(String token) {
+        if (token == null) return "UNAUTHORIZED";
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -53,7 +59,19 @@ public class JwtUtil {
                 .getBody();
 
         String role = claims.get("role", String.class);
-        return role != null ? role : ""; // Возвращаем пустой список, если роли отсутствуют
+        return role != null ? role : "";
+    }
+
+    public String extractUserid(String token) {
+        if (token == null) return "UNAUTHORIZED";
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        String userId = claims.get("userId", String.class);
+        return userId != null ? userId : "";
     }
 
     public LocalDateTime extractDateStart(String token) {
@@ -86,6 +104,18 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_CONFIRMATION_LINK))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractTokenFromRequest() {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            HttpServletRequest request = requestAttributes.getRequest();
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                return authHeader.substring(7);
+            }
+        }
+        return null;
     }
 
     public boolean validateToken(String token) {

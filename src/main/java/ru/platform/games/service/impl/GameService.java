@@ -8,6 +8,8 @@ import ru.platform.games.mapper.IGameMapper;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.games.repository.GameRepository;
 import ru.platform.games.service.IGameService;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 
 import java.util.*;
 
@@ -19,6 +21,7 @@ public class GameService implements IGameService {
     private final IGameMapper gameMapper;
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.ALL_GAMES)
     public GameListRsDto<GameMainPageRsDto> getAllGames() {
         List<GameEntity> allGames = repository.findAllByOrderByRatingDesc();
         return gameMapper.toGameListRs(allGames);

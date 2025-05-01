@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
@@ -24,7 +26,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
@@ -49,6 +50,7 @@ public class UserService implements IUserService {
     private final static String LOG_PREFIX = "UserService: {}";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
     public ConfirmationRsDto createUser(SignupUserRqDto user) {
         checkUserExists(user.getUsername());
 
@@ -88,7 +90,7 @@ public class UserService implements IUserService {
 
     @Override
     public AuthRsDto checkConfirmationSignUp(String confirmationToken) {
-        String username = jwtUtil.extractUsername(confirmationToken);
+        String username = jwtUtil.extractUserid(confirmationToken);
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isPresent()) {
             String password = jwtUtil.extractUserPassword(confirmationToken);

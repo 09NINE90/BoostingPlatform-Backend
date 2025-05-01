@@ -3,18 +3,18 @@ package ru.platform.offers.dao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.user.dao.UserEntity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "offers")
@@ -63,4 +63,10 @@ public class OfferEntity {
     @Schema(description = "Игра по которой заказ")
     private GameEntity game;
 
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferOptionEntity> options = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "offer_id")
+    private List<OfferSectionEntity> sections;
 }
