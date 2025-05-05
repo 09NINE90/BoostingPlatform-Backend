@@ -60,7 +60,7 @@ services:
 
 
   backend:
-    build: https://github.com/09NINE90/BoostingPlatform-Backend.git#test/docker-test
+    build: .
     container_name: backend
     environment:
         PASSWORD_DB: "@P05tGreSQL!"
@@ -85,7 +85,7 @@ services:
   frontend:
    image: platform-frontend
    container_name: platform-frontend
-   build: https://github.com/09NINE90/BoostingPlatformFrontEnd.git#testOption
+   build: C:\Users\alraz\WebstormProjects\BoostingPlatformFrontEnd
    ports:
     - "5173:5173"
    depends_on:
