@@ -7,6 +7,7 @@ import ru.platform.offers.dao.SectionItemEntity;
 import ru.platform.offers.dto.response.OfferSectionItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
+import ru.platform.utils.DtoUtil;
 
 @Component
 public class OfferMapper implements IOfferMapper {
@@ -44,15 +45,24 @@ public class OfferMapper implements IOfferMapper {
                             .title(sectionItemEntity.getTitle())
                             .imageUrl(sectionItemEntity.getImageUrl())
                             .price(sectionItemEntity.getPrice())
-                            .offerId(sectionItemEntity.getRelatedOfferId() == null ? null : sectionItemEntity.getRelatedOfferId().toString())
+                            .offerId(getRelatedOfferDto(sectionItemEntity))
                             .build())
                     .build();
-        }
-        else {
+        } else {
             return OfferSectionItemRsDto.builder()
+                    .title(sectionItemEntity.getTitle())
                     .description(sectionItemEntity.getDescription())
+                    .type(sectionItemEntity.getType())
+                    .relatedOffer(OfferSectionItemRsDto.RelatedOfferDto.builder()
+                            .offerId(getRelatedOfferDto(sectionItemEntity))
+                            .build())
                     .build();
         }
     }
 
+    private String getRelatedOfferDto(SectionItemEntity sectionItemEntity) {
+        return DtoUtil.safelyGet(sectionItemEntity, SectionItemEntity::getRelatedOfferId) == null
+                ? null
+                : sectionItemEntity.getRelatedOfferId().toString();
+    }
 }

@@ -31,5 +31,4 @@ public class OfferSectionItemRsDto {
         private Double price;
         private String title;
     }
-
 }
