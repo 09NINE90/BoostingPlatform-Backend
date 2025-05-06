@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.offers.dto.request.OfferRqDto;
+import ru.platform.offers.dto.request.OfferToCartRqDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
@@ -43,4 +44,11 @@ public class OfferApi {
     public ResponseEntity<OfferByIdRsDto> findOfferById(@PathVariable UUID offerId) {
         return ResponseEntity.ok(service.getOfferById(offerId));
     }
+
+    @PostMapping("/addToCart")
+    @Operation(summary = "Добавление предложенияв корзину")
+    public void addOfferToCart(@RequestBody OfferToCartRqDto offer) {
+        service.addOfferToCart(offer);
+    }
+
 }

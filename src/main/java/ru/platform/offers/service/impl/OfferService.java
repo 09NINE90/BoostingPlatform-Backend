@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
+import ru.platform.offers.dao.OfferCartEntity;
+import ru.platform.offers.dao.repository.OfferCartRepository;
 import ru.platform.offers.dto.request.OfferRqDto;
+import ru.platform.offers.dto.request.OfferToCartRqDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
@@ -17,8 +20,10 @@ import ru.platform.offers.dao.OfferEntity;
 import ru.platform.offers.dao.repository.OfferRepository;
 import ru.platform.offers.dao.specification.OfferSpecification;
 import ru.platform.offers.service.IOfferService;
+import ru.platform.user.service.IAuthService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -29,7 +34,9 @@ public class OfferService implements IOfferService {
 
     private final OfferRepository offerRepository;
     private final OfferSpecification specification;
+    private final OfferCartRepository offerCartRepository;
     private final PaginationOffersUtil paginationOffersUtil;
+    private final IAuthService authService;
     private final IOfferMapper offerMapper;
 
     private final String LOG_PREFIX = "OfferService: ";
@@ -43,7 +50,7 @@ public class OfferService implements IOfferService {
             return offersByGame.stream()
                     .map(offerMapper::toOfferByGameIdRsDto)
                     .toList();
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(LOG_PREFIX + "Error when searching for offers by game ID");
             throw new EntityNotFoundException("Error when searching for offers by game ID", e);
         }
@@ -98,6 +105,20 @@ public class OfferService implements IOfferService {
                 .price(offerEntity.getPrice().doubleValue())
                 .sections(offerEntity.getSections().stream().map(offerMapper::toOfferSectionRsDto).toList())
                 .build();
+    }
+
+    @Override
+    public void addOfferToCart(OfferToCartRqDto offer) {
+        OfferCartEntity offerCartEntity = new OfferCartEntity();
+        Optional<OfferEntity> offerEntityOptional = offerRepository.findById(offer.getOfferId());
+        offerEntityOptional.ifPresent(offerCartEntity::setOffer);
+        offerCartEntity.setGameName(offer.getGameName());
+        offerCartEntity.setCreator(authService.getAuthUser());
+        offerCartEntity.setTotalPrice(offer.getTotalPrice());
+        offerCartEntity.setBasePrice(offer.getBasePrice());
+        offerCartEntity.setTotalTime(offer.getTotalTime());
+
+        offerCartRepository.save(offerCartEntity);
     }
 
 }

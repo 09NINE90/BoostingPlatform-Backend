@@ -1,0 +1,62 @@
+package ru.platform.offers.dao;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.platform.user.dao.UserEntity;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "offer_cart")
+@Schema(description = "Корзина предложений")
+public class OfferCartEntity {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "game_name")
+    private String gameName;
+
+    @Column(name = "base_price")
+    private double basePrice;
+
+    @Column(name = "total_price")
+    private double totalPrice;
+
+    @Column(name = "total_time")
+    private int totalTime;
+
+    @ManyToOne
+    @JoinColumn(name = "offer_id")
+    private OfferEntity offer;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private UserEntity creator;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+}

@@ -48,6 +48,14 @@ public class AuthService implements IAuthService {
         }
     }
 
+    @Override
+    public UserEntity getAuthUser() {
+        String token = jwtUtil.extractTokenFromRequest();
+        String userId = jwtUtil.extractUserid(token);
+        Optional<UserEntity> user = userRepository.findById(UUID.fromString(userId));
+        return user.get();
+    }
+
     private void checkConfirmationEmail(LoginUserRqDto userRqDto){
         Optional<UserEntity> user = userRepository.findByUsername(userRqDto.getUsername());
         if(user.isPresent()){
