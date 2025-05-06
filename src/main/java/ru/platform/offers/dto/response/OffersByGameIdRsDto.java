@@ -16,13 +16,13 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 public class OffersByGameIdRsDto {
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
-    private String offerId;
+    private String id;
     @Schema(description = "Название предложения", example = "Rank boosting")
-    private String offerTitle;
+    private String title;
     @Schema(description = "Описание предложения", example = "Very long description")
-    private String offerDescription;
+    private String description;
     @Schema(description = "Ссылка на картинку предложения", example = DEFAULT_IMAGE_LINK)
-    private String offerImageUrl;
+    private String imageUrl;
     @Schema(description = "Стоимость предложения", example = "100")
-    private Float offerPrice;
+    private Float price;
 }

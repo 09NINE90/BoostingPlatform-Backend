@@ -15,11 +15,11 @@ public class OfferMapper implements IOfferMapper {
     @Override
     public OffersByGameIdRsDto toOfferByGameIdRsDto(OfferEntity offer) {
         return OffersByGameIdRsDto.builder()
-                .offerId(offer.getId().toString())
-                .offerTitle(offer.getTitle())
-                .offerDescription(offer.getDescription())
-                .offerImageUrl(offer.getImageUrl())
-                .offerPrice(offer.getPrice())
+                .id(offer.getId().toString())
+                .title(offer.getTitle())
+                .description(offer.getDescription())
+                .imageUrl(offer.getImageUrl())
+                .price(offer.getPrice())
                 .build();
     }
 

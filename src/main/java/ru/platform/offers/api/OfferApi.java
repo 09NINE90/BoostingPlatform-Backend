@@ -5,13 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.offers.dao.OfferEntity;
 import ru.platform.offers.dto.request.OfferRqDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
 import ru.platform.offers.service.IOfferService;
 
+import java.util.List;
 import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.OFFER_TAG_DESCRIPTION;
@@ -27,8 +27,8 @@ public class OfferApi {
 
     @GetMapping("/getOffersByGameId/{gameId}")
     @Operation(summary = "Получение предложений по идентификатору игры")
-    public ResponseEntity<OffersListRsDto<OffersByGameIdRsDto>> getOffersByGameId(@PathVariable UUID gameId) {
-        OffersListRsDto<OffersByGameIdRsDto> result = service.getOffersByGameId(gameId);
+    public ResponseEntity<List<OffersByGameIdRsDto>> getOffersByGameId(@PathVariable("gameId") UUID gameId) {
+        List<OffersByGameIdRsDto> result = service.getOffersByGameId(gameId);
         return ResponseEntity.ok(result);
     }
 
@@ -39,6 +39,7 @@ public class OfferApi {
     }
 
     @GetMapping("/{offerId}")
+    @Operation(summary = "Получение предложения по ID")
     public ResponseEntity<OfferByIdRsDto> findOfferById(@PathVariable UUID offerId) {
         return ResponseEntity.ok(service.getOfferById(offerId));
     }

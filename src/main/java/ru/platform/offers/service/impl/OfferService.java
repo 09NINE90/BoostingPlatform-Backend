@@ -36,13 +36,13 @@ public class OfferService implements IOfferService {
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.OFFERS_BY_GAME_ID)
-    public OffersListRsDto<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
+    public List<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
         try {
             List<OfferEntity> offersByGame = offerRepository.findAllByGameId(gameId);
             log.debug(LOG_PREFIX + "Preparing a response for the frontend");
-            return new OffersListRsDto<>(offersByGame.stream()
+            return offersByGame.stream()
                     .map(offerMapper::toOfferByGameIdRsDto)
-                    .toList());
+                    .toList();
         }catch (Exception e) {
             log.error(LOG_PREFIX + "Error when searching for offers by game ID");
             throw new EntityNotFoundException("Error when searching for offers by game ID", e);
@@ -88,7 +88,7 @@ public class OfferService implements IOfferService {
 
         return OfferByIdRsDto.builder()
                 .offerId(offerEntity.getId().toString())
-                .gameId(offerEntity.getGame().getId().toString())
+                .gameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
                 .title(offerEntity.getTitle())
