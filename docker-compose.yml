@@ -58,6 +58,16 @@ services:
     timeout: 5s
     retries: 5
 
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:@P05tGreSQL!@db:5432/boosting_platform?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      db:
+        condition: service_healthy
 
   backend:
     build: .
