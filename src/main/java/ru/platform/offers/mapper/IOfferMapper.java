@@ -7,8 +7,6 @@ import ru.platform.offers.dto.response.OfferSectionItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 
-import java.util.List;
-
 public interface IOfferMapper {
 
     OffersByGameIdRsDto toOfferByGameIdRsDto(OfferEntity offer);
