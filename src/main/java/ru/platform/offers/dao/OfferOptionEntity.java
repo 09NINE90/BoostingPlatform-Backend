@@ -55,7 +55,10 @@ public class OfferOptionEntity {
     private Integer step;
 
     @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OptionItemEntity> items = new ArrayList<>();
+    private List<OptionItemEntity> items;
+
+    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferOptionCartEntity> optionCart;
 
     @ManyToOne
     @JoinColumn(name = "parent_item_id")

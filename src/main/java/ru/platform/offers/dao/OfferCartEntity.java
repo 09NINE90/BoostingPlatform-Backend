@@ -3,15 +3,18 @@ package ru.platform.offers.dao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.user.dao.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "offer_cart")
@@ -48,6 +51,10 @@ public class OfferCartEntity {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "offer_cart_id")
+    private List<OfferOptionCartEntity> optionCarts;
 
     @PrePersist
     protected void onCreate() {

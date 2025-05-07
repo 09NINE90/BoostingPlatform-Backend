@@ -64,7 +64,6 @@ public class JwtUtil {
 
     public String extractUserid(String token) {
         if (token == null) return "UNAUTHORIZED";
-        System.out.println(token);
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
