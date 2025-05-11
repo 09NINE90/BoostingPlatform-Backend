@@ -52,8 +52,13 @@ public class AuthService implements IAuthService {
     public UserEntity getAuthUser() {
         String token = jwtUtil.extractTokenFromRequest();
         String userId = jwtUtil.extractUserid(token);
-        Optional<UserEntity> user = userRepository.findById(UUID.fromString(userId));
-        return user.get();
+        try {
+            Optional<UserEntity> user = userRepository.findById(UUID.fromString(userId));
+            return user.get();
+        } catch (Exception e) {
+            log.error(LOG_PREFIX, UNAUTHORIZED_ERROR.getDescription(), null);
+            throw new PlatformException(UNAUTHORIZED_ERROR);
+        }
     }
 
     private void checkConfirmationEmail(LoginUserRqDto userRqDto){

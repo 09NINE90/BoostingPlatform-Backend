@@ -1,11 +1,11 @@
-package ru.platform.offers.dto.request;
+package ru.platform.orders.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class SelectedOptionToCartDto {
+public class CartSelectedOptionsDto {
 
     private String optionTitle;
     private Object value;

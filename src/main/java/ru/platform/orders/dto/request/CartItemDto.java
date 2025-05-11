@@ -1,17 +1,19 @@
-package ru.platform.offers.dto.request;
+package ru.platform.orders.dto.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
 @Data
-public class OfferToCartRqDto {
+@Builder
+public class CartItemDto {
 
     private UUID offerId;
     private String gameName;
     private double basePrice;
-    private List<SelectedOptionToCartDto> selectedOptions;
+    private List<CartSelectedOptionsDto> selectedOptions;
     private double totalPrice;
     private int totalTime;
 }

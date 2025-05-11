@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.platform.annotation.RoleRequired;
 import ru.platform.offers.dto.request.OfferRqDto;
 import ru.platform.offers.dto.request.OfferToCartRqDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
+import ru.platform.offers.dto.response.OfferCartRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
 import ru.platform.offers.dto.response.OffersListRsDto;
 import ru.platform.offers.service.IOfferService;
@@ -35,7 +37,7 @@ public class OfferApi {
 
     @PostMapping("/getOffersByRequest")
     @Operation(summary = "Получение предложений с сортировкой, фильтрами и пагинацией")
-    public ResponseEntity<OffersListRsDto<OffersByGameIdRsDto>> getOffersByRequest(@RequestBody OfferRqDto request){
+    public ResponseEntity<OffersListRsDto> getOffersByRequest(@RequestBody OfferRqDto request){
         return ResponseEntity.ok(service.getOffersByRequest(request));
     }
 
@@ -47,8 +49,8 @@ public class OfferApi {
 
     @PostMapping("/addToCart")
     @Operation(summary = "Добавление предложенияв корзину")
-    public void addOfferToCart(@RequestBody OfferToCartRqDto offer) {
-        service.addOfferToCart(offer);
+    public ResponseEntity<List<OfferCartRsDto>> addOfferToCart(@RequestBody OfferToCartRqDto offer) {
+        return ResponseEntity.ok(service.addOfferToCart(offer));
     }
 
 }

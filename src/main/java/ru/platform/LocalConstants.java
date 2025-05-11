@@ -5,6 +5,8 @@ public class LocalConstants {
     public static class Api {
         public static final String OFFER_TAG_NAME = "Предложения";
         public static final String OFFER_TAG_DESCRIPTION = "Получение предложений для клиентов";
+        public static final String ORDER_TAG_NAME = "Заказы";
+        public static final String ORDER_TAG_DESCRIPTION = "Работа с заказами";
         public static final String AUTH_TAG_NAME = "Пользователь";
         public static final String AUTH_TAG_DESCRIPTION = "Аутентификация, авторизация, подтверждение регистрации и восстеновление пароля";
         public static final String GAME_TAG_NAME = "Игры";
