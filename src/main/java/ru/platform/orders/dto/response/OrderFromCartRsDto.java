@@ -1,5 +1,7 @@
 package ru.platform.orders.dto.response;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import ru.platform.orders.dto.request.CartSelectedOptionsDto;
@@ -11,10 +13,19 @@ import java.util.List;
 @Builder
 public class OrderFromCartRsDto {
 
+    @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
-    private OrderStatus orderStatus;
-    private List<CartSelectedOptionsDto> selectedOptions;
-    private double totalPrice;
-    private int totalTime;
 
+    @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
+    private OrderStatus orderStatus;
+
+    @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
+    private List<CartSelectedOptionsDto> selectedOptions;
+
+    @Schema(description = "Общая стоимость заказа", example = "150.0")
+    private double totalPrice;
+
+    @Schema(description = "Общее время выполнения заказа (в минутах)", example = "90")
+    private int totalTime;
 }
+
