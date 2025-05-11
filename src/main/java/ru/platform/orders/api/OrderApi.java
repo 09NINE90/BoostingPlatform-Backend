@@ -27,7 +27,7 @@ public class OrderApi {
     private final IOrderService orderService;
 
     @PostMapping("/create")
-    @Operation(description = "Создание заказа")
+    @Operation(summary = "Создание заказа")
     public ResponseEntity<List<OrderFromCartRsDto>> createOrder(@RequestBody CreateOrderRqDto orderRqDto) {
        return ResponseEntity.ok(orderService.createOrder(orderRqDto));
     }
