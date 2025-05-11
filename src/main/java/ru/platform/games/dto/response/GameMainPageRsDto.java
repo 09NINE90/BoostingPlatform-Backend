@@ -12,8 +12,12 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 public class GameMainPageRsDto {
 
     @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
-    private String gameId;
+    private String id;
+
+    @Schema(description = "Второй id для фрона состояший из названия игры")
+    private String secondId;
+
     @Schema(description = "Название игры", example = "The best game")
-    private String gameTitle;
+    private String name;
 
 }

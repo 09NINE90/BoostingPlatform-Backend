@@ -41,6 +41,14 @@ public enum MonitoringMethodType {
     OFFER_OPTIONS(
             "offer option",
             "Получение опций предложения по его идентификатору: /api/offer/option/byOfferId/{offerId}"
+    ),
+    ADD_OFFER_TO_CART(
+            "add offer to cart",
+            "Добавление предложения в корзину"
+    ),
+    CREATE_ORDER(
+            "create order",
+            "Создание заказа из корзины"
     );
 
     private final String name;

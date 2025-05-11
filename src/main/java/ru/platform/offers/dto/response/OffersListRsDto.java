@@ -13,10 +13,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OffersListRsDto<T> {
+public class OffersListRsDto {
 
     @ArraySchema(schema = @Schema(description = "Список предложений"))
-    List<T> offers;
+    List<OffersByGameIdRsDto> offers;
     @Schema(description = "Всего страниц", example = "5")
     private int pageTotal;
     @Schema(description = "Номер страницы", example = "1")
@@ -26,7 +26,7 @@ public class OffersListRsDto<T> {
     @Schema(description = "Всего объектов найдено", example = "100")
     private long recordTotal;
 
-    public OffersListRsDto(List<T> offers) {
+    public OffersListRsDto(List<OffersByGameIdRsDto> offers) {
         this.offers = offers;
     }
 }

@@ -8,8 +8,6 @@ import ru.platform.offers.dto.response.OptionItemRsDto;
 
 import java.util.*;
 
-import static java.util.Collections.emptyList;
-
 @Component
 public class OfferOptionMapper implements IOfferOptionMapper{
 
