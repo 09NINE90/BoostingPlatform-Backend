@@ -7,5 +7,6 @@ public enum OfferOptionType {
     BUTTONS,
     SELECT,
     CHECKBOX,
-    SLIDER
+    SLIDER,
+    SLIDER_INVERT
 }
