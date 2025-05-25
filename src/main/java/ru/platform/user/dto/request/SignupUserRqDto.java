@@ -19,7 +19,4 @@ public class SignupUserRqDto {
     private String username;
     @Schema(description = "Пароль пользователя", example = DEFAULT_USER_PASSWORD)
     private String password;
-    @Schema(description = "Роль пользователя", example = DEFAULT_USER_ROLE)
-    private String roles;
-
 }
