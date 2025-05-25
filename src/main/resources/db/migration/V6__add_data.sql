@@ -13,22 +13,27 @@ VALUES ('47f6bb3e-5df5-48ba-b4a1-59c3aa002933'::uuid, '2025-03-14', '2025-03-14'
         '5c21809e-a4c8-49a4-8659-86b3d2d58201'::uuid);
 
 
-INSERT INTO game (id, second_id, description, title, image_url, creator_id, rating)
+INSERT INTO game (id, second_id, description, title, image_url, mini_image_url, creator_id, rating)
 VALUES ('3e8e1d1a-5a19-4c6e-b872-7387a1a91e01', 'LoE',
         'Фэнтезийная ролевая игра в открытом мире с захватывающим сюжетом.', 'Legend of Eldoria',
-        'https://example.com/images/eldoria.jpg', '79c1d1cd-0be9-4f98-a6be-8974edad3cde', 10),
+        'https://example.com/images/eldoria.jpg', 'https://ibb.co/VcLkjkDh', '79c1d1cd-0be9-4f98-a6be-8974edad3cde',
+        10),
        ('e2bc2767-7d71-4b3a-90a6-3db49b9d6542', 'galactic_strike',
         'Научно-фантастический шутер от первого лица с кооперативным режимом.', 'Galactic Strike',
-        'https://example.com/images/galactic.jpg', '79c1d1cd-0be9-4f98-a6be-8974edad3cde', 3),
+        'https://example.com/images/galactic.jpg', 'https://ibb.co/VcLkjkDh', '79c1d1cd-0be9-4f98-a6be-8974edad3cde',
+        3),
        ('4f92e0f3-5c21-47d5-b1a5-f6d3c8f289c3', 'dream_walker',
         'Головоломка с элементами платформера, действие которой происходит в мире снов.', 'Dream walker',
-        'https://example.com/images/dreamwalker.jpg', '79c1d1cd-0be9-4f98-a6be-8974edad3cde', 5),
+        'https://example.com/images/dreamwalker.jpg', 'https://ibb.co/VcLkjkDh', '79c1d1cd-0be9-4f98-a6be-8974edad3cde',
+        5),
        ('b9c1c0ee-85a4-4f79-92db-9aeaf4a2c9fd', 'kingdoms_rise',
         'Классическая стратегия в реальном времени в средневековом сеттинге.', 'Kingdoms Rise',
-        'https://example.com/images/kingdoms.jpg', '79c1d1cd-0be9-4f98-a6be-8974edad3cde', 7),
+        'https://example.com/images/kingdoms.jpg', 'https://ibb.co/VcLkjkDh', '79c1d1cd-0be9-4f98-a6be-8974edad3cde',
+        7),
        ('f6a14376-2628-4a3c-9883-7ffdfb58b126', 'pro_league_24',
         'Спортивный симулятор с возможностью создать собственного персонажа и карьеру.', 'Pro League 24',
-        'https://example.com/images/proleague.jpg', '79c1d1cd-0be9-4f98-a6be-8974edad3cde', 1);
+        'https://example.com/images/proleague.jpg', 'https://ibb.co/VcLkjkDh', '79c1d1cd-0be9-4f98-a6be-8974edad3cde',
+        1);
 
 INSERT INTO offers (id, price, categories, created_at, description, image_url, second_id, title, creator_id, game_id)
 VALUES ('8b8c14d1-9b3a-4c26-8039-1db20b5109c0', 1999.99, 'Action', DEFAULT, 'Экшен-игра с динамичным геймплеем.',

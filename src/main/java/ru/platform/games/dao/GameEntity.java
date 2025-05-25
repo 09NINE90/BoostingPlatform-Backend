@@ -37,6 +37,10 @@ public class GameEntity {
     @Schema(description = "Ссылка на изображение для игры")
     private String imageUrl;
 
+    @Column(name = "mini_image_url", columnDefinition="TEXT")
+    @Schema(description = "Ссылка на изображение игры для side bar")
+    private String miniImageUrl;
+
     @Column(name = "description", columnDefinition="TEXT")
     @JsonProperty("description")
     @Schema(description = "Описание игры")
