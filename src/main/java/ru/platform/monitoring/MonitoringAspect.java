@@ -24,8 +24,9 @@ public class MonitoringAspect {
         String status = "success";
         String exceptionName = "none";
 
-        String token = jwtUtil.extractTokenFromRequest();
-        String username = jwtUtil.extractUsername(token);
+        // todo проработать логику, чтобы не выкидывало 500
+//        String token = jwtUtil.extractTokenFromRequest();
+        String username = "username"; // заглушка
 
         try {
             return pjp.proceed();
