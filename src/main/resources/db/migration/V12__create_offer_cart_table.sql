@@ -1,4 +1,4 @@
-CREATE TABLE offer_cart
+CREATE TABLE IF NOT EXISTS offer_cart
 (
     id          UUID PRIMARY KEY,
     game_name   VARCHAR(255),
@@ -7,18 +7,11 @@ CREATE TABLE offer_cart
     total_time  INT,
     offer_id    UUID REFERENCES offers (id),
     creator_id  UUID REFERENCES users (id),
-    created_at  TIMESTAMP NOT NULL,
-    updated_at  TIMESTAMP NOT NULL
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON TABLE offer_cart IS 'Корзина предложений';
-COMMENT ON COLUMN offer_cart.id IS 'Уникальный идентификатор корзины';
-COMMENT ON COLUMN offer_cart.game_name IS 'Название игры';
-COMMENT ON COLUMN offer_cart.base_price IS 'Базовая цена предложения';
-COMMENT ON COLUMN offer_cart.total_price IS 'Итоговая цена с учетом опций';
-COMMENT ON COLUMN offer_cart.total_time IS 'Общее время выполнения в часах';
-
-CREATE TABLE offer_option_cart
+CREATE TABLE IF NOT EXISTS offer_option_cart
 (
     id            UUID PRIMARY KEY,
     option_id     UUID REFERENCES offer_options (id),

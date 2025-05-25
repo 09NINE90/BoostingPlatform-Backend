@@ -1,4 +1,4 @@
-CREATE TABLE orders
+CREATE TABLE IF NOT EXISTS orders
 (
     id          UUID PRIMARY KEY,
     creator_id  UUID REFERENCES users (id),
@@ -8,11 +8,11 @@ CREATE TABLE orders
     base_price  DOUBLE PRECISION            NOT NULL,
     total_price DOUBLE PRECISION            NOT NULL,
     total_time  INT                         NOT NULL,
-    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE order_options
+CREATE TABLE IF NOT EXISTS order_options
 (
     id           UUID PRIMARY KEY,
     option_id    UUID REFERENCES offer_options (id),

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
-import ru.platform.orders.dto.request.CartSelectedOptionsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.service.IAuthService;
@@ -32,12 +31,12 @@ public class OrderMapper {
                 .build();
     }
 
-    private List<OrderOptionEntity> toOrderOptionList(List<CartSelectedOptionsDto> cartSelectedOptionsList) {
+    private List<OrderOptionEntity> toOrderOptionList(List<CartItemDto.CartSelectedOptionsDto> cartSelectedOptionsList) {
         if (cartSelectedOptionsList == null || cartSelectedOptionsList.isEmpty()) return emptyList();
         return cartSelectedOptionsList.stream().map(this::toOrderOption).toList();
     }
 
-    private OrderOptionEntity toOrderOption(CartSelectedOptionsDto cartSelectedOptionsDto) {
+    private OrderOptionEntity toOrderOption(CartItemDto.CartSelectedOptionsDto cartSelectedOptionsDto) {
         return OrderOptionEntity.builder()
                 .value(cartSelectedOptionsDto.getValue().toString())
                 .label(cartSelectedOptionsDto.getLabel().toString())
@@ -55,13 +54,13 @@ public class OrderMapper {
                 .build();
     }
 
-    private List<CartSelectedOptionsDto> toOrderOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
+    private List<OrderFromCartRsDto.CartSelectedOptionsDto> toOrderOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
         if (orderOptionEntities == null || orderOptionEntities.isEmpty()) return emptyList();
         return orderOptionEntities.stream().map(this::toOrderOptionDto).toList();
     }
 
-    private CartSelectedOptionsDto toOrderOptionDto(OrderOptionEntity cartSelectedOptionsDto) {
-        return CartSelectedOptionsDto.builder()
+    private OrderFromCartRsDto.CartSelectedOptionsDto toOrderOptionDto(OrderOptionEntity cartSelectedOptionsDto) {
+        return OrderFromCartRsDto.CartSelectedOptionsDto.builder()
                 .value(cartSelectedOptionsDto.getValue())
                 .label(cartSelectedOptionsDto.getLabel())
                 .optionTitle(cartSelectedOptionsDto.getOptionTitle())

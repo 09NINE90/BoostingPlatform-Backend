@@ -13,7 +13,6 @@ import ru.platform.offers.dao.OfferOptionCartEntity;
 import ru.platform.offers.dao.repository.OfferCartRepository;
 import ru.platform.offers.dto.request.OfferRqDto;
 import ru.platform.offers.dto.request.OfferToCartRqDto;
-import ru.platform.offers.dto.request.SelectedOptionToCartDto;
 import ru.platform.offers.dto.response.OfferByIdRsDto;
 import ru.platform.offers.dto.response.OfferCartRsDto;
 import ru.platform.offers.dto.response.OffersByGameIdRsDto;
@@ -141,7 +140,7 @@ public class OfferService implements IOfferService {
         return offerCartEntities.stream().map(offerMapper::toOfferCartRsDto).toList();
     }
 
-    private List<OfferOptionCartEntity> toOptionCarts(List<SelectedOptionToCartDto> options) {
+    private List<OfferOptionCartEntity> toOptionCarts(List<OfferToCartRqDto.SelectedOptionToCartDto> options) {
         if (options == null || options.isEmpty()) return emptyList();
 
         return options.stream()
@@ -149,7 +148,7 @@ public class OfferService implements IOfferService {
                 .toList();
     }
 
-    private OfferOptionCartEntity toOfferOptionCartEntity(SelectedOptionToCartDto selectedOptionToCartDto) {
+    private OfferOptionCartEntity toOfferOptionCartEntity(OfferToCartRqDto.SelectedOptionToCartDto selectedOptionToCartDto) {
         return OfferOptionCartEntity.builder()
                 .optionTitle(selectedOptionToCartDto.getOptionTitle())
                 .label(selectedOptionToCartDto.getValue().toString())

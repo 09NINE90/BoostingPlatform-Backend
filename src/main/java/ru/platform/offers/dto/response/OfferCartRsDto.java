@@ -2,9 +2,9 @@ package ru.platform.offers.dto.response;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import ru.platform.offers.dto.request.SelectedOptionToCartDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +21,8 @@ public class OfferCartRsDto {
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
-    @ArraySchema(schema = @Schema(description = "Список выбранных опций для предложения"))
+    @ArraySchema(schema = @Schema(description = "Список выбранных опций для предложения"), minItems = 1, maxItems = 100)
+    @Size(min = 1, max = 100)
     private List<SelectedOptionToCartDto> selectedOptions;
 
     @Schema(description = "Общая стоимость с учётом выбранных опций", example = "150.0")
@@ -29,5 +30,19 @@ public class OfferCartRsDto {
 
     @Schema(description = "Общее время выполнения услуги (в минутах)", example = "120")
     private int totalTime;
+
+    @Data
+    @Builder
+    public static class SelectedOptionToCartDto {
+
+        @Schema(description = "Название выбранной опции", example = "Коллекция достижений")
+        private String optionTitle;
+
+        @Schema(description = "Значение выбранной опции", example = "achievement_pack_01")
+        private Object value;
+
+        @Schema(description = "Метка, отображаемая пользователю", example = "Пак достижений #1")
+        private Object label;
+    }
 }
 

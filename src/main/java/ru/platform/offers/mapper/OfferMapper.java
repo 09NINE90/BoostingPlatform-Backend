@@ -2,7 +2,6 @@ package ru.platform.offers.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.platform.offers.dao.*;
-import ru.platform.offers.dto.request.SelectedOptionToCartDto;
 import ru.platform.offers.dto.response.OfferCartRsDto;
 import ru.platform.offers.dto.response.OfferSectionItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionRsDto;
@@ -79,13 +78,13 @@ public class OfferMapper implements IOfferMapper {
                 .build();
     }
 
-    private List<SelectedOptionToCartDto> toSelectionOptionsCartList(List<OfferOptionCartEntity> optionCarts) {
+    private List<OfferCartRsDto.SelectedOptionToCartDto> toSelectionOptionsCartList(List<OfferOptionCartEntity> optionCarts) {
         if (optionCarts == null || optionCarts.isEmpty()) return null;
         return optionCarts.stream().map(this::toSelectionOptionsCart).toList();
     }
 
-    private SelectedOptionToCartDto toSelectionOptionsCart(OfferOptionCartEntity offerOptionCartEntity) {
-        return SelectedOptionToCartDto.builder()
+    private OfferCartRsDto.SelectedOptionToCartDto toSelectionOptionsCart(OfferOptionCartEntity offerOptionCartEntity) {
+        return OfferCartRsDto.SelectedOptionToCartDto.builder()
                 .label(offerOptionCartEntity.getLabel())
                 .value(offerOptionCartEntity.getValue())
                 .optionTitle(offerOptionCartEntity.getOptionTitle())

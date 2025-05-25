@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.platform.orders.dto.request.CartSelectedOptionsDto;
 import ru.platform.orders.enumz.OrderStatus;
 
 import java.util.List;
@@ -27,5 +26,20 @@ public class OrderFromCartRsDto {
 
     @Schema(description = "Общее время выполнения заказа (в минутах)", example = "90")
     private int totalTime;
+
+    @Data
+    @Builder
+    public static class CartSelectedOptionsDto {
+
+        @Schema(description = "Название опции, выбранной пользователем", example = "Стрим-сопровождение")
+        private String optionTitle;
+
+        @Schema(description = "Значение, переданное для опции", example = "stream_support")
+        private Object value;
+
+        @Schema(description = "Метка, отображаемая пользователю", example = "С включением стрима")
+        private Object label;
+    }
+
 }
 
