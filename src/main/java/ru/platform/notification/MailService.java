@@ -1,8 +1,10 @@
 package ru.platform.notification;
 
 import freemarker.template.Configuration;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,9 @@ public class MailService implements IMailService {
 
     private final Configuration configuration;
     private final JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String MAIL_FROM;
 
     @Override
     public void sendMail(UserEntity user, MailType type, Properties properties) {
@@ -50,6 +55,7 @@ public class MailService implements IMailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setSubject("Confirmation registration");
         helper.setTo(user.getUsername());
+        helper.setFrom(new InternetAddress(MAIL_FROM));
         String emailContent = getRegistrationEmailContent(user);
         helper.setText(emailContent, true);
         javaMailSender.send(mimeMessage);
@@ -72,6 +78,7 @@ public class MailService implements IMailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setSubject("Password recovery");
         helper.setTo(user.getUsername());
+        helper.setFrom(new InternetAddress(MAIL_FROM));
         String emailContent = getPasswordRecoveryEmailContent(user);
         helper.setText(emailContent, true);
         javaMailSender.send(mimeMessage);
