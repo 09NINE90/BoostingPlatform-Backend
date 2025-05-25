@@ -25,8 +25,11 @@ public class GameEntity {
     @Schema(description = "ID игры")
     private UUID id;
 
+    @Column(name = "second_id")
+    @Schema(description = "Второй id для фрона состояший из названия игры")
+    private String secondId;
+
     @Column(name = "title")
-    @JsonProperty("title")
     @Schema(description = "Название игры")
     private String title;
 

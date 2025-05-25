@@ -32,6 +32,6 @@ CREATE TABLE offer_section_item
             ON DELETE CASCADE
 );
 
-CREATE INDEX idx_offer_section_offer_id ON offer_section(offer_id);
-CREATE INDEX idx_section_item_section_id ON offer_section_item(section_id);
-CREATE INDEX idx_section_item_parent_id ON offer_section_item(parent_id);
+CREATE INDEX idx_offer_section_offer_id ON offer_section (offer_id);
+CREATE INDEX idx_section_item_section_id ON offer_section_item (section_id);
+CREATE INDEX idx_section_item_parent_id ON offer_section_item (parent_id);
