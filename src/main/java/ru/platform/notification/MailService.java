@@ -6,8 +6,9 @@ import lombok.SneakyThrows;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ru.platform.exception.ErrorType;
+import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.user.dao.UserEntity;
@@ -33,10 +34,13 @@ public class MailService implements IMailService {
         }
     }
 
-    @Async
     @Override
     public void sendMail(UserEntity user, MailType type) {
-        sendMail(user, type, null);
+        try {
+            sendMail(user, type, null);
+        }catch (Exception e) {
+            throw new PlatformException(ErrorType.EMAIL_SEND_ERROR);
+        }
     }
 
     @SneakyThrows
