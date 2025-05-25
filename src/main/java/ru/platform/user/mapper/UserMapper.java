@@ -11,7 +11,7 @@ public class UserMapper implements IUserMapper {
     @Override
     public LoginUserRqDto toLoginUserRqDto(SignupUserRqDto user) {
         return  LoginUserRqDto.builder()
-                .username(user.getUsername())
+                .username(user.getEmail())
                 .password(user.getPassword())
                 .build();
     }
