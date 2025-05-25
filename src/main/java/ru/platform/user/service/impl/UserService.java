@@ -73,10 +73,10 @@ public class UserService implements IUserService {
 
         userEntity.setProfile(profileEntity);
 
+        mailService.sendMail(userEntity, REGISTRATION);
+
         userRepository.save(userEntity);
         userProfileRepository.save(profileEntity);
-
-        mailService.sendMail(userEntity, REGISTRATION);
 
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }

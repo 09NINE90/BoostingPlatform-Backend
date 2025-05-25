@@ -13,6 +13,9 @@ public enum ErrorType {
     EMAIL_VERIFIED_ERROR(
             "Email has not been verified"
     ),
+    EMAIL_SEND_ERROR(
+            "Email has not been sent"
+    ),
     USER_EXISTS_ERROR(
             "User already exists"
     ),
