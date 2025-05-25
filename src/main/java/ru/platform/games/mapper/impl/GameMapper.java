@@ -21,7 +21,8 @@ public class GameMapper implements IGameMapper {
             games.add(new GameMainPageRsDto(
                     e.getId().toString(),
                     e.getSecondId(),
-                    e.getTitle()))
+                    e.getTitle(),
+                    e.getMiniImageUrl()))
         );
         return games;
     }

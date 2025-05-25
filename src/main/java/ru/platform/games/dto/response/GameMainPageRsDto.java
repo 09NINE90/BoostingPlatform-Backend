@@ -3,6 +3,7 @@ package ru.platform.games.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_IMAGE_LINK;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
@@ -20,4 +21,6 @@ public class GameMainPageRsDto {
     @Schema(description = "Название игры", example = "The best game")
     private String name;
 
+    @Schema(description = "Ссылка на изображение игры для sede bar", example = DEFAULT_IMAGE_LINK)
+    private String imageUrl;
 }
