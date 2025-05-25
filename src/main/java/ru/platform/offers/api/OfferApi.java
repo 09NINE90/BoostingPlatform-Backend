@@ -52,4 +52,10 @@ public class OfferApi {
         return ResponseEntity.ok(service.addOfferToCart(offer));
     }
 
+    @GetMapping("/getCartItems")
+    @Operation(summary = "Получение содержания корзины пользователя")
+    public ResponseEntity<List<OfferCartRsDto>> getCartItems() {
+        return ResponseEntity.ok(service.getCartItems());
+    }
+
 }

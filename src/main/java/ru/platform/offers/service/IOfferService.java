@@ -16,4 +16,5 @@ public interface IOfferService {
     List<OffersByGameIdRsDto> getOffersByGameId(UUID gameId);
     OfferByIdRsDto getOfferById(UUID offerId);
     List<OfferCartRsDto> addOfferToCart(OfferToCartRqDto offer);
+    List<OfferCartRsDto> getCartItems();
 }
