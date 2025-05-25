@@ -52,12 +52,12 @@ public class UserService implements IUserService {
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
     public ConfirmationRsDto createUser(SignupUserRqDto user) {
-        checkUserExists(user.getUsername());
+        checkUserExists(user.getEmail());
 
-        String token = jwtUtil.generateConfirmationToken(user.getUsername(), user.getPassword());
+        String token = jwtUtil.generateConfirmationToken(user.getEmail(), user.getPassword());
 
         UserEntity userEntity = UserEntity.builder()
-                .username(user.getUsername())
+                .username(user.getEmail())
                 .password(encoder.encode(user.getPassword()))
                 .roles(ROLE_CUSTOMER.name())
                 .confirmationToken(token)
