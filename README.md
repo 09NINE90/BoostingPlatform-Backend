@@ -2,13 +2,6 @@
 - - -
 [Ссылка localhost swagger](http://localhost:6969/swagger-ui/index.html#/)
 
-### ENV:
-
-- JWT_SECRET_KEY=ajscqSVPNj4GNzF+Ln2H6yaE2etWGExa618+TDP96ZE=
-- PASSWORD_DB=@P05tGreSQL!
-- URL_DB=jdbc:postgresql://localhost:5432/boosting_platform
-- USERNAME_DB=postgres
-
 ### Нагрузка
 - - -
 
