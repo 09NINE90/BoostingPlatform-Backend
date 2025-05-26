@@ -15,8 +15,10 @@ public class SignupUserRqDto {
 
     @Schema(description = "Никнейм пользователя", example = DEFAULT_USER_NICKNAME)
     private String nickname;
+
     @Schema(description = "Почта-логин пользователя", example = DEFAULT_USER_MAIL)
     private String email;
+
     @Schema(description = "Пароль пользователя", example = DEFAULT_USER_PASSWORD)
     private String password;
 }

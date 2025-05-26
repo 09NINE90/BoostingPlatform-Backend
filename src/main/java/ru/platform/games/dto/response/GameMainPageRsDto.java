@@ -21,6 +21,6 @@ public class GameMainPageRsDto {
     @Schema(description = "Название игры", example = "The best game")
     private String name;
 
-    @Schema(description = "Ссылка на изображение игры для sede bar", example = DEFAULT_IMAGE_LINK)
+    @Schema(description = "Ссылка на изображение игры для side bar", example = DEFAULT_IMAGE_LINK)
     private String imageUrl;
 }

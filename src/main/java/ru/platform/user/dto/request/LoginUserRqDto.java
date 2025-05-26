@@ -15,7 +15,8 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_USER_PASSWORD;
 public class LoginUserRqDto {
 
     @Schema(description = "Почта-логин пользователя", example = DEFAULT_USER_MAIL)
-    private String username;
+    private String email;
+
     @Schema(description = "Пароль пользователя", example = DEFAULT_USER_PASSWORD)
     private String password;
 

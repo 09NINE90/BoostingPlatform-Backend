@@ -12,6 +12,7 @@ public class ConfirmationEmailRqDto {
 
     @Schema(description = "Почта пользователя для подтверждения", example = DEFAULT_USER_MAIL)
     private String email;
+
     @Schema(description = "Пароль пользователя", example = DEFAULT_USER_PASSWORD)
     private String password;
 

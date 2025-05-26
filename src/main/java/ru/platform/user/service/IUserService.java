@@ -8,7 +8,7 @@ import ru.platform.user.dto.response.ConfirmationRsDto;
 
 public interface IUserService {
     @Schema(description = "Создание пользователя")
-    ConfirmationRsDto createUser(SignupUserRqDto user);
+    ConfirmationRsDto registrationUser(SignupUserRqDto user);
 
     @Schema(description = "Подтверждение регистрации пользователя")
     AuthRsDto checkConfirmationSignUp(String confirmationToken);
@@ -21,4 +21,7 @@ public interface IUserService {
 
     @Schema(description = "Запрос на смену пароля")
     AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation);
+
+    @Schema(description = "Запрос на повторное письмо подтверждения почты")
+    ConfirmationRsDto resendConfirmationEmail(ConfirmationEmailRqDto email);
 }
