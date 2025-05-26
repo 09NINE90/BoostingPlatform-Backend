@@ -1,15 +1,13 @@
 package ru.platform.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import ru.platform.exception.PlatformException;
 
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -17,6 +15,8 @@ import java.util.Date;
 
 import static ru.platform.LocalConstants.Variables.TEN_HOURS;
 import static ru.platform.LocalConstants.Variables.TEN_MINUTES;
+import static ru.platform.exception.ErrorType.AUTHORIZATION_ERROR;
+import static ru.platform.exception.ErrorType.TOKEN_EXPIRED_ERROR;
 
 @Component
 public class JwtUtil {
@@ -41,58 +41,91 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        if (token == null) return "UNAUTHORIZED";
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try {
+            if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new PlatformException(TOKEN_EXPIRED_ERROR);
+        } catch (JwtException e) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
+        }
     }
 
     public String extractRoles(String token) {
-        if (token == null) return "UNAUTHORIZED";
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        String role = claims.get("role", String.class);
-        return role != null ? role : "";
+            String role = claims.get("role", String.class);
+            return role != null ? role : "";
+        } catch (ExpiredJwtException e) {
+            throw new PlatformException(TOKEN_EXPIRED_ERROR);
+        } catch (JwtException e) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
+        }
+
     }
 
     public String extractUserid(String token) {
-        if (token == null) return "UNAUTHORIZED";
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        String userId = claims.get("userId", String.class);
-        return userId != null ? userId : "";
+            String userId = claims.get("userId", String.class);
+            return userId != null ? userId : "";
+        } catch (ExpiredJwtException e) {
+            throw new PlatformException(TOKEN_EXPIRED_ERROR);
+        } catch (JwtException e) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
+        }
     }
 
     public LocalDateTime extractDateStart(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        String dateStart = claims.get("dateStart", String.class);
-        return DateUtil.getDateTimeFromString(dateStart);
+            String dateStart = claims.get("dateStart", String.class);
+            return DateUtil.getDateTimeFromString(dateStart);
+        } catch (ExpiredJwtException e) {
+            throw new PlatformException(TOKEN_EXPIRED_ERROR);
+        } catch (JwtException e) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
+        }
+
     }
 
     public String extractUserPassword(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        return claims.get("password", String.class);
+            return claims.get("password", String.class);
+        } catch (ExpiredJwtException e) {
+            throw new PlatformException(TOKEN_EXPIRED_ERROR);
+        } catch (JwtException e) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
+        }
+
     }
 
     public String generateConfirmationToken(String username, String password) {

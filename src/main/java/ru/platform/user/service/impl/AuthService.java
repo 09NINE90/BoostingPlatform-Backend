@@ -17,6 +17,7 @@ import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
+import ru.platform.user.service.IValidationUserService;
 import ru.platform.utils.JwtUtil;
 
 import java.util.Optional;
@@ -31,45 +32,42 @@ import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 public class AuthService implements IAuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final IValidationUserService validationUserService;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    private final static String LOG_PREFIX = "AuthService: {}, Email: {}";
+    private final static String LOG_PREFIX = "AuthService: {}";
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.AUTHORIZATION_USER)
-    public AuthRsDto trySignup(LoginUserRqDto userRqDto) {
+    public AuthRsDto trySignIn(LoginUserRqDto userRqDto) {
+        validationUserService.validateSignInUser(userRqDto);
         checkConfirmationEmail(userRqDto);
         try {
             return userAuthorization(userRqDto);
         }catch (Exception e) {
-            log.error(LOG_PREFIX, UNAUTHORIZED_ERROR.getDescription(), userRqDto.getUsername());
-            throw new PlatformException(UNAUTHORIZED_ERROR);
+            throw new PlatformException(AUTHORIZATION_ERROR);
         }
     }
 
     @Override
     public UserEntity getAuthUser() {
         String token = jwtUtil.extractTokenFromRequest();
-        String userId = jwtUtil.extractUserid(token);
-        try {
-            Optional<UserEntity> user = userRepository.findById(UUID.fromString(userId));
-            return user.get();
-        } catch (Exception e) {
-            log.error(LOG_PREFIX, UNAUTHORIZED_ERROR.getDescription(), null);
-            throw new PlatformException(UNAUTHORIZED_ERROR);
+        if (token == null) {
+            throw new PlatformException(AUTHORIZATION_ERROR);
         }
+        String userId = jwtUtil.extractUserid(token);
+        return userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
     }
 
     private void checkConfirmationEmail(LoginUserRqDto userRqDto){
-        Optional<UserEntity> user = userRepository.findByUsername(userRqDto.getUsername());
+        Optional<UserEntity> user = userRepository.findByUsername(userRqDto.getEmail());
         if(user.isPresent()){
             if (!user.get().isEnabled()){
-                log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getDescription(), userRqDto.getUsername());
                 throw new PlatformException(EMAIL_VERIFIED_ERROR);
             }
         } else {
-            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getDescription(), userRqDto.getUsername());
             throw new PlatformException(NOT_FOUND_ERROR);
         }
 
@@ -77,13 +75,13 @@ public class AuthService implements IAuthService {
 
     private AuthRsDto userAuthorization(LoginUserRqDto userRqDto){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userRqDto.getUsername(), userRqDto.getPassword())
+                new UsernamePasswordAuthenticationToken(userRqDto.getEmail(), userRqDto.getPassword())
         );
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UUID userId = userDetails.getId();
         String role = getRole(authentication);
-        String token = jwtUtil.generateToken(userId.toString(), userRqDto.getUsername(), role);
-        log.info("User {} signed up", userRqDto.getUsername());
+        String token = jwtUtil.generateToken(userId.toString(), userRqDto.getEmail(), role);
+        log.info("User {} signed up", userRqDto.getEmail());
         return new AuthRsDto(token, role);
     }
 

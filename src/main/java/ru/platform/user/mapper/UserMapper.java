@@ -11,7 +11,7 @@ public class UserMapper implements IUserMapper {
     @Override
     public LoginUserRqDto toLoginUserRqDto(SignupUserRqDto user) {
         return  LoginUserRqDto.builder()
-                .username(user.getEmail())
+                .email(user.getEmail())
                 .password(user.getPassword())
                 .build();
     }
@@ -19,7 +19,7 @@ public class UserMapper implements IUserMapper {
     @Override
     public LoginUserRqDto toLoginUserRqDto(UserEntity user) {
         return  LoginUserRqDto.builder()
-                .username(user.getUsername())
+                .email(user.getUsername())
                 .password(user.getPassword())
                 .build();
     }

@@ -28,7 +28,7 @@ public class AuthApi {
     @PostMapping("/signUp")
     @Operation(summary = "Запрос на регистрацию пользователя")
     public ResponseEntity<ConfirmationRsDto> signUp(@RequestBody SignupUserRqDto user) {
-        ConfirmationRsDto result = userService.createUser(user);
+        ConfirmationRsDto result = userService.registrationUser(user);
         return ResponseEntity.ok(result);
     }
 
@@ -39,10 +39,17 @@ public class AuthApi {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/resendConfirmationEmail")
+    @Operation(summary = "Повторная отправка токена пользователя для подтверждения регистрации")
+    public ResponseEntity<ConfirmationRsDto> resendConfirmationEmail(@RequestBody ConfirmationEmailRqDto confirmation) {
+        ConfirmationRsDto result = userService.resendConfirmationEmail(confirmation);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/signIn")
     @Operation(summary = "Авторизация пользователя")
     public ResponseEntity<AuthRsDto> signIn(@RequestBody LoginUserRqDto user){
-        AuthRsDto result = authService.trySignup(user);
+        AuthRsDto result = authService.trySignIn(user);
         return ResponseEntity.ok(result);
     }
 
