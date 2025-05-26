@@ -48,28 +48,28 @@ public class AuthApi {
 
     @PostMapping("/signIn")
     @Operation(summary = "Авторизация пользователя")
-    public ResponseEntity<AuthRsDto> signIn(@RequestBody LoginUserRqDto user){
+    public ResponseEntity<AuthRsDto> signIn(@RequestBody LoginUserRqDto user) {
         AuthRsDto result = authService.trySignIn(user);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/forgotPassword")
     @Operation(summary = "Запрос на восстановления пароля пользователя")
-    public ResponseEntity<ConfirmationRsDto> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation){
+    public ResponseEntity<ConfirmationRsDto> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
         ConfirmationRsDto result = userService.forgotPassword(confirmation);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/confirmPasswordRecovery/{confirmationToken}")
     @Schema(description = "Подтверждение смены пароля")
-    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@PathVariable String confirmationToken){
+    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@PathVariable String confirmationToken) {
         ConfirmationRsDto result = userService.confirmPasswordRecovery(confirmationToken);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/changeUserPassword")
     @Operation(summary = "Запрос на смену пароля")
-    public ResponseEntity<AuthRsDto> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation){
+    public ResponseEntity<AuthRsDto> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
         AuthRsDto result = userService.changeUserPassword(confirmation);
         return ResponseEntity.ok(result);
     }
