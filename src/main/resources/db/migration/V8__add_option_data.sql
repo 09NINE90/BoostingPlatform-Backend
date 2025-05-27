@@ -5,7 +5,7 @@ VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'boosting',
         '2023-01-15',
         'Power leveling service for your character',
-        'https://example.com/image1.jpg',
+        'https://avatars.mds.yandex.net/i?id=948b470c3c52788ebb687a01eaa32c4e0a0bbdce-5359329-images-thumbs&n=13',
         'OFFER-001',
         'Power Leveling Package',
         '5c21809e-a4c8-49a4-8659-86b3d2d58201', -- ID пользователя

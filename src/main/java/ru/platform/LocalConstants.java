@@ -15,6 +15,8 @@ public class LocalConstants {
         public static final String CATEGORY_TAG_DESCRIPTION = "Получение категорий игр";
         public static final String OFFER_OPTION_TAG_NAME = "Опции предложения";
         public static final String OFFER_OPTION_TAG_DESCRIPTION = "Получение опций предложений для клиентов";
+        public static final String CAROUSEL_TAG_NAME = "Карусель на главной странице";
+        public static final String CAROUSEL_TAG_DESCRIPTION = "Получение объектов карусели";
     }
 
     public static class Variables {
