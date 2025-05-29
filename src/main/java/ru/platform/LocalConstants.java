@@ -9,6 +9,8 @@ public class LocalConstants {
         public static final String ORDER_TAG_DESCRIPTION = "Работа с заказами";
         public static final String AUTH_TAG_NAME = "Пользователь";
         public static final String AUTH_TAG_DESCRIPTION = "Аутентификация, авторизация, подтверждение регистрации и восстеновление пароля";
+        public static final String USER_TAG_NAME = "Пользователь";
+        public static final String USER_TAG_DESCRIPTION = "Получение и обновление данных пароля";
         public static final String GAME_TAG_NAME = "Игры";
         public static final String GAME_TAG_DESCRIPTION = "Получение игр для клментов";
         public static final String CATEGORY_TAG_NAME = "Категории игр";

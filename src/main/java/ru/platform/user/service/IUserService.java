@@ -26,7 +26,9 @@ public interface IUserService {
     @Schema(description = "Запрос на повторное письмо подтверждения почты")
     ConfirmationRsDto resendConfirmationEmail(ConfirmationEmailRqDto email);
 
+    @Schema(description = "Запрос на получение данных профиля пользователя")
     UserProfileRsDto getUserProfileData();
 
+    @Schema(description = "Запрос на смену никнейма пользователя")
     String changeNickname(String nickname);
 }

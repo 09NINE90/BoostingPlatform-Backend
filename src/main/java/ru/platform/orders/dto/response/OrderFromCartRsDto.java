@@ -24,7 +24,7 @@ public class OrderFromCartRsDto {
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private double totalPrice;
 
-    @Schema(description = "Общее время выполнения заказа (в минутах)", example = "90")
+    @Schema(description = "Общее время выполнения заказа (в часах)", example = "90")
     private int totalTime;
 
     @Data
