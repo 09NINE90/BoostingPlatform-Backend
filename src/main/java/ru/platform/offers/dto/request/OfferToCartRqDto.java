@@ -28,7 +28,7 @@ public class OfferToCartRqDto {
     @Schema(description = "Общая стоимость с учётом выбранных опций", example = "150.0")
     private double totalPrice;
 
-    @Schema(description = "Общее время выполнения услуги (в минутах)", example = "120")
+    @Schema(description = "Общее время выполнения услуги (в часах)", example = "120")
     private int totalTime;
 
     @Data

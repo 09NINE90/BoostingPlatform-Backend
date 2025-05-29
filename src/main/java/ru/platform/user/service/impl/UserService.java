@@ -1,5 +1,6 @@
 package ru.platform.user.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
 import ru.platform.user.dto.response.AuthRsDto;
+import ru.platform.user.dto.response.UserProfileRsDto;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -184,6 +186,34 @@ public class UserService implements IUserService {
         mailService.sendMail(user, REGISTRATION);
 
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
+    }
+
+    @Override
+    public UserProfileRsDto getUserProfileData() {
+        UserEntity userEntity = authService.getAuthUser();
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        return UserProfileRsDto.builder()
+                .nickname(profileEntity.getNickname())
+                .imageUrl(profileEntity.getImageUrl())
+                .secondId(profileEntity.getSecondId())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public String changeNickname(String nickname) {
+        UserEntity userEntity = authService.getAuthUser();
+        userEntity = userRepository.findById(userEntity.getId())
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        if (profileEntity == null) {
+            profileEntity = new UserProfileEntity();
+            userEntity.setProfile(profileEntity);
+        }
+        profileEntity.setNickname(nickname);
+        userRepository.save(userEntity);
+        userProfileRepository.save(userEntity.getProfile());
+        return "Success";
     }
 
 }
