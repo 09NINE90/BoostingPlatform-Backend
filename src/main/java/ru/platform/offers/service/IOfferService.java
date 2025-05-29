@@ -17,4 +17,6 @@ public interface IOfferService {
     OfferByIdRsDto getOfferById(UUID offerId);
     List<OfferCartRsDto> addOfferToCart(OfferToCartRqDto offer);
     List<OfferCartRsDto> getCartItems();
+    int getCountCartItems();
+
 }

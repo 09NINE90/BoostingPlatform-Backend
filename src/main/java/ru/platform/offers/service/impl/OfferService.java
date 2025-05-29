@@ -138,6 +138,12 @@ public class OfferService implements IOfferService {
         return getAllOfferCartByUser(user);
     }
 
+    @Override
+    public int getCountCartItems() {
+        UserEntity user = authService.getAuthUser();
+        return (int) offerCartRepository.countByCreator(user);
+    }
+
     /**
      * Получение списка объектов корзины конкретного пользователя
      */
