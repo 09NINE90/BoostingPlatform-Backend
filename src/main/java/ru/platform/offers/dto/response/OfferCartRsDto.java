@@ -21,6 +21,9 @@ public class OfferCartRsDto {
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
+    @Schema(description = "Название предложения", example = "Legend of Eldoria")
+    private String offerName;
+
     @ArraySchema(schema = @Schema(description = "Список выбранных опций для предложения"), minItems = 1, maxItems = 100)
     @Size(min = 1, max = 100)
     private List<SelectedOptionToCartDto> selectedOptions;

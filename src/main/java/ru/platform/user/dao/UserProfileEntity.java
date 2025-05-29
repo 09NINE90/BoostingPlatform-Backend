@@ -33,6 +33,10 @@ public class UserProfileEntity {
     @Schema(description = "Имя пользователя")
     private String nickname;
 
+    @Column(name = "image_url", columnDefinition="TEXT")
+    @Schema(description = "Ссылка на аватарку пользователя")
+    private String imageUrl;
+
     @Column(name = "created_at")
     @Schema(description = "Дата создания аккаунта на платформе")
     private LocalDate createdAt;
