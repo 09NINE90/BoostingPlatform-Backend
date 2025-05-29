@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface OfferCartRepository extends JpaRepository<OfferCartEntity, UUID> {
 
     List<OfferCartEntity> findAllByCreator(UserEntity creator);
+    long countByCreator(UserEntity creator);
 }

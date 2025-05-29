@@ -58,4 +58,10 @@ public class OfferApi {
         return ResponseEntity.ok(service.getCartItems());
     }
 
+    @GetMapping("/getCountCartItems")
+    @Operation(summary = "Получение содержания корзины пользователя")
+    public ResponseEntity<Integer> getCountCartItems() {
+        return ResponseEntity.ok(service.getCountCartItems());
+    }
+
 }
