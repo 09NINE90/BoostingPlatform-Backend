@@ -1,0 +1,839 @@
+openapi: 3.1.0
+info:
+  title: Boosting platform
+  version: "1.0"
+servers:
+  - url: http://localhost:6969
+    description: Generated server url
+security:
+  - BearerAuth: []
+tags:
+  - name: Категории игр
+    description: Получение категорий игр
+  - name: Пользователь
+    description: Получение и обновление данных пароля
+  - name: Игры
+    description: Получение игр для клментов
+  - name: Опции предложения
+    description: Получение опций предложений для клиентов
+  - name: Пользователь
+    description: "Аутентификация, авторизация, подтверждение регистрации и восстенов\
+    ление пароля"
+  - name: Карусель на главной странице
+    description: Получение объектов карусели
+  - name: Предложения
+    description: Получение предложений для клиентов
+  - name: Заказы
+    description: Работа с заказами
+paths:
+  /api/user/changeNickname:
+    post:
+      tags:
+        - Пользователь
+      summary: Запрос на смену никнейма пользователя
+      operationId: changeNickname
+      parameters:
+        - name: nickname
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/order/create:
+    post:
+      tags:
+        - Заказы
+      summary: Создание заказа
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderFromCartRsDto"
+  /api/offer/getOffersByRequest:
+    post:
+      tags:
+        - Предложения
+      summary: "Получение предложений с сортировкой, фильтрами и пагинацией"
+      operationId: getOffersByRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OffersListRsDto"
+  /api/offer/addToCart:
+    post:
+      tags:
+        - Предложения
+      summary: Добавление предложенияв корзину
+      operationId: addOfferToCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferToCartRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferCartRsDto"
+  /api/auth/signUp:
+    post:
+      tags:
+        - Пользователь
+      summary: Запрос на регистрацию пользователя
+      operationId: signUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupUserRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConfirmationRsDto"
+  /api/auth/signIn:
+    post:
+      tags:
+        - Пользователь
+      summary: Авторизация пользователя
+      operationId: signIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthRsDto"
+  /api/auth/resendConfirmationEmail:
+    post:
+      tags:
+        - Пользователь
+      summary: Повторная отправка токена пользователя для подтверждения регистрации
+      operationId: resendConfirmationEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmationEmailRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConfirmationRsDto"
+  /api/auth/forgotPassword:
+    post:
+      tags:
+        - Пользователь
+      summary: Запрос на восстановления пароля пользователя
+      operationId: forgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmationEmailRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConfirmationRsDto"
+  /api/auth/changeUserPassword:
+    post:
+      tags:
+        - Пользователь
+      summary: Запрос на смену пароля
+      operationId: changeUserPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmationEmailRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthRsDto"
+  /api/user/getUserProfileData:
+    get:
+      tags:
+        - Пользователь
+      summary: Запрос на получение данных профиля пользователя
+      operationId: getUserProfileData
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserProfileRsDto"
+  /api/offer/{offerId}:
+    get:
+      tags:
+        - Предложения
+      summary: Получение предложения по ID
+      operationId: findOfferById
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OfferByIdRsDto"
+  /api/offer/option/byOfferId/{offerId}:
+    get:
+      tags:
+        - Опции предложения
+      summary: Получение опций по предложению
+      operationId: getOptionsByOfferId
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferOptionRsDto"
+  /api/offer/getOffersByGameId/{gameId}:
+    get:
+      tags:
+        - Предложения
+      summary: Получение предложений по идентификатору игры
+      operationId: getOffersByGameId
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OffersByGameIdRsDto"
+  /api/offer/getCartItems:
+    get:
+      tags:
+        - Предложения
+      summary: Получение содержания корзины пользователя
+      operationId: getCartItems
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferCartRsDto"
+  /api/games/getCategoriesByGameId/{gameId}:
+    get:
+      tags:
+        - Категории игр
+      summary: Получение категорий игры по идентификатору игры
+      operationId: getCategoriesByGameId
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryRsDto"
+  /api/games/getBySecondId/{secondId}:
+    get:
+      tags:
+        - Игры
+      summary: Получить объект игры с категориями
+      operationId: getGameBySecondId
+      parameters:
+        - name: secondId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GameBySecondIdRsDto"
+  /api/games/getAllGames:
+    get:
+      tags:
+        - Игры
+      summary: "Получить список всех игр, отсортированных по рейтингу"
+      operationId: getAllGames
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameMainPageRsDto"
+  /api/carousel/getItems:
+    get:
+      tags:
+        - Карусель на главной странице
+      summary: Получение объектов карусели
+      operationId: getItems
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CarouselRsDto"
+  /api/auth/confirmSignUp/{confirmationToken}:
+    get:
+      tags:
+        - Пользователь
+      summary: Подтверждение регистрации пользователя
+      operationId: confirmSignUp
+      parameters:
+        - name: confirmationToken
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthRsDto"
+  /api/auth/confirmPasswordRecovery/{confirmationToken}:
+    get:
+      tags:
+        - Пользователь
+      operationId: confirmPasswordRecovery
+      parameters:
+        - name: confirmationToken
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConfirmationRsDto"
+components:
+  schemas:
+    CreateOrderRqDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            description: "Список элементов корзины, из которых будет сформирован з\
+              аказ"
+    OrderFromCartRsDto:
+      type: object
+      properties:
+        gameName:
+          type: string
+          description: Название игры
+          example: Legend of Eldoria
+        orderStatus:
+          type: string
+          description: Текущий статус заказа
+          enum:
+            - NEW
+            - IN_PROGRESS
+            - COMPLETED
+            - CLOSED
+          example: NEW
+        selectedOptions:
+          type: array
+          items:
+            description: "Список опций, выбранных для заказа"
+        totalPrice:
+          type: number
+          format: double
+          description: Общая стоимость заказа
+          example: 150.0
+        totalTime:
+          type: integer
+          format: int32
+          description: Общее время выполнения заказа (в часах)
+          example: 90
+    OfferRqDto:
+      type: object
+      properties:
+        gameId:
+          type: string
+          description: "Идентификатор игры, к которой относится предложение"
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        category:
+          type: string
+          description: "Название категорий игры, к которым относится предложение"
+          example: "PVP, PVE"
+        sort:
+          $ref: "#/components/schemas/SortFilter"
+          description: Поле для указания сортировки
+        pageNumber:
+          type: integer
+          format: int32
+          description: Номер страницы для получения данных
+          example: 1
+        pageSize:
+          type: integer
+          format: int32
+          description: Количество объектов на одной странице
+          example: 20
+    SortFilter:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Ключ сортировки
+          enum:
+            - TITLE
+            - PRICE
+            - CREATED_AT
+          example: PRICE
+        asc:
+          type: boolean
+          description: Направлние сортировки
+          example: true
+    OffersByGameIdRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор предложения
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        title:
+          type: string
+          description: Название предложения
+          example: Rank boosting
+        description:
+          type: string
+          description: Описание предложения
+          example: Very long description
+        imageUrl:
+          type: string
+          description: Ссылка на картинку предложения
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        price:
+          type: number
+          format: float
+          description: Стоимость предложения
+          example: 100
+    OffersListRsDto:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            description: Список предложений
+        pageTotal:
+          type: integer
+          format: int32
+          description: Всего страниц
+          example: 5
+        pageNumber:
+          type: integer
+          format: int32
+          description: Номер страницы
+          example: 1
+        pageSize:
+          type: integer
+          format: int32
+          description: Количество объектов на одной странице
+          example: 20
+        recordTotal:
+          type: integer
+          format: int64
+          description: Всего объектов найдено
+          example: 100
+    OfferToCartRqDto:
+      type: object
+      properties:
+        offerId:
+          type: string
+          format: uuid
+          description: "Идентификатор предложения, которое добавляется в корзину"
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        gameName:
+          type: string
+          description: Название игры
+          example: Legend of Eldoria
+        basePrice:
+          type: number
+          format: double
+          description: Базовая стоимость предложения без опций
+          example: 120.0
+        selectedOptions:
+          type: array
+          items:
+            description: Список выбранных опций для добавления в корзину
+        totalPrice:
+          type: number
+          format: double
+          description: Общая стоимость с учётом выбранных опций
+          example: 150.0
+        totalTime:
+          type: integer
+          format: int32
+          description: Общее время выполнения услуги (в часах)
+          example: 120
+    OfferCartRsDto:
+      type: object
+      properties:
+        offerId:
+          type: string
+          format: uuid
+          description: Идентификатор предложения
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        gameName:
+          type: string
+          description: Название игры
+          example: Legend of Eldoria
+        offerName:
+          type: string
+          description: Название предложения
+          example: Legend of Eldoria
+        selectedOptions:
+          type: array
+          items:
+            description: Список выбранных опций для предложения
+          maxItems: 100
+          minItems: 1
+        totalPrice:
+          type: number
+          format: double
+          description: Общая стоимость с учётом выбранных опций
+          example: 150.0
+        totalTime:
+          type: integer
+          format: int32
+          description: Общее время выполнения услуги (в часах)
+          example: 120
+    SignupUserRqDto:
+      type: object
+      description: Объект для регистрации пользователя
+      properties:
+        nickname:
+          type: string
+          description: Никнейм пользователя
+          example: userNickname
+        email:
+          type: string
+          description: Почта-логин пользователя
+          example: user@mail.com
+        password:
+          type: string
+          description: Пароль пользователя
+          example: userPASSWORD123
+    ConfirmationRsDto:
+      type: object
+      description: Подтверждение регистрации пользователя
+      properties:
+        confirmation:
+          type: string
+          description: Сообщение с подтвержением отправки письма на почту полльзователю
+          example: Confirmation code sent to email
+        username:
+          type: string
+          description: Почта пользоавателя
+          example: user@mail.com
+    LoginUserRqDto:
+      type: object
+      description: Объект для авторизации пользователя
+      properties:
+        email:
+          type: string
+          description: Почта-логин пользователя
+          example: user@mail.com
+        password:
+          type: string
+          description: Пароль пользователя
+          example: userPASSWORD123
+    AuthRsDto:
+      type: object
+      description: Объект для передачи фронту токена и роли пользователя
+      properties:
+        token:
+          type: string
+          description: Токен пользователя
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFt
+        role:
+          type: string
+          description: Роль пользователя
+          example: ROLE_CUSTOMER
+    ConfirmationEmailRqDto:
+      type: object
+      description: Запрос для отправки кода подтверждения на проверку
+      properties:
+        email:
+          type: string
+          description: Почта пользователя для подтверждения
+          example: user@mail.com
+        password:
+          type: string
+          description: Пароль пользователя
+          example: userPASSWORD123
+    UserProfileRsDto:
+      type: object
+      description: Объект для передачи фронту данные профиля пользователя
+      properties:
+        secondId:
+          type: string
+          description: ID пользователя для отображения на странице
+          example: ABCD-123
+        nickname:
+          type: string
+          description: Имя пользователя
+          example: userNickname
+        imageUrl:
+          type: string
+          description: Ссылка на аватарку пользователя
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+    OfferByIdRsDto:
+      type: object
+      properties:
+        offerId:
+          type: string
+          description: Идентификатор предложения
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        gameId:
+          type: string
+          description: "Идентификатор игры, привязанной к предложению"
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondId:
+          type: string
+          description: Второй идентификатор предложения
+          example: ABCD-123
+        gameName:
+          type: string
+          description: Название игры
+          example: Destiny 2
+        title:
+          type: string
+          description: Название предложения
+          example: Rank boosting
+        description:
+          type: string
+          description: Описание предложения
+          example: Very long description
+        imageUrl:
+          type: string
+          description: Ссылка на картинку предложения
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        price:
+          type: number
+          format: double
+          description: Стоимость предложения
+          example: 100
+        categories:
+          type: string
+          description: Категории предложения
+          example: "PVP, PVE"
+        sections:
+          type: array
+          items:
+            description: Список секций для предложения
+    OfferOptionRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор опции
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        optionId:
+          type: string
+          description: Идентификатор предложения
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        title:
+          type: string
+          description: Название опции
+          example: Region
+        type:
+          type: string
+          description: Тип опции
+          enum:
+            - BUTTONS
+            - SELECT
+            - CHECKBOX
+            - SLIDER
+            - SLIDER_INVERT
+          example: BUTTONS
+        multiple:
+          type: boolean
+          description: Флаг множественного выбора
+          example: false
+        sliderPriceChange:
+          type: number
+          format: double
+        min:
+          type: integer
+          format: int32
+          description: Минимальное значение (для SLIDER)
+          example: 1
+        max:
+          type: integer
+          format: int32
+          description: Максимальное значение (для SLIDER)
+          example: 100
+        step:
+          type: integer
+          format: int32
+          description: Шаг изменения (для SLIDER)
+          example: 5
+        items:
+          type: array
+          items:
+            description: Список элементов опции
+    CategoryRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор категории
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        name:
+          type: string
+          description: Название категории
+          example: PVP
+    GameBySecondIdRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор игры
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondId:
+          type: string
+          description: Второй идентификатор игры
+          example: ABCD-123
+        name:
+          type: string
+          description: Название игры
+          example: Destiny 2
+        categories:
+          type: array
+          items:
+            description: "Список категорий, к которым относится игра"
+    GameMainPageRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор игры
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondId:
+          type: string
+          description: Второй id для фрона состояший из названия игры
+        name:
+          type: string
+          description: Название игры
+          example: The best game
+        imageUrl:
+          type: string
+          description: Ссылка на изображение игры для side bar
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+    CarouselRsDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок карусели
+          example: It is CS2!
+        description:
+          type: string
+          description: Описание карусели
+          example: Sample description
+        imageUrl:
+          type: string
+          description: Ссылка на картинку карусели
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+  securitySchemes:
+    BearerAuth:
+      type: http
+      name: BearerAuth
+      scheme: bearer
+      bearerFormat: JWT

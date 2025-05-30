@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boostingplatform-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: boostingplatform-backend
+  template:
+    metadata:
+      labels:
+        app: boostingplatform-backend
+    spec:
+      containers:
+        - name: boostingplatform-backend
+          image: boostingplatform-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6969

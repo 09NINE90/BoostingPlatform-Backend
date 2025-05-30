@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Recovery</title>
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        #div {
+            background-color: #2E1E4D;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: #E0E0E0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        #link {
+            text-decoration: none;
+            color: #E0E0E0;
+            background-color: #D08D4E;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        #link:hover {
+            background-color: #B87A3E;
+        }
+    </style>
+</head>
+<body>
+<div id="div">
+    <h1>Registration</h1>
+    <p>
+        <a id="link" href="http://localhost:6969/api/auth/confirmSignUp/${confirmationToken}">
+            Click to confirm your email
+        </a>
+    </p>
+</div>
+</body>
+</html>

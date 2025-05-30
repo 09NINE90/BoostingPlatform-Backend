@@ -24,35 +24,50 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.4.1'
-    implementation 'org.springframework.boot:spring-boot-starter-web:3.4.1'
-    implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
-    implementation 'org.springframework.boot:spring-boot-starter-web:3.4.1'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.5'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
-    implementation 'org.freemarker:freemarker:2.3.32'
+    implementation 'org.freemarker:freemarker:2.3.34'
     implementation 'io.minio:minio:8.5.12'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.2'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.8'
+    implementation 'org.flywaydb:flyway-core:11.3.4'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.5'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.hibernate:hibernate-jpamodelgen:6.6.4.Final'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.3.4'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    compileOnly 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }
