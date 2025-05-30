@@ -44,9 +44,9 @@ services:
    image: postgres:17.4-alpine
    container_name: platform-db
    environment:
-    POSTGRES_USER: "postgres"
-    POSTGRES_PASSWORD: "@P05tGreSQL!"
-    POSTGRES_DB: "boosting_platform"
+    POSTGRES_USER: "POSTGRES_USER"
+    POSTGRES_PASSWORD: "POSTGRES_PASSWORD"
+    POSTGRES_DB: "POSTGRES_DB"
     LANG: "en_US.utf8"
    volumes:
     - postgresdata:/var/lib/postgresql/data
@@ -73,10 +73,10 @@ services:
     build: .
     container_name: backend
     environment:
-        PASSWORD_DB: "@P05tGreSQL!"
-        USERNAME_DB: "postgres"
-        JWT_SECRET_KEY: "ajscqSVPNj4GNzF+Ln2H6yaE2etWGExa618+TDP96ZE="
-        URL_DB: "jdbc:postgresql://db:5432/boosting_platform"
+        PASSWORD_DB: "PASSWORD_DB"
+        USERNAME_DB: "USERNAME_DB"
+        JWT_SECRET_KEY: "JWT_SECRET_KEY"
+        URL_DB: "jdbc:postgresql://db:5432/db_name"
     ports:
       - "6969:6969"
     logging:
@@ -95,7 +95,7 @@ services:
   frontend:
    image: platform-frontend
    container_name: platform-frontend
-   build: C:\Users\alraz\WebstormProjects\BoostingPlatformFrontEnd
+   build: .
    ports:
     - "5173:5173"
    depends_on:
