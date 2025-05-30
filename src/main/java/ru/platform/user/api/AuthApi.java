@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
+import ru.platform.user.dto.request.EmailConfirmationRequest;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.AuthRsDto;
@@ -32,10 +33,10 @@ public class AuthApi {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/confirmSignUp/{confirmationToken}")
+    @PostMapping("/confirmSignUp")
     @Operation(summary = "Подтверждение регистрации пользователя")
-    public ResponseEntity<AuthRsDto> confirmSignUp(@PathVariable String confirmationToken) {
-        AuthRsDto result = userService.checkConfirmationSignUp(confirmationToken);
+    public ResponseEntity<AuthRsDto> confirmSignUp(@RequestBody EmailConfirmationRequest confirmationToken) {
+        AuthRsDto result = userService.checkConfirmationSignUp(confirmationToken.getToken());
         return ResponseEntity.ok(result);
     }
 

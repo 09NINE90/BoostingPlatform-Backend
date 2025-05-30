@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import static ru.platform.LocalConstants.Variables.TEN_HOURS;
-import static ru.platform.LocalConstants.Variables.TEN_MINUTES;
 import static ru.platform.exception.ErrorType.AUTHORIZATION_ERROR;
 import static ru.platform.exception.ErrorType.TOKEN_EXPIRED_ERROR;
 
@@ -25,7 +24,7 @@ public class JwtUtil {
     private static String SECRET_KEY = "ajscqSVPNj4GNzF+Ln2H6yaE2etWGExa618+TDP96ZE=";
 
     private static final long EXPIRATION_TIME = TEN_HOURS;
-    private static final long EXPIRATION_TIME_CONFIRMATION_LINK = TEN_MINUTES;
+    private static final long EXPIRATION_TIME_CONFIRMATION_LINK = TEN_HOURS;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
