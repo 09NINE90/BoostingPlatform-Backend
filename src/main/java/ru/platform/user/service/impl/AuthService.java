@@ -81,7 +81,6 @@ public class AuthService implements IAuthService {
         UUID userId = userDetails.getId();
         String role = getRole(authentication);
         String token = jwtUtil.generateToken(userId.toString(), userRqDto.getEmail(), role);
-        log.info("User {} signed up", userRqDto.getEmail());
         return new AuthRsDto(token, role);
     }
 
