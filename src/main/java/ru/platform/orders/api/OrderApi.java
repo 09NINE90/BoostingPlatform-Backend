@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
+import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.service.IOrderService;
 
@@ -34,5 +35,10 @@ public class OrderApi {
     @Operation(summary = "Получение списка заказов для пользователя")
     public ResponseEntity<List<OrderFromCartRsDto>> getByCreator(@RequestBody OrdersByCreatorRqDto ordersByCreatorRqDto) {
         return ResponseEntity.ok(orderService.getByCreator(ordersByCreatorRqDto));
+    }
+
+    @GetMapping("/getFilters")
+    public ResponseEntity<OrderFiltersRsDto> getOrderFilters() {
+        return ResponseEntity.ok(orderService.getOrderFilters());
     }
 }

@@ -31,6 +31,9 @@ public class OrderEntity {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "offer_name")
+    private String offerName;
+
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private UserEntity workerId;

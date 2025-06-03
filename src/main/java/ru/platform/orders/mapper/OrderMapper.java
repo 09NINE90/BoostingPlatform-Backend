@@ -22,6 +22,7 @@ public class OrderMapper {
     public OrderEntity toOrder(CartItemDto cartItemDto) {
         return OrderEntity.builder()
                 .creator(authService.getAuthUser())
+                .offerName(cartItemDto.getOfferName())
                 .basePrice(cartItemDto.getBasePrice())
                 .totalPrice(cartItemDto.getTotalPrice())
                 .status(OrderStatus.NEW.name())
@@ -46,6 +47,7 @@ public class OrderMapper {
 
     public OrderFromCartRsDto toOrderFromCartDto(OrderEntity orderEntity) {
         return OrderFromCartRsDto.builder()
+                .orderName(orderEntity.getOfferName())
                 .orderStatus(OrderStatus.valueOf(orderEntity.getStatus()))
                 .gameName(orderEntity.getGameName())
                 .totalPrice(orderEntity.getTotalPrice())

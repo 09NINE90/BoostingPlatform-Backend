@@ -12,6 +12,9 @@ import java.util.List;
 @Builder
 public class OrderFromCartRsDto {
 
+    @Schema(description = "Название заказа", example = "Legend of Eldoria")
+    private String orderName;
+
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 

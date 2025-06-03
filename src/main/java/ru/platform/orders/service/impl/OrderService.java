@@ -11,12 +11,15 @@ import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderSpecification;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
+import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -65,6 +68,27 @@ public class OrderService implements IOrderService {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);
         }
+    }
+
+    @Override
+    public OrderFiltersRsDto getOrderFilters() {
+        UserEntity user = authService.getAuthUser();
+
+        List<String> statuses = Arrays.stream(OrderStatus.values())
+                .map(OrderStatus::name)
+                .toList();
+        List<String> gameNames = orderRepository.findAllDistinctGameNamesByCreator(user);
+        double minPrice = orderRepository.findMinPrice(user);
+        double maxPrice = orderRepository.findMaxPrice(user);
+
+        return OrderFiltersRsDto.builder()
+                .gameNames(gameNames)
+                .statuses(statuses)
+                .price(OrderFiltersRsDto.PriceFilterDto.builder()
+                        .priceMin(minPrice)
+                        .priceMax(maxPrice)
+                        .build())
+                .build();
     }
 
 }
