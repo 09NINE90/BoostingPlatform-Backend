@@ -7,12 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.request.OrderByStatusRqDto;
-import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
 import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
-import ru.platform.orders.dto.response.OrderStatusRsDto;
-import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.service.IOrderService;
 
 import java.util.List;
@@ -39,11 +36,6 @@ public class OrderApi {
     @Operation(summary = "Получение списка заказов для пользователя")
     public ResponseEntity<List<OrderListRsDto>> getByCreator(@RequestBody OrderByStatusRqDto orderByStatusRqDto) {
         return ResponseEntity.ok(orderService.getByCreator(orderByStatusRqDto.getStatus()));
-    }
-
-    @GetMapping("/getOrderStatuses")
-    public ResponseEntity<List<OrderStatusRsDto>> getOrderStatuses() {
-        return ResponseEntity.ok(orderService.getOrderStatuses());
     }
 
     @GetMapping("/getFilters") // получение фильров заказов для бустера

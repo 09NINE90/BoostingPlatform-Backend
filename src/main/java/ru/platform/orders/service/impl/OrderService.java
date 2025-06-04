@@ -14,7 +14,6 @@ import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
 import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
-import ru.platform.orders.dto.response.OrderStatusRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderService;
@@ -22,7 +21,6 @@ import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
@@ -92,18 +90,6 @@ public class OrderService implements IOrderService {
                         .priceMax(maxPrice)
                         .build())
                 .build();
-    }
-
-    @Override
-    public List<OrderStatusRsDto> getOrderStatuses() {
-        UserEntity user = authService.getAuthUser();
-        return orderRepository.findAllDistinctStatusesByCreator(user)
-                .stream()
-                .map(s -> OrderStatusRsDto.builder()
-                        .id(UUID.randomUUID().toString())
-                        .name(s)
-                        .build())
-                .toList();
     }
 
 }
