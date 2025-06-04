@@ -18,6 +18,9 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
     @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.creator = :creator")
     List<String> findAllDistinctGameNamesByCreator(UserEntity creator);
 
+    @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.creator = :creator")
+    List<String> findAllDistinctStatusesByCreator(UserEntity creator);
+
     @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.creator = :creator")
     Double findMinPrice(@Param("creator") UserEntity creator);
 

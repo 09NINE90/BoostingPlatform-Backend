@@ -4,8 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    NEW,
+    CREATED,
     IN_PROGRESS,
-    COMPLETED,
-    CLOSED
+    COMPLETED
 }

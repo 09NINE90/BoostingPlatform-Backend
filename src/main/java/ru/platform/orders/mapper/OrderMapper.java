@@ -6,6 +6,7 @@ import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
+import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.service.IAuthService;
 
@@ -25,7 +26,7 @@ public class OrderMapper {
                 .offerName(cartItemDto.getOfferName())
                 .basePrice(cartItemDto.getBasePrice())
                 .totalPrice(cartItemDto.getTotalPrice())
-                .status(OrderStatus.NEW.name())
+                .status(OrderStatus.CREATED.name())
                 .gameName(cartItemDto.getGameName())
                 .totalTime(cartItemDto.getTotalTime())
                 .optionList(toOrderOptionList(cartItemDto.getSelectedOptions()))
@@ -66,6 +67,16 @@ public class OrderMapper {
                 .value(cartSelectedOptionsDto.getValue())
                 .label(cartSelectedOptionsDto.getLabel())
                 .optionTitle(cartSelectedOptionsDto.getOptionTitle())
+                .build();
+    }
+
+    public OrderListRsDto toOrderLisRsDto(OrderEntity orderEntity) {
+        return OrderListRsDto.builder()
+                .orderId(String.valueOf(orderEntity.getSecondId()))
+                .offerName(orderEntity.getOfferName())
+                .gameName(orderEntity.getGameName())
+                .orderStatus(orderEntity.getStatus())
+                .totalPrice(orderEntity.getTotalPrice())
                 .build();
     }
 }
