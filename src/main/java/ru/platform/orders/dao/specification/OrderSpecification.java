@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderEntity_;
 import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
+import ru.platform.user.dao.UserEntity;
 import ru.platform.utils.IBaseSpecificationUtil;
 
 import java.util.ArrayList;
@@ -26,10 +27,18 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
     @Override
     public List<BiConsumer<Set<Specification<OrderEntity>>, OrdersByCreatorRqDto>> getSpecificationConsumerList() {
         List<BiConsumer<Set<Specification<OrderEntity>>, OrdersByCreatorRqDto>> result = new ArrayList<>();
+        result.add(this::prepareCreator);
         result.add(this::prepareGameName);
         result.add(this::prepareStatus);
         result.add(this::preparePrice);
         return result;
+    }
+
+    private void prepareCreator(Set<Specification<OrderEntity>> set, OrdersByCreatorRqDto request) {
+        UserEntity creator = request.getCreator();
+        if (Objects.nonNull(creator)) {
+            set.add(fieldEqualTo(creator, OrderEntity_.CREATOR));
+        }
     }
 
     private void prepareGameName(Set<Specification<OrderEntity>> set, OrdersByCreatorRqDto request) {

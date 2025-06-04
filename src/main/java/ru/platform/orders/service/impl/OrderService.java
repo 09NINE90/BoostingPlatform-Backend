@@ -57,8 +57,10 @@ public class OrderService implements IOrderService {
     public List<OrderListRsDto> getByCreator(OrderStatus status) {
         UserEntity user = authService.getAuthUser();
 
-        OrdersByCreatorRqDto ordersByCreatorRqDto = OrdersByCreatorRqDto.builder().status(status).build();
-        ordersByCreatorRqDto.setCreator(user);
+        OrdersByCreatorRqDto ordersByCreatorRqDto = OrdersByCreatorRqDto.builder()
+                .status(status)
+                .creator(user)
+                .build();
 
         List<OrderEntity> orders = getServicePageFunc().apply(ordersByCreatorRqDto);
         return orders.stream().map(mapper::toOrderLisRsDto).toList();
