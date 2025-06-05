@@ -10,7 +10,7 @@ import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderSpecification;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
-import ru.platform.orders.dto.request.OrdersByCreatorRqDto;
+import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
@@ -55,7 +55,7 @@ public class OrderService implements IOrderService {
     public List<OrderListRsDto> getByCreator(OrderStatus status) {
         UserEntity user = authService.getAuthUser();
 
-        OrdersByCreatorRqDto ordersByCreatorRqDto = OrdersByCreatorRqDto.builder()
+        OrdersByFiltersRqDto ordersByCreatorRqDto = OrdersByFiltersRqDto.builder()
                 .status(status)
                 .creator(user)
                 .build();
@@ -64,7 +64,7 @@ public class OrderService implements IOrderService {
         return orders.stream().map(mapper::toOrderLisRsDto).toList();
     }
 
-    private Function<OrdersByCreatorRqDto, List<OrderEntity>> getServicePageFunc() {
+    private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFunc() {
         try {
             return request -> orderRepository.findAll(specification.getFilter(request));
         } catch (Exception e) {

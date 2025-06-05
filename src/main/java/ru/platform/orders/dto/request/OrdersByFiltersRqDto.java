@@ -8,7 +8,7 @@ import ru.platform.user.dao.UserEntity;
 
 @Data
 @Builder
-public class OrdersByCreatorRqDto {
+public class OrdersByFiltersRqDto {
 
     @Schema(hidden = true)
     private UserEntity creator;
