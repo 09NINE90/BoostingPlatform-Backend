@@ -1,5 +1,6 @@
 package ru.platform.orders.dao;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +44,9 @@ public class OrderEntity {
 
     @Column(name = "game_name")
     private String gameName;
+
+    @Column(name = "game_platform")
+    private String gamePlatform;
 
     @Column(name = "base_price")
     private double basePrice;

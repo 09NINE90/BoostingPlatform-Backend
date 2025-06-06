@@ -72,6 +72,7 @@ public class OfferMapper implements IOfferMapper {
         return OfferCartRsDto.builder()
                 .offerId(offerCartEntity.getOffer().getId())
                 .gameName(offerCartEntity.getGameName())
+                .gamePlatform(offerCartEntity.getGamePlatform())
                 .offerName(offerCartEntity.getOffer().getTitle())
                 .totalPrice(offerCartEntity.getTotalPrice())
                 .totalTime(offerCartEntity.getTotalTime())

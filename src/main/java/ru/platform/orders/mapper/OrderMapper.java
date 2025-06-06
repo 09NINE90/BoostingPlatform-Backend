@@ -28,6 +28,7 @@ public class OrderMapper {
                 .totalPrice(cartItemDto.getTotalPrice())
                 .status(OrderStatus.CREATED.name())
                 .gameName(cartItemDto.getGameName())
+                .gamePlatform(cartItemDto.getGamePlatform())
                 .totalTime(cartItemDto.getTotalTime())
                 .optionList(toOrderOptionList(cartItemDto.getSelectedOptions()))
                 .build();
@@ -75,6 +76,7 @@ public class OrderMapper {
                 .orderId(String.valueOf(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
+                .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
                 .build();

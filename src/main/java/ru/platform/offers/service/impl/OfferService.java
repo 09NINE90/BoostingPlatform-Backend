@@ -26,6 +26,7 @@ import ru.platform.offers.service.IOfferService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -104,6 +105,7 @@ public class OfferService implements IOfferService {
                 .gameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
+                .gamePlatforms(Arrays.stream(offerEntity.getGame().getPlatforms().split(",")).map(String::trim).toList())
                 .title(offerEntity.getTitle())
                 .description(offerEntity.getDescription())
                 .imageUrl(offerEntity.getImageUrl())
@@ -123,6 +125,7 @@ public class OfferService implements IOfferService {
                 .offer(offerEntityOptional.orElse(null))
                 .creator(authService.getAuthUser())
                 .gameName(offer.getGameName())
+                .gamePlatform(offer.getGamePlatform())
                 .basePrice(offer.getBasePrice())
                 .totalPrice(offer.getTotalPrice())
                 .totalTime(offer.getTotalTime())

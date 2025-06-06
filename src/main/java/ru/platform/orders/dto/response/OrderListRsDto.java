@@ -17,6 +17,9 @@ public class OrderListRsDto {
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
+    @Schema(description = "Название платформы", example = "XBOX")
+    private String gamePlatform;
+
     @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
     private String orderStatus;
 
