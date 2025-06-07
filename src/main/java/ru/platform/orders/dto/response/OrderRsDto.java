@@ -4,31 +4,36 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.platform.orders.enumz.OrderStatus;
 
 import java.util.List;
 
 @Data
 @Builder
-public class OrderFromCartRsDto {
+public class OrderRsDto {
+
+    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    private String orderId;
+
+    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    private String secondId;
 
     @Schema(description = "Название заказа", example = "Legend of Eldoria")
-    private String orderName;
+    private String offerName;
 
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
-    @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
-    private OrderStatus orderStatus;
+    @Schema(description = "Название платформы", example = "XBOX")
+    private String gamePlatform;
 
-    @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
-    private List<CartSelectedOptionsDto> selectedOptions;
+    @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
+    private String orderStatus;
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private double totalPrice;
 
-    @Schema(description = "Общее время выполнения заказа (в часах)", example = "90")
-    private int totalTime;
+    @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
+    private List<CartSelectedOptionsDto> selectedOptions;
 
     @Data
     @Builder
@@ -43,6 +48,4 @@ public class OrderFromCartRsDto {
         @Schema(description = "Метка, отображаемая пользователю", example = "С включением стрима")
         private Object label;
     }
-
 }
-

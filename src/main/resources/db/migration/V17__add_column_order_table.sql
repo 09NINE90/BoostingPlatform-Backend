@@ -1,0 +1,1 @@
+ALTER TABLE orders ADD COLUMN offer_name VARCHAR(200);

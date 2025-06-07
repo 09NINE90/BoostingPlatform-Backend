@@ -33,6 +33,10 @@ public class GameEntity {
     @Schema(description = "Название игры")
     private String title;
 
+    @Column(name = "platforms")
+    @Schema(description = "Платформы для прохождения (PS, PC, Xbox)")
+    private String platforms;
+
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на изображение для игры")
     private String imageUrl;

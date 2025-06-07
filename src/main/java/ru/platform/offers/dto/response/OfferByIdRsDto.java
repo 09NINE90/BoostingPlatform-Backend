@@ -25,6 +25,9 @@ public class OfferByIdRsDto {
     @Schema(description = "Название игры", example = "Destiny 2")
     private String gameName;
 
+    @ArraySchema(schema = @Schema(description = "Платформы для игр", example = "PC"))
+    private List<String> gamePlatforms;
+
     @Schema(description = "Название предложения", example = "Rank boosting")
     private String title;
 

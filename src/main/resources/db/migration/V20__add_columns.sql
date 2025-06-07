@@ -1,0 +1,3 @@
+ALTER TABLE offer_cart ADD COLUMN game_platform VARCHAR(50) DEFAULT 'PS';
+ALTER TABLE orders ADD COLUMN game_platform VARCHAR(50) DEFAULT 'PS';
+

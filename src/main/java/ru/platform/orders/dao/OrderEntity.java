@@ -1,5 +1,6 @@
 package ru.platform.orders.dao;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,9 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "second_id")
+    private long secondId;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private UserEntity creator;
@@ -31,12 +35,18 @@ public class OrderEntity {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "offer_name")
+    private String offerName;
+
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private UserEntity workerId;
 
     @Column(name = "game_name")
     private String gameName;
+
+    @Column(name = "game_platform")
+    private String gamePlatform;
 
     @Column(name = "base_price")
     private double basePrice;

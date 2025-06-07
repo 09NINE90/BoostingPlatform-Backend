@@ -21,6 +21,9 @@ public class OfferCartRsDto {
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
+    @Schema(description = "Название платформы", example = "XBOX")
+    private String gamePlatform;
+
     @Schema(description = "Название предложения", example = "Legend of Eldoria")
     private String offerName;
 
