@@ -29,6 +29,9 @@ public class OfferCartEntity {
     @Column(name = "game_name")
     private String gameName;
 
+    @Column(name = "game_platform")
+    private String gamePlatform;
+
     @Column(name = "base_price")
     private double basePrice;
 

@@ -64,7 +64,7 @@ public class UserService implements IUserService {
         userRepository.save(userEntity);
         userProfileRepository.save(userEntity.getProfile());
 
-        return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
+        return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE, userEntity.getUsername());
     }
 
     /**

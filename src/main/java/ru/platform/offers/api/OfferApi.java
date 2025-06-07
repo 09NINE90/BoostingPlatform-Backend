@@ -48,8 +48,8 @@ public class OfferApi {
 
     @PostMapping("/addToCart")
     @Operation(summary = "Добавление предложенияв корзину")
-    public ResponseEntity<List<OfferCartRsDto>> addOfferToCart(@RequestBody OfferToCartRqDto offer) {
-        return ResponseEntity.ok(service.addOfferToCart(offer));
+    public ResponseEntity<List<OfferCartRsDto>> addOfferToCart(@RequestBody OfferToCartRqDto request) {
+        return ResponseEntity.ok(service.addOfferToCart(request));
     }
 
     @GetMapping("/getCartItems")

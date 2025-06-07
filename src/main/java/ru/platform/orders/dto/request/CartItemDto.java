@@ -17,8 +17,14 @@ public class CartItemDto {
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
     private UUID offerId;
 
+    @Schema(description = "Название предложения", example = "Coop fight")
+    private String offerName;
+
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
+
+    @Schema(description = "Название платформы", example = "XBOX")
+    private String gamePlatform;
 
     @Schema(description = "Базовая цена без учёта опций", example = "120.0")
     private double basePrice;

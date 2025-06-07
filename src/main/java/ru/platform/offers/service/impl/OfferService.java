@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
@@ -25,12 +26,14 @@ import ru.platform.offers.service.IOfferService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
+import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 
 @Slf4j
 @Service
@@ -44,19 +47,19 @@ public class OfferService implements IOfferService {
     private final IAuthService authService;
     private final IOfferMapper offerMapper;
 
-    private final String LOG_PREFIX = "OfferService: ";
+    private final String LOG_PREFIX = "OfferService: {}";
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.OFFERS_BY_GAME_ID)
     public List<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
         try {
             List<OfferEntity> offersByGame = offerRepository.findAllByGameId(gameId);
-            log.debug(LOG_PREFIX + "Preparing a response for the frontend");
+            log.debug(LOG_PREFIX, "Preparing a response for the frontend");
             return offersByGame.stream()
                     .map(offerMapper::toOfferByGameIdRsDto)
                     .toList();
         } catch (Exception e) {
-            log.error(LOG_PREFIX + "Error when searching for offers by game ID");
+            log.error(LOG_PREFIX, "Error when searching for offers by game ID");
             throw new EntityNotFoundException("Error when searching for offers by game ID", e);
         }
     }
@@ -87,10 +90,9 @@ public class OfferService implements IOfferService {
             return request -> offerRepository
                     .findAll(specification.getFilter(request), paginationOffersUtil.getPageRequest(request));
         } catch (Exception e) {
-            log.error(LOG_PREFIX + "Error when searching for offers with sorting, filters, and pagination");
-            throw new EntityNotFoundException("Error when searching for offers with sorting, filters, and pagination", e);
+            log.error(LOG_PREFIX, "Error when searching for offers with sorting, filters, and pagination");
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
-
     }
 
     @Override
@@ -103,6 +105,7 @@ public class OfferService implements IOfferService {
                 .gameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
+                .gamePlatforms(Arrays.stream(offerEntity.getGame().getPlatforms().split(",")).map(String::trim).toList())
                 .title(offerEntity.getTitle())
                 .description(offerEntity.getDescription())
                 .imageUrl(offerEntity.getImageUrl())
@@ -122,6 +125,7 @@ public class OfferService implements IOfferService {
                 .offer(offerEntityOptional.orElse(null))
                 .creator(authService.getAuthUser())
                 .gameName(offer.getGameName())
+                .gamePlatform(offer.getGamePlatform())
                 .basePrice(offer.getBasePrice())
                 .totalPrice(offer.getTotalPrice())
                 .totalTime(offer.getTotalTime())

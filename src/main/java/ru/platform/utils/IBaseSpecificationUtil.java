@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import ru.platform.offers.dao.OfferEntity;
 import ru.platform.games.dao.GameEntity;
+import ru.platform.user.dao.UserEntity;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -127,6 +128,12 @@ public interface IBaseSpecificationUtil<T, U>  {
     }
 
     default Specification<T> fieldEqualTo(Integer value, String field) {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.get(field), value);
+        };
+    }
+
+    default Specification<T> fieldEqualTo(UserEntity value, String field) {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.equal(root.get(field), value);
         };
