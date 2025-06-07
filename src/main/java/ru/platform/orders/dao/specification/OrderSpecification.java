@@ -31,7 +31,15 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
         result.add(this::prepareGameName);
         result.add(this::prepareStatus);
         result.add(this::preparePrice);
+        result.add(this::preparePlatform);
         return result;
+    }
+
+    private void preparePlatform(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
+        String gamePlatform = request.getGamePlatform();
+        if (Objects.nonNull(gamePlatform) && !gamePlatform.isEmpty()) {
+            set.add(fieldAreLike(gamePlatform, OrderEntity_.GAME_PLATFORM));
+        }
     }
 
     private void prepareCreator(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {

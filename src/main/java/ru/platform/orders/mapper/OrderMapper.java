@@ -1,12 +1,14 @@
 package ru.platform.orders.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
+import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.service.IAuthService;
 
@@ -71,14 +73,40 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderListRsDto toOrderLisRsDto(OrderEntity orderEntity) {
+    public OrderListRsDto toOrderListRsDto(Page<OrderEntity> orderEntity) {
+        List<OrderRsDto> orders = orderEntity.map(this::toOrderRsDto).toList();
         return OrderListRsDto.builder()
-                .orderId(String.valueOf(orderEntity.getSecondId()))
+                .orders(orders)
+                .pageNumber(orderEntity.getNumber())
+                .pageSize(orderEntity.getSize())
+                .pageTotal(orderEntity.getTotalPages())
+                .recordTotal(orderEntity.getTotalElements())
+                .build();
+    }
+
+    public OrderRsDto toOrderRsDto(OrderEntity orderEntity) {
+        return OrderRsDto.builder()
+                .orderId(orderEntity.getId().toString())
+                .secondId(String.valueOf(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
+                .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
+                .build();
+    }
+
+    private List<OrderRsDto.CartSelectedOptionsDto> toOrderListOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
+        if (orderOptionEntities == null || orderOptionEntities.isEmpty()) return emptyList();
+        return orderOptionEntities.stream().map(this::toOrderListOptionDto).toList();
+    }
+
+    private OrderRsDto.CartSelectedOptionsDto toOrderListOptionDto(OrderOptionEntity cartSelectedOptionsDto) {
+        return OrderRsDto.CartSelectedOptionsDto.builder()
+                .value(cartSelectedOptionsDto.getValue())
+                .label(cartSelectedOptionsDto.getLabel())
+                .optionTitle(cartSelectedOptionsDto.getOptionTitle())
                 .build();
     }
 }

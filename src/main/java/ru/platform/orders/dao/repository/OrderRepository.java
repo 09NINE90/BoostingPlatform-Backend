@@ -15,15 +15,18 @@ import java.util.UUID;
 public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaSpecificationExecutor<OrderEntity> {
     List<OrderEntity> findAllByCreator(UserEntity user);
 
-    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.creator = :creator")
-    List<String> findAllDistinctGameNamesByCreator(UserEntity creator);
+    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o")
+    List<String> findAllDistinctGameNames();
 
-    @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.creator = :creator")
-    List<String> findAllDistinctStatusesByCreator(UserEntity creator);
+    @Query("SELECT DISTINCT o.status FROM OrderEntity o")
+    List<String> findAllDistinctStatuses();
 
-    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.creator = :creator")
-    Double findMinPrice(@Param("creator") UserEntity creator);
+    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o")
+    List<String> findAllDistinctGamePlatforms();
 
-    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.creator = :creator")
-    Double findMaxPrice(@Param("creator") UserEntity creator);
+    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o")
+    Double findMinPrice();
+
+    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o")
+    Double findMaxPrice();
 }

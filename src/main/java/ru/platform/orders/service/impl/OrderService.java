@@ -2,10 +2,12 @@ package ru.platform.orders.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
+import ru.platform.orders.PaginationOrdersUtil;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderSpecification;
@@ -14,6 +16,7 @@ import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
+import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderService;
@@ -34,6 +37,7 @@ public class OrderService implements IOrderService {
     private final IAuthService authService;
     private final OrderRepository orderRepository;
     private final OrderSpecification specification;
+    private final PaginationOrdersUtil paginationOrdersUtil;
 
     private final String LOG_PREFIX = "OrderService: {}";
 
@@ -52,7 +56,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderListRsDto> getByCreator(OrderStatus status) {
+    public List<OrderRsDto> getByCreator(OrderStatus status) {
         UserEntity user = authService.getAuthUser();
 
         OrdersByFiltersRqDto ordersByCreatorRqDto = OrdersByFiltersRqDto.builder()
@@ -61,7 +65,7 @@ public class OrderService implements IOrderService {
                 .build();
 
         List<OrderEntity> orders = getServicePageFunc().apply(ordersByCreatorRqDto);
-        return orders.stream().map(mapper::toOrderLisRsDto).toList();
+        return orders.stream().map(mapper::toOrderRsDto).toList();
     }
 
     private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFunc() {
@@ -73,23 +77,39 @@ public class OrderService implements IOrderService {
         }
     }
 
+    private Function<OrdersByFiltersRqDto, Page<OrderEntity>> getServicePageFuncWithSort() {
+        try {
+            return request -> orderRepository
+                    .findAll(specification.getFilter(request), paginationOrdersUtil.getPageRequest(request));
+        } catch (Exception e) {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
+    }
+
     @Override
     public OrderFiltersRsDto getOrderFilters() {
-        UserEntity user = authService.getAuthUser();
-
-        List<String> statuses = orderRepository.findAllDistinctStatusesByCreator(user);
-        List<String> gameNames = orderRepository.findAllDistinctGameNamesByCreator(user);
-        double minPrice = orderRepository.findMinPrice(user);
-        double maxPrice = orderRepository.findMaxPrice(user);
+        List<String> statuses = orderRepository.findAllDistinctStatuses();
+        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms();
+        List<String> gameNames = orderRepository.findAllDistinctGameNames();
+        Double minPrice = orderRepository.findMinPrice();
+        Double maxPrice = orderRepository.findMaxPrice();
 
         return OrderFiltersRsDto.builder()
                 .gameNames(gameNames)
+                .gamePlatforms(gamePlatforms)
                 .statuses(statuses)
                 .price(OrderFiltersRsDto.PriceFilterDto.builder()
                         .priceMin(minPrice)
                         .priceMax(maxPrice)
                         .build())
                 .build();
+    }
+
+    @Override
+    public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
+        Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
+        return mapper.toOrderListRsDto(orders);
     }
 
 }

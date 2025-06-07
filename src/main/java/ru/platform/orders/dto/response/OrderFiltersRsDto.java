@@ -17,6 +17,9 @@ public class OrderFiltersRsDto {
     @ArraySchema(schema =  @Schema(description = "Названия игр для фильтров", example = "Game name"))
     private List<String> gameNames;
 
+    @ArraySchema(schema =  @Schema(description = "Названия игровых платформ для фильтров", example = "PS"))
+    private List<String> gamePlatforms;
+
     @Schema(description = "Цена min/max для фильтров")
     private PriceFilterDto price;
 
