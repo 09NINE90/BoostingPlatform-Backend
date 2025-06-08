@@ -108,6 +108,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
+        request.setStatus(OrderStatus.CREATED);
         Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return mapper.toOrderListRsDto(orders);
     }
