@@ -24,6 +24,7 @@ import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
@@ -111,6 +112,13 @@ public class OrderService implements IOrderService {
         request.setStatus(OrderStatus.CREATED);
         Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return mapper.toOrderListRsDto(orders);
+    }
+
+    @Override
+    public OrderRsDto getOrderById(UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+        return mapper.toOrderRsDto(order);
     }
 
 }

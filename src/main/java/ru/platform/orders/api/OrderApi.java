@@ -15,6 +15,7 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.service.IOrderService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.ORDER_TAG_DESCRIPTION;
 import static ru.platform.LocalConstants.Api.ORDER_TAG_NAME;
@@ -45,7 +46,12 @@ public class OrderApi {
         return ResponseEntity.ok(orderService.getAllOrders(request));
     }
 
-    @GetMapping("/getFilters") // получение фильров заказов для бустера
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderRsDto> getOrderById(@PathVariable("orderId") UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
+
+    @GetMapping("/getFilters")
     public ResponseEntity<OrderFiltersRsDto> getOrderFilters() {
         return ResponseEntity.ok(orderService.getOrderFilters());
     }

@@ -9,10 +9,12 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface IOrderService {
     List<OrderFromCartRsDto> createOrder(CreateOrderRqDto orderRqDto);
     List<OrderRsDto> getByCreator(OrderStatus status);
     OrderFiltersRsDto getOrderFilters();
     OrderListRsDto getAllOrders(OrdersByFiltersRqDto request);
+    OrderRsDto getOrderById(UUID orderId);
 }
