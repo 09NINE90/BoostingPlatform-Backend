@@ -28,6 +28,9 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
+import static ru.platform.exception.ErrorType.ORDER_ALREADY_IN_PROGRESS_ERROR;
+import static ru.platform.orders.enumz.OrderStatus.CREATED;
+import static ru.platform.orders.enumz.OrderStatus.IN_PROGRESS;
 
 @Slf4j
 @Service
@@ -109,7 +112,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
-        request.setStatus(OrderStatus.CREATED);
+        request.setStatus(CREATED);
         Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return mapper.toOrderListRsDto(orders);
     }
@@ -119,6 +122,21 @@ public class OrderService implements IOrderService {
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
         return mapper.toOrderRsDto(order);
+    }
+
+    @Override
+    public void acceptOrder(UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        if (!order.getStatus().equals(CREATED.name()) && order.getWorkerId() != null) {
+            throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
+        }
+
+        UserEntity user = authService.getAuthUser();
+        order.setWorkerId(user);
+        order.setStatus(IN_PROGRESS.name());
+        orderRepository.save(order);
     }
 
 }

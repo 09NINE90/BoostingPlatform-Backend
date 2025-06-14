@@ -17,4 +17,5 @@ public interface IOrderService {
     OrderFiltersRsDto getOrderFilters();
     OrderListRsDto getAllOrders(OrdersByFiltersRqDto request);
     OrderRsDto getOrderById(UUID orderId);
+    void acceptOrder(UUID orderId);
 }
