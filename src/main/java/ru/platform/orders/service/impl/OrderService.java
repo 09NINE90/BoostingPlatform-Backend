@@ -24,9 +24,13 @@ import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
+import static ru.platform.exception.ErrorType.ORDER_ALREADY_IN_PROGRESS_ERROR;
+import static ru.platform.orders.enumz.OrderStatus.CREATED;
+import static ru.platform.orders.enumz.OrderStatus.IN_PROGRESS;
 
 @Slf4j
 @Service
@@ -108,8 +112,31 @@ public class OrderService implements IOrderService {
 
     @Override
     public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
+        request.setStatus(CREATED);
         Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return mapper.toOrderListRsDto(orders);
+    }
+
+    @Override
+    public OrderRsDto getOrderById(UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+        return mapper.toOrderRsDto(order);
+    }
+
+    @Override
+    public void acceptOrder(UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        if (!order.getStatus().equals(CREATED.name()) && order.getWorkerId() != null) {
+            throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
+        }
+
+        UserEntity user = authService.getAuthUser();
+        order.setWorkerId(user);
+        order.setStatus(IN_PROGRESS.name());
+        orderRepository.save(order);
     }
 
 }

@@ -29,6 +29,10 @@ public enum ErrorType {
             409,
             "User already exists."
     ),
+    ORDER_ALREADY_IN_PROGRESS_ERROR(
+            409,
+            "The order is already in progress."
+    ),
     DATE_CONVERSION_ERROR(
             400,
             "Invalid date format or failed date conversion."

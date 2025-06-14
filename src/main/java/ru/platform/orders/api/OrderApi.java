@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.platform.annotation.RoleRequired;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.request.OrderByStatusRqDto;
 import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
@@ -15,6 +16,7 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.service.IOrderService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.ORDER_TAG_DESCRIPTION;
 import static ru.platform.LocalConstants.Api.ORDER_TAG_NAME;
@@ -45,8 +47,20 @@ public class OrderApi {
         return ResponseEntity.ok(orderService.getAllOrders(request));
     }
 
-    @GetMapping("/getFilters") // получение фильров заказов для бустера
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderRsDto> getOrderById(@PathVariable("orderId") UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
+
+    @GetMapping("/getFilters")
     public ResponseEntity<OrderFiltersRsDto> getOrderFilters() {
         return ResponseEntity.ok(orderService.getOrderFilters());
+    }
+
+    @PostMapping("/accept/{orderId}")
+    @RoleRequired(value = "ROLE_BOOSTER")
+    public ResponseEntity<Void> acceptOrder(@PathVariable("orderId") UUID orderId) {
+        orderService.acceptOrder(orderId);
+        return ResponseEntity.ok().build();
     }
 }

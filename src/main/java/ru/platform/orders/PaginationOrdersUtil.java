@@ -21,7 +21,7 @@ public class PaginationOrdersUtil {
 
     private Sort getSortBy(OrderSortFilter sort) {
         if (sort == null || sort.getKey() == null) {
-            sort = new OrderSortFilter(OrderSortKeys.PRICE, false);
+            sort = new OrderSortFilter(OrderSortKeys.CREATION_AT, false);
         }
         boolean isAsc = sort.getAsc();
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
