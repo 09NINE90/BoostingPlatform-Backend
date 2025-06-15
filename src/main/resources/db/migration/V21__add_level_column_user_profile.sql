@@ -1,0 +1,1 @@
+ALTER TABLE user_profile ADD COLUMN level int2 DEFAULT 1;
