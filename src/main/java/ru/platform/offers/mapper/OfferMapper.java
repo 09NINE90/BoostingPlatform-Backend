@@ -74,7 +74,7 @@ public class OfferMapper implements IOfferMapper {
                 .gameName(offerCartEntity.getGameName())
                 .gamePlatform(offerCartEntity.getGamePlatform())
                 .offerName(offerCartEntity.getOffer().getTitle())
-                .totalPrice(offerCartEntity.getTotalPrice())
+                .totalPrice(offerCartEntity.getTotalPrice().doubleValue())
                 .totalTime(offerCartEntity.getTotalTime())
                 .selectedOptions(toSelectionOptionsCartList(offerCartEntity.getOptionCarts()))
                 .build();

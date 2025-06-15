@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,13 +24,13 @@ public class OfferToCartRqDto {
     private String gamePlatform;
 
     @Schema(description = "Базовая стоимость предложения без опций", example = "120.0")
-    private double basePrice;
+    private BigDecimal basePrice;
 
     @ArraySchema(schema = @Schema(description = "Список выбранных опций для добавления в корзину"))
     private List<SelectedOptionToCartDto> selectedOptions;
 
     @Schema(description = "Общая стоимость с учётом выбранных опций", example = "150.0")
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
     @Schema(description = "Общее время выполнения услуги (в часах)", example = "120")
     private int totalTime;

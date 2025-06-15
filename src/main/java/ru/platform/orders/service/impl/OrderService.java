@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static ru.platform.LocalConstants.Variables.*;
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 import static ru.platform.exception.ErrorType.ORDER_ALREADY_IN_PROGRESS_ERROR;
 import static ru.platform.orders.enumz.OrderStatus.CREATED;
@@ -114,8 +113,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
         UserEntity user = authService.getAuthUser();
-        int userLevel = user.getProfile().getLevel();
-        double ratio = getRatioLevel(userLevel);
+        double ratio = user.getBoosterProfile().getPercentageOfOrder();
 
         preparationRequest(request, ratio);
         Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
@@ -132,21 +130,12 @@ public class OrderService implements IOrderService {
         }
     }
 
-    private OrderListRsDto recalculationPrice(OrderListRsDto response,  double ratio) {
-        List<OrderRsDto> orders =  response.getOrders().stream()
-                .peek(o -> o.setTotalPrice(Math.ceil(o.getTotalPrice() * ratio)))
+    private OrderListRsDto recalculationPrice(OrderListRsDto response, double ratio) {
+        List<OrderRsDto> orders = response.getOrders().stream()
+                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
                 .toList();
         response.setOrders(orders);
         return response;
-    }
-
-    private double getRatioLevel(int userLevel) {
-        return switch (userLevel) {
-            case 1 -> BOOSTER_LEVEL_1_PERCENT;
-            case 2 -> BOOSTER_LEVEL_2_PERCENT;
-            case 3 -> BOOSTER_LEVEL_3_PERCENT;
-            default -> throw new IllegalStateException("Unexpected value: " + userLevel);
-        };
     }
 
     @Override
