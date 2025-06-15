@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 import static ru.platform.LocalConstants.Variables.DEFAULT_IMAGE_LINK;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
@@ -24,5 +26,5 @@ public class OffersByGameIdRsDto {
     @Schema(description = "Ссылка на картинку предложения", example = DEFAULT_IMAGE_LINK)
     private String imageUrl;
     @Schema(description = "Стоимость предложения", example = "100")
-    private Float price;
+    private BigDecimal price;
 }

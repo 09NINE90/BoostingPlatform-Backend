@@ -12,6 +12,7 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.service.IAuthService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -26,8 +27,8 @@ public class OrderMapper {
         return OrderEntity.builder()
                 .creator(authService.getAuthUser())
                 .offerName(cartItemDto.getOfferName())
-                .basePrice(cartItemDto.getBasePrice())
-                .totalPrice(cartItemDto.getTotalPrice())
+                .basePrice(BigDecimal.valueOf(cartItemDto.getBasePrice()))
+                .totalPrice(BigDecimal.valueOf(cartItemDto.getTotalPrice()))
                 .status(OrderStatus.CREATED.name())
                 .gameName(cartItemDto.getGameName())
                 .gamePlatform(cartItemDto.getGamePlatform())
@@ -54,7 +55,7 @@ public class OrderMapper {
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(OrderStatus.valueOf(orderEntity.getStatus()))
                 .gameName(orderEntity.getGameName())
-                .totalPrice(orderEntity.getTotalPrice())
+                .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .totalTime(orderEntity.getTotalTime())
                 .selectedOptions(toOrderOptionDtoList(orderEntity.getOptionList()))
                 .build();
@@ -92,7 +93,7 @@ public class OrderMapper {
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
-                .totalPrice(orderEntity.getTotalPrice())
+                .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
                 .build();
     }
