@@ -9,7 +9,7 @@ import ru.platform.games.dao.GameEntity;
 import ru.platform.user.dao.UserEntity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class OfferEntity {
 
     @Column(name = "created_at")
     @Schema(description = "Дата создания заказа на платформе")
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
