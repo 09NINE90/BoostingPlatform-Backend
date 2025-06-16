@@ -14,6 +14,9 @@ public class OrdersByFiltersRqDto {
     @Schema(hidden = true)
     private UserEntity creator;
 
+    @Schema(hidden = true)
+    private UserEntity worker;
+
     @Schema(description = "Статус заказа", enumAsRef = true)
     private OrderStatus status;
 

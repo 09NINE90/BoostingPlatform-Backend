@@ -18,4 +18,5 @@ public interface IOrderService {
     OrderListRsDto getAllOrders(OrdersByFiltersRqDto request);
     OrderRsDto getOrderById(UUID orderId);
     void acceptOrder(UUID orderId);
+    List<OrderRsDto> getOrdersByBooster(OrdersByFiltersRqDto request);
 }

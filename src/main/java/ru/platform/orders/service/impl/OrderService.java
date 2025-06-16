@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
-import ru.platform.orders.PaginationOrdersUtil;
+import ru.platform.orders.utils.PaginationOrdersUtil;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderSpecification;
@@ -20,6 +20,7 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderService;
+import ru.platform.orders.utils.SortOrderUtils;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
@@ -41,7 +42,6 @@ public class OrderService implements IOrderService {
     private final IAuthService authService;
     private final OrderRepository orderRepository;
     private final OrderSpecification specification;
-    private final PaginationOrdersUtil paginationOrdersUtil;
 
     private final String LOG_PREFIX = "OrderService: {}";
 
@@ -72,25 +72,6 @@ public class OrderService implements IOrderService {
         return orders.stream().map(mapper::toOrderRsDto).toList();
     }
 
-    private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFunc() {
-        try {
-            return request -> orderRepository.findAll(specification.getFilter(request));
-        } catch (Exception e) {
-            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
-            throw new PlatformException(NOT_FOUND_ERROR);
-        }
-    }
-
-    private Function<OrdersByFiltersRqDto, Page<OrderEntity>> getServicePageFuncWithSort() {
-        try {
-            return request -> orderRepository
-                    .findAll(specification.getFilter(request), paginationOrdersUtil.getPageRequest(request));
-        } catch (Exception e) {
-            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
-            throw new PlatformException(NOT_FOUND_ERROR);
-        }
-    }
-
     @Override
     public OrderFiltersRsDto getOrderFilters() {
         List<String> statuses = orderRepository.findAllDistinctStatuses();
@@ -115,27 +96,23 @@ public class OrderService implements IOrderService {
         UserEntity user = authService.getAuthUser();
         double ratio = user.getBoosterProfile().getPercentageOfOrder();
 
-        preparationRequest(request, ratio);
-        Page<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
-        OrderListRsDto response = mapper.toOrderListRsDto(orders);
-        return recalculationPrice(response, ratio);
-    }
-
-    private void preparationRequest(OrdersByFiltersRqDto request, double ratio) {
         request.setStatus(CREATED);
-        OrdersByFiltersRqDto.PriceDto requestPrice = request.getPrice();
-        if (requestPrice != null && requestPrice.getPriceFrom() != null && requestPrice.getPriceTo() != null) {
-            requestPrice.setPriceFrom(Math.floor(requestPrice.getPriceFrom() / ratio));
-            requestPrice.setPriceTo(Math.floor(requestPrice.getPriceTo() / ratio));
-        }
+        preparationRequest(request, ratio);
+        Page<OrderEntity> orders = getServicePageFuncWithSortAndPage().apply(request);
+        OrderListRsDto response = mapper.toOrderListRsDto(orders);
+        response.setOrders(recalculationPrice(response, ratio));
+        return response;
     }
 
-    private OrderListRsDto recalculationPrice(OrderListRsDto response, double ratio) {
-        List<OrderRsDto> orders = response.getOrders().stream()
-                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
-                .toList();
-        response.setOrders(orders);
-        return response;
+    @Override
+    public List<OrderRsDto> getOrdersByBooster(OrdersByFiltersRqDto request) {
+        UserEntity user = authService.getAuthUser();
+        double ratio = user.getBoosterProfile().getPercentageOfOrder();
+        preparationRequest(request, ratio);
+
+        request.setWorker(user);
+        List<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
+        return orders.stream().map(mapper::toOrderRsDto).toList();
     }
 
     @Override
@@ -158,6 +135,49 @@ public class OrderService implements IOrderService {
         order.setWorkerId(user);
         order.setStatus(IN_PROGRESS.name());
         orderRepository.save(order);
+    }
+
+    private void preparationRequest(OrdersByFiltersRqDto request, double ratio) {
+        OrdersByFiltersRqDto.PriceDto requestPrice = request.getPrice();
+        if (requestPrice != null && requestPrice.getPriceFrom() != null && requestPrice.getPriceTo() != null) {
+            requestPrice.setPriceFrom(Math.floor(requestPrice.getPriceFrom() / ratio));
+            requestPrice.setPriceTo(Math.floor(requestPrice.getPriceTo() / ratio));
+        }
+    }
+
+    private List<OrderRsDto> recalculationPrice(OrderListRsDto response, double ratio) {
+        return response.getOrders().stream()
+                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
+                .toList();
+    }
+
+    private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFunc() {
+        try {
+            return request -> orderRepository.findAll(specification.getFilter(request));
+        } catch (Exception e) {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
+    }
+
+    private Function<OrdersByFiltersRqDto, Page<OrderEntity>> getServicePageFuncWithSortAndPage() {
+        try {
+            return request -> orderRepository
+                    .findAll(specification.getFilter(request), PaginationOrdersUtil.getPageRequest(request));
+        } catch (Exception e) {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
+    }
+
+    private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFuncWithSort() {
+        try {
+            return request -> orderRepository
+                    .findAll(specification.getFilter(request), SortOrderUtils.getSortBy(request));
+        } catch (Exception e) {
+            log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
     }
 
 }

@@ -63,4 +63,9 @@ public class OrderApi {
         orderService.acceptOrder(orderId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/byBooster")
+    public ResponseEntity<List<OrderRsDto>> getOrdersByBooster(@RequestBody OrdersByFiltersRqDto request) {
+        return ResponseEntity.ok(orderService.getOrdersByBooster(request));
+    }
 }
