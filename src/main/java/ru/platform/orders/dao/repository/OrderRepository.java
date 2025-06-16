@@ -29,4 +29,23 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
 
     @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o")
     Double findMaxPrice();
+
+    /**
+     * Запросы для бустера
+     */
+    @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.workerId = :booster")
+    List<String> findAllDistinctStatusesByWorkerId(@Param("booster") UserEntity booster);
+
+    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.workerId = :booster")
+    List<String> findAllDistinctGamePlatformsByWorkerId(@Param("booster") UserEntity booster);
+
+    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.workerId = :booster")
+    List<String> findAllDistinctGameNamesByWorkerId(@Param("booster") UserEntity booster);
+
+    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.workerId = :booster")
+    Double findMinPriceByWorkerId(@Param("booster") UserEntity booster);
+
+    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.workerId = :booster")
+    Double findMaxPriceByWorkerId(@Param("booster") UserEntity booster);
+
 }

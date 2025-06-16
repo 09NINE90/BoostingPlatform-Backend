@@ -51,10 +51,10 @@ public class OrderApi {
         return ResponseEntity.ok(orderBoosterService.getAllOrders(request));
     }
 
-    @GetMapping("/getFilters")
+    @GetMapping("/getFiltersForCreatedOrders")
     @Operation(summary = "Получение значений фильтров для заказов")
-    public ResponseEntity<OrderFiltersRsDto> getOrderFilters() {
-        return ResponseEntity.ok(orderBoosterService.getOrderFilters());
+    public ResponseEntity<OrderFiltersRsDto> getFiltersForCreatedOrders() {
+        return ResponseEntity.ok(orderBoosterService.getFiltersForCreatedOrders());
     }
 
     @PostMapping("/accept/{orderId}")
@@ -70,5 +70,12 @@ public class OrderApi {
     @Operation(summary = "Получение списка заказов, закрепленных за бустером")
     public ResponseEntity<List<OrderRsDto>> getOrdersByBooster(@RequestBody OrdersByBoosterRqDto request) {
         return ResponseEntity.ok(orderBoosterService.getOrdersByBooster(request));
+    }
+
+    @GetMapping("/getFiltersForOrdersByBooster")
+    @RoleRequired(value = "ROLE_BOOSTER")
+    @Operation(summary = "Получение значений фильтров для заказов, закрепленных за бустером")
+    public ResponseEntity<OrderFiltersRsDto> getFiltersForOrdersByBooster() {
+        return ResponseEntity.ok(orderBoosterService.getFiltersForOrdersByBooster());
     }
 }

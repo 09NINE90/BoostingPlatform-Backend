@@ -42,12 +42,32 @@ public class OrderBoosterService implements IOrderBoosterService {
     private final String LOG_PREFIX = "OrderBoosterService: {}";
 
     @Override
-    public OrderFiltersRsDto getOrderFilters() {
+    public OrderFiltersRsDto getFiltersForCreatedOrders() {
         List<String> statuses = orderRepository.findAllDistinctStatuses();
         List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms();
         List<String> gameNames = orderRepository.findAllDistinctGameNames();
         Double minPrice = orderRepository.findMinPrice();
         Double maxPrice = orderRepository.findMaxPrice();
+
+        return OrderFiltersRsDto.builder()
+                .gameNames(gameNames)
+                .gamePlatforms(gamePlatforms)
+                .statuses(statuses)
+                .price(OrderFiltersRsDto.PriceFilterDto.builder()
+                        .priceMin(minPrice)
+                        .priceMax(maxPrice)
+                        .build())
+                .build();
+    }
+
+    @Override
+    public OrderFiltersRsDto getFiltersForOrdersByBooster() {
+        UserEntity user = authService.getAuthUser();
+        List<String> statuses = orderRepository.findAllDistinctStatusesByWorkerId(user);
+        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByWorkerId(user);
+        List<String> gameNames = orderRepository.findAllDistinctGameNamesByWorkerId(user);
+        Double minPrice = orderRepository.findMinPriceByWorkerId(user);
+        Double maxPrice = orderRepository.findMaxPriceByWorkerId(user);
 
         return OrderFiltersRsDto.builder()
                 .gameNames(gameNames)

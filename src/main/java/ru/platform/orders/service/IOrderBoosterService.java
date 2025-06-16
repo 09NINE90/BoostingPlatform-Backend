@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IOrderBoosterService {
-    OrderFiltersRsDto getOrderFilters();
+    OrderFiltersRsDto getFiltersForCreatedOrders();
     OrderListRsDto getAllOrders(OrdersByFiltersRqDto request);
     void acceptOrder(UUID orderId);
     List<OrderRsDto> getOrdersByBooster(OrdersByBoosterRqDto request);
+    OrderFiltersRsDto getFiltersForOrdersByBooster();
 }
