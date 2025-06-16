@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
+import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
+import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
@@ -23,7 +25,10 @@ public class OrderMapper {
 
     private final IAuthService authService;
 
-    public OrderEntity toOrder(CartItemDto cartItemDto) {
+    /**
+     * Маппинг объекта из корзины в объект сущности БД
+     */
+    public OrderEntity toOrderEntity(CartItemDto cartItemDto) {
         return OrderEntity.builder()
                 .creator(authService.getAuthUser())
                 .offerName(cartItemDto.getOfferName())
@@ -37,11 +42,17 @@ public class OrderMapper {
                 .build();
     }
 
+    /**
+     * Маппинг списка опций объекта из корзины в список опций объекта сущности БД
+     */
     private List<OrderOptionEntity> toOrderOptionList(List<CartItemDto.CartSelectedOptionsDto> cartSelectedOptionsList) {
         if (cartSelectedOptionsList == null || cartSelectedOptionsList.isEmpty()) return emptyList();
         return cartSelectedOptionsList.stream().map(this::toOrderOption).toList();
     }
 
+    /**
+     * Маппинг объекта опции корзины в объект опции сущности БД
+     */
     private OrderOptionEntity toOrderOption(CartItemDto.CartSelectedOptionsDto cartSelectedOptionsDto) {
         return OrderOptionEntity.builder()
                 .value(cartSelectedOptionsDto.getValue().toString())
@@ -108,6 +119,21 @@ public class OrderMapper {
                 .value(cartSelectedOptionsDto.getValue())
                 .label(cartSelectedOptionsDto.getLabel())
                 .optionTitle(cartSelectedOptionsDto.getOptionTitle())
+                .build();
+    }
+
+    /**
+     * Маппинг объекта запроса на получения ордеров закрепленных за бустером
+     * в объект запроса для получения отфильтрованных и отсортированных ордеров
+     */
+    public OrdersByFiltersRqDto toOrdersByFiltersRqDto(OrdersByBoosterRqDto request) {
+        return OrdersByFiltersRqDto.builder()
+                .worker(request.getWorker())
+                .status(request.getStatus())
+                .gameName(request.getGameName())
+                .gamePlatform(request.getGamePlatform())
+                .price(request.getPrice())
+                .sort(request.getSort())
                 .build();
     }
 }
