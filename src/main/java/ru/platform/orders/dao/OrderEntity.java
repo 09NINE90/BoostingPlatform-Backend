@@ -1,14 +1,13 @@
 package ru.platform.orders.dao;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -48,11 +47,11 @@ public class OrderEntity {
     @Column(name = "game_platform")
     private String gamePlatform;
 
-    @Column(name = "base_price")
-    private double basePrice;
+    @Column(name = "base_price", precision = 19, scale = 4)
+    private BigDecimal basePrice;
 
-    @Column(name = "total_price")
-    private double totalPrice;
+    @Column(name = "total_price", precision = 19, scale = 4)
+    private BigDecimal totalPrice;
 
     @Column(name = "total_time")
     private int totalTime;

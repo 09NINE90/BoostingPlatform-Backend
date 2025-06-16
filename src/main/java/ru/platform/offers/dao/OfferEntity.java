@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.user.dao.UserEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ public class OfferEntity {
     @Schema(description = "Описание заказа")
     private String description;
 
-    @Column(name = "price", scale = 2)
+    @Column(name = "price", precision = 19, scale = 4)
     @Schema(description = "Базовая стоимость заказа")
-    private Float price;
+    private BigDecimal price;
 
     @Column(name = "categories")
     private String categories;

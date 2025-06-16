@@ -9,10 +9,7 @@ import ru.platform.user.dao.UserEntity;
 
 @Data
 @Builder
-public class OrdersByFiltersRqDto {
-
-    @Schema(hidden = true)
-    private UserEntity creator;
+public class OrdersByBoosterRqDto {
 
     @Schema(hidden = true)
     private UserEntity worker;
@@ -27,17 +24,10 @@ public class OrdersByFiltersRqDto {
     private String gamePlatform;
 
     @Schema(description = "Цена от/до")
-    private PriceDto price;
+    private OrdersByFiltersRqDto.PriceDto price;
 
     @Schema(description = "Сортировка", example = "PRICE")
     private OrderSortFilter sort;
-
-    @Schema(description = "Номер страницы для получения данных", example = "1")
-    private int pageNumber;
-
-    @Schema(description = "Количество объектов на одной странице", example = "20")
-    private int pageSize;
-
 
     @Data
     @Builder
