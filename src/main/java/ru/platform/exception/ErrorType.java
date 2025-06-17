@@ -52,6 +52,10 @@ public enum ErrorType {
     ORDER_LIMIT_EXCEEDED_ERROR(
             400,
             "You cannot take more orders. You have reached the maximum number of orders in progress."
+    ),
+    JSON_LOAD_ERROR(
+            400,
+            "Failed to load object from JSON."
     );
 
     private final int httpStatus;

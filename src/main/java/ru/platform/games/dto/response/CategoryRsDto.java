@@ -3,11 +3,13 @@ package ru.platform.games.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
+@Jacksonized
 public class CategoryRsDto {
 
     @Schema(description = "Идентификатор категории", example = DEFAULT_UUID)
