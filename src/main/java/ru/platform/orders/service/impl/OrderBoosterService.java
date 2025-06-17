@@ -20,12 +20,13 @@ import ru.platform.orders.utils.SortOrderUtils;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
-import static ru.platform.exception.ErrorType.ORDER_ALREADY_IN_PROGRESS_ERROR;
+import static ru.platform.LocalConstants.Variables.BOOSTER_LIMIT_ORDERS_IN_WORK;
+import static ru.platform.exception.ErrorType.*;
 import static ru.platform.orders.enumz.OrderStatus.CREATED;
 import static ru.platform.orders.enumz.OrderStatus.IN_PROGRESS;
 
@@ -89,7 +90,7 @@ public class OrderBoosterService implements IOrderBoosterService {
         preparationRequest(request, ratio);
         Page<OrderEntity> orders = getServicePageFuncWithSortAndPage().apply(request);
         OrderListRsDto response = mapper.toOrderListRsDto(orders);
-        response.setOrders(recalculationPrice(response, ratio));
+        response.setOrders(recalculationPrice(response.getOrders(), ratio));
         return response;
     }
 
@@ -103,11 +104,13 @@ public class OrderBoosterService implements IOrderBoosterService {
         preparationRequest(preparedRequest, ratio);
 
         List<OrderEntity> orders = getServicePageFuncWithSort().apply(preparedRequest);
-        return orders.stream().map(mapper::toOrderRsDto).toList();
+        List<OrderRsDto> preparedOrders = orders.stream().map(mapper::toOrderRsDto).toList();
+        return recalculationPrice(preparedOrders, ratio);
     }
 
     @Override
     public void acceptOrder(UUID orderId) {
+        UserEntity user = authService.getAuthUser();
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
@@ -115,10 +118,20 @@ public class OrderBoosterService implements IOrderBoosterService {
             throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
         }
 
-        UserEntity user = authService.getAuthUser();
+        if (getCountOrdersInWork(user) >= BOOSTER_LIMIT_ORDERS_IN_WORK){
+            throw new PlatformException(ORDER_LIMIT_EXCEEDED_ERROR);
+        }
         order.setWorkerId(user);
         order.setStatus(IN_PROGRESS.name());
+        order.setStartTimeExecution(OffsetDateTime.now());
         orderRepository.save(order);
+    }
+
+    /**
+     * Получение количества заказов, которые находятся в работе и закреплены за бустером
+     */
+    private long getCountOrdersInWork(UserEntity boosterUser) {
+        return orderRepository.findCountOrdersInWorkByBooster(boosterUser);
     }
 
     /**
@@ -135,8 +148,8 @@ public class OrderBoosterService implements IOrderBoosterService {
     /**
      * Пересчет цен относительно процента бустера для ответа фронту
      */
-    private List<OrderRsDto> recalculationPrice(OrderListRsDto response, double ratio) {
-        return response.getOrders().stream()
+    private List<OrderRsDto> recalculationPrice(List<OrderRsDto> orders, double ratio) {
+        return orders.stream()
                 .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
                 .toList();
     }

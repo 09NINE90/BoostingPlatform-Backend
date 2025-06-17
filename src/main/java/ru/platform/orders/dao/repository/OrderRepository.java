@@ -48,4 +48,6 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
     @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.workerId = :booster")
     Double findMaxPriceByWorkerId(@Param("booster") UserEntity booster);
 
+    @Query("select COUNT(*) from OrderEntity o WHERE o.workerId = :booster AND o.status = 'IN_PROGRESS'")
+    long findCountOrdersInWorkByBooster(@Param("booster") UserEntity booster);
 }

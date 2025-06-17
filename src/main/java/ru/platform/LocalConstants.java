@@ -40,6 +40,8 @@ public class LocalConstants {
         public static final double BOOSTER_LEVEL_1_PERCENT = 0.5;
         public static final double BOOSTER_LEVEL_2_PERCENT = 0.55;
         public static final double BOOSTER_LEVEL_3_PERCENT = 0.6;
+
+        public static final int BOOSTER_LIMIT_ORDERS_IN_WORK = 3;
     }
 
     public static class Message {
