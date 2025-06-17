@@ -37,7 +37,7 @@ public class GameServiceTest {
     @Test
     @DisplayName("Игры: получение списка игра на главную страницу в side bar")
     void getAllGamesSuccess() throws IOException {
-        when(repository.findAllByOrderByRatingDesc()).thenReturn(CreatorDto.getListOfGamesEntity());
+        when(repository.findAllByIsActiveByOrderByRatingDesc()).thenReturn(CreatorDto.getListOfGamesEntity());
         when(gameMapper.toGameListRs(any())).thenReturn(CreatorDto.getGameMainPageRsDto());
 
         List<GameMainPageRsDto> response = gameService.getAllGames();
