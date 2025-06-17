@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS offer_cart
     total_time  INT,
     offer_id    UUID REFERENCES offers (id),
     creator_id  UUID REFERENCES users (id),
-    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS offer_option_cart

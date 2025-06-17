@@ -25,7 +25,8 @@ import ru.platform.user.service.IValidationUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
 import ru.platform.utils.JwtUtil;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
@@ -81,6 +82,7 @@ public class UserService implements IUserService {
     private UserEntity createUser(SignupUserRqDto user) {
         String token = jwtUtil.generateConfirmationToken(user.getEmail(), user.getPassword());
 
+        OffsetDateTime nowUtc = OffsetDateTime.now(ZoneOffset.UTC);
         UserEntity userEntity = UserEntity.builder()
                 .username(user.getEmail())
                 .password(encoder.encode(user.getPassword()))
@@ -90,8 +92,8 @@ public class UserService implements IUserService {
                 .build();
         UserProfileEntity profileEntity = UserProfileEntity.builder()
                 .nickname(user.getNickname())
-                .createdAt(LocalDate.now())
-                .lastActivityAt(LocalDate.now())
+                .createdAt(nowUtc)
+                .lastActivityAt(nowUtc)
                 .secondId(randomId.getRandomId())
                 .user(userEntity)
                 .build();
