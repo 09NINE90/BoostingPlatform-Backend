@@ -12,10 +12,10 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_USER_MAIL;
 @Schema(description = "Подтверждение регистрации пользователя")
 public class ConfirmationRsDto {
 
-    @Schema(description = "Сообщение с подтвержением отправки письма на почту полльзователю", example = CONFIRMATION_CODE_MASSAGE)
+    @Schema(description = "Сообщение с подтверждением отправки письма на почту пользователю", example = CONFIRMATION_CODE_MASSAGE)
     private String confirmation;
 
-    @Schema(description = "Почта пользоавателя", example = DEFAULT_USER_MAIL)
+    @Schema(description = "Почта пользователя", example = DEFAULT_USER_MAIL)
     private String username;
 
     public ConfirmationRsDto(String confirmation) {
