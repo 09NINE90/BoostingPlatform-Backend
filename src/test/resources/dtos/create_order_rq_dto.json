@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "offerId": "b1a2c3d4-e5f6-7890-abcd-ef1234567890",
+      "offerName":"Kingdoms Rise Boosting",
+      "gameName": "Kingdoms Rise",
+      "gamePlatform": "PC",
+      "basePrice": 68.0,
+      "totalPrice": 143.0,
+      "totalTime": 32,
+      "selectedOptions": [
+        {
+          "optionTitle": "Collection of achievements",
+          "value": "[All achievements, Rare trophies]",
+          "label": "All achievements, Rare trophies"
+        }
+      ]
+    }
+  ]
+}

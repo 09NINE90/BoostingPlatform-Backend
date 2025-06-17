@@ -15,6 +15,7 @@ import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.service.IAuthService;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -38,6 +39,8 @@ public class OrderMapper {
                 .gameName(cartItemDto.getGameName())
                 .gamePlatform(cartItemDto.getGamePlatform())
                 .totalTime(cartItemDto.getTotalTime())
+                .createdAt(OffsetDateTime.now())
+                .updatedAt(OffsetDateTime.now())
                 .optionList(toOrderOptionList(cartItemDto.getSelectedOptions()))
                 .build();
     }

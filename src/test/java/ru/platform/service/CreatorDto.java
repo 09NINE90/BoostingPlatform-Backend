@@ -6,6 +6,8 @@ import ru.platform.games.dao.GameEntity;
 import ru.platform.games.dto.response.GameBySecondIdRsDto;
 import ru.platform.games.dto.response.GameMainPageRsDto;
 import ru.platform.orders.dao.OrderEntity;
+import ru.platform.orders.dto.request.CreateOrderRqDto;
+import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.user.dao.UserEntity;
 
@@ -106,6 +108,50 @@ public class CreatorDto {
     public static OrderRsDto getOrderRsDto() {
         try {
             return TestDataLoader.loadFromJson(DTOS_PATH + "order_rs_dto.json", OrderRsDto.class);
+        } catch (IOException e) {
+            throw new PlatformException(JSON_LOAD_ERROR);
+        }
+    }
+
+    /**
+     * Генерация объекта запроса на создание заказа
+     */
+    public static CreateOrderRqDto getCreateOrderRqDto() {
+        try {
+            return TestDataLoader.loadFromJson(DTOS_PATH + "create_order_rq_dto.json", CreateOrderRqDto.class);
+        } catch (IOException e) {
+            throw new PlatformException(JSON_LOAD_ERROR);
+        }
+    }
+
+    /**
+     * Генерация объекта запроса на создание заказа
+     */
+    public static CreateOrderRqDto getCreateOrderRqDtoNotValid() {
+        try {
+            return TestDataLoader.loadFromJson(DTOS_PATH + "create_order_rq_dto_not_valid.json", CreateOrderRqDto.class);
+        } catch (IOException e) {
+            throw new PlatformException(JSON_LOAD_ERROR);
+        }
+    }
+
+    /**
+     * Генерация объекта ответа заказов
+     */
+    public static OrderFromCartRsDto getOrderFromCartRsDto() {
+        try {
+            return TestDataLoader.loadFromJson(DTOS_PATH + "order_from_cart_rs_dto.json", OrderFromCartRsDto.class);
+        } catch (IOException e) {
+            throw new PlatformException(JSON_LOAD_ERROR);
+        }
+    }
+
+    /**
+     * Генерация объекта сохраненного заказа
+     */
+    public static OrderEntity getOrderEntity() {
+        try {
+            return TestDataLoader.loadFromJson(ENTITIES_PATH + "saved_order_entity.json", OrderEntity.class);
         } catch (IOException e) {
             throw new PlatformException(JSON_LOAD_ERROR);
         }

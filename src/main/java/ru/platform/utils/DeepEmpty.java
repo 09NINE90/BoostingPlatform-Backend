@@ -12,6 +12,7 @@ class DeepEmpty {
         V value = SafelyGet.safelyGet(dto, getter);
 
         if (value == null) return true;
+        if (value instanceof String && ((String) value).isEmpty()) return true;
 
         return value instanceof Collection<?> && ((Collection<?>) value).isEmpty();
     }

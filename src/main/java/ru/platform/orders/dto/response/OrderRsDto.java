@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 @Data
 @Builder
+@Jacksonized
 public class OrderRsDto {
 
     @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
@@ -37,6 +39,7 @@ public class OrderRsDto {
 
     @Data
     @Builder
+    @Jacksonized
     public static class CartSelectedOptionsDto {
 
         @Schema(description = "Название опции, выбранной пользователем", example = "Стрим-сопровождение")
