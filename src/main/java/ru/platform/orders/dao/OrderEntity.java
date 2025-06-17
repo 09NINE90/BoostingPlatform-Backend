@@ -66,5 +66,11 @@ public class OrderEntity {
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
+    @Column(name = "start_time_execution")
+    private OffsetDateTime startTimeExecution;
+
+    @Column(name = "end_time_execution")
+    private OffsetDateTime endTimeExecution;
+
 }
 

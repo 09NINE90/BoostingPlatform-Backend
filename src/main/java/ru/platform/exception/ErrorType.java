@@ -48,6 +48,10 @@ public enum ErrorType {
     NOT_VALID_REQUEST(
             400,
             "Requested data is not valid."
+    ),
+    ORDER_LIMIT_EXCEEDED_ERROR(
+            400,
+            "You cannot take more orders. You have reached the maximum number of orders in progress."
     );
 
     private final int httpStatus;
