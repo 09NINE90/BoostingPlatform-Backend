@@ -16,6 +16,7 @@ import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderCustomerService;
+import ru.platform.orders.service.IValidationOrderService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
@@ -33,12 +34,14 @@ public class OrderCustomerService implements IOrderCustomerService {
     private final IAuthService authService;
     private final OrderRepository orderRepository;
     private final OrderSpecification specification;
+    private final IValidationOrderService validationOrderService;
 
     private final String LOG_PREFIX = "OrderCustomerService: {}";
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.CREATE_ORDER)
     public List<OrderFromCartRsDto> createOrder(CreateOrderRqDto orderRqDto) {
+        validationOrderService.validateCreateOrderRqDto(orderRqDto);
         List<OrderEntity> ordersToSave = orderRqDto.getItems().stream()
                 .map(mapper::toOrderEntity)
                 .toList();

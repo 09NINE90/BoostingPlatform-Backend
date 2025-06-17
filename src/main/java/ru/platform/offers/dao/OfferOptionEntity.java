@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.offers.enumz.OfferOptionType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

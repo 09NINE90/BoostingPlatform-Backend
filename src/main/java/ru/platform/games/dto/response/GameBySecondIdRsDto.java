@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
+@Jacksonized
 public class GameBySecondIdRsDto {
 
     @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
