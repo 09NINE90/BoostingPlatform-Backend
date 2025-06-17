@@ -36,6 +36,12 @@ public class LocalConstants {
         public static final String DEFAULT_UUID = "70b82203-0f41-47e1-b11c-0fb96f8f9204";
         public static final String DEFAULT_SECOND_UUID = "ABCD-123";
         public static final String DEFAULT_IMAGE_LINK = "https://bb82cdcce70076216efdbdfb864e275d.jpg";
+
+        public static final double BOOSTER_LEVEL_1_PERCENT = 0.5;
+        public static final double BOOSTER_LEVEL_2_PERCENT = 0.55;
+        public static final double BOOSTER_LEVEL_3_PERCENT = 0.6;
+
+        public static final int BOOSTER_LIMIT_ORDERS_IN_WORK = 3;
     }
 
     public static class Message {

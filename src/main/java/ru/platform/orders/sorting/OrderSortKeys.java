@@ -7,7 +7,8 @@ public enum OrderSortKeys {
     OFFER_NAME("offerName"),
     PRICE("totalPrice"),
     GAME_NAME("gameName"),
-    GAME_PLATFORM("gamePlatform");
+    GAME_PLATFORM("gamePlatform"),
+    CREATION_AT("createdAt");
 
     private final String title;
 

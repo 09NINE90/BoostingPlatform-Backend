@@ -1,0 +1,2 @@
+ALTER TABLE orders ADD COLUMN start_time_execution TIMESTAMP WITH TIME ZONE;
+ALTER TABLE orders ADD COLUMN end_time_execution TIMESTAMP WITH TIME ZONE;

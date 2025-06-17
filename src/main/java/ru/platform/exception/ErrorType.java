@@ -29,6 +29,10 @@ public enum ErrorType {
             409,
             "User already exists."
     ),
+    ORDER_ALREADY_IN_PROGRESS_ERROR(
+            409,
+            "The order is already in progress."
+    ),
     DATE_CONVERSION_ERROR(
             400,
             "Invalid date format or failed date conversion."
@@ -44,6 +48,10 @@ public enum ErrorType {
     NOT_VALID_REQUEST(
             400,
             "Requested data is not valid."
+    ),
+    ORDER_LIMIT_EXCEEDED_ERROR(
+            400,
+            "You cannot take more orders. You have reached the maximum number of orders in progress."
     );
 
     private final int httpStatus;

@@ -8,7 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.user.dao.UserEntity;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,11 +33,11 @@ public class OfferCartEntity {
     @Column(name = "game_platform")
     private String gamePlatform;
 
-    @Column(name = "base_price")
-    private double basePrice;
+    @Column(name = "base_price", precision = 19, scale = 4)
+    private BigDecimal basePrice;
 
-    @Column(name = "total_price")
-    private double totalPrice;
+    @Column(name = "total_price", precision = 19, scale = 4)
+    private BigDecimal totalPrice;
 
     @Column(name = "total_time")
     private int totalTime;
@@ -50,23 +51,13 @@ public class OfferCartEntity {
     private UserEntity creator;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "offer_cart_id")
     private List<OfferOptionCartEntity> optionCarts;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 
 }

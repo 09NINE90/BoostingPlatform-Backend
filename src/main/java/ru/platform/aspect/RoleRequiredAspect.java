@@ -1,54 +1,54 @@
 package ru.platform.aspect;
 
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.platform.annotation.RoleRequired;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import ru.platform.exception.PlatformException;
+import ru.platform.user.dao.UserEntity;
+import ru.platform.user.service.IAuthService;
+
+import static ru.platform.exception.ErrorType.ACCESS_DENIED_ERROR;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class RoleRequiredAspect {
 
+    private final IAuthService authService;
     private static final Logger logger = LoggerFactory.getLogger(RoleRequiredAspect.class);
 
     @Around("@annotation(roleRequired)")
     public Object checkRole(ProceedingJoinPoint joinPoint, RoleRequired roleRequired) throws Throwable {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = authService.getAuthUser();
 
-        if (authentication == null || authentication.getAuthorities().isEmpty()) {
-            logger.warn("Access denied: User is not authenticated");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authenticated");
+        if (user == null) {
+            logger.error("Access denied: User is not authenticated");
+            throw new PlatformException(ACCESS_DENIED_ERROR);
         }
 
         List<String> requiredRoles = Arrays.asList(roleRequired.value());
-        List<String> userRoles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+        String userRoles = user.getRoles();
 
-        logger.info("Attempting access: User '{}' with roles {} is trying to call {}",
-                authentication.getName(), userRoles, joinPoint.getSignature().toShortString());
+        logger.debug("Attempting access: User '{}' with roles {} is trying to call {}",
+                user.getUsername(), userRoles, joinPoint.getSignature().toShortString());
 
-        boolean hasRole = userRoles.stream().anyMatch(requiredRoles::contains);
+        boolean hasRole = requiredRoles.stream().anyMatch(role -> role.equals(userRoles));
         if (!hasRole) {
-            logger.warn("Access denied: User '{}' does not have the required roles {}",
-                    authentication.getName(), requiredRoles);
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have the required role");
+            logger.error("Access denied: User '{}' does not have the required roles {}",
+                    user.getUsername(), requiredRoles);
+            throw new PlatformException(ACCESS_DENIED_ERROR);
         }
 
-        logger.info("Access granted: User '{}' is executing {}", authentication.getName(), joinPoint.getSignature().toShortString());
+        logger.debug("Access granted: User '{}' is executing {}", user.getUsername(), joinPoint.getSignature().toShortString());
 
         return joinPoint.proceed();
     }
