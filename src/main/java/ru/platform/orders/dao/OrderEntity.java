@@ -38,8 +38,8 @@ public class OrderEntity {
     private String offerName;
 
     @ManyToOne
-    @JoinColumn(name = "worker_id")
-    private UserEntity workerId;
+    @JoinColumn(name = "booster")
+    private UserEntity booster;
 
     @Column(name = "game_name")
     private String gameName;

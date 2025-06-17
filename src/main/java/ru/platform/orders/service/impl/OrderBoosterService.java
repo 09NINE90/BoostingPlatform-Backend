@@ -64,11 +64,11 @@ public class OrderBoosterService implements IOrderBoosterService {
     @Override
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
-        List<String> statuses = orderRepository.findAllDistinctStatusesByWorkerId(user);
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByWorkerId(user);
-        List<String> gameNames = orderRepository.findAllDistinctGameNamesByWorkerId(user);
-        Double minPrice = orderRepository.findMinPriceByWorkerId(user);
-        Double maxPrice = orderRepository.findMaxPriceByWorkerId(user);
+        List<String> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
+        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
+        List<String> gameNames = orderRepository.findAllDistinctGameNamesByBooster(user);
+        Double minPrice = orderRepository.findMinPriceByBooster(user);
+        Double maxPrice = orderRepository.findMaxPriceByBooster(user);
 
         return OrderFiltersRsDto.builder()
                 .gameNames(gameNames)
@@ -97,7 +97,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     @Override
     public List<OrderRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
-        request.setWorker(user);
+        request.setBooster(user);
 
         OrdersByFiltersRqDto preparedRequest = mapper.toOrdersByFiltersRqDto(request);
         double ratio = user.getBoosterProfile().getPercentageOfOrder();
@@ -114,14 +114,14 @@ public class OrderBoosterService implements IOrderBoosterService {
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
-        if (!order.getStatus().equals(CREATED.name()) && order.getWorkerId() != null) {
+        if (!order.getStatus().equals(CREATED.name()) && order.getBooster() != null) {
             throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
         }
 
         if (getCountOrdersInWork(user) >= BOOSTER_LIMIT_ORDERS_IN_WORK){
             throw new PlatformException(ORDER_LIMIT_EXCEEDED_ERROR);
         }
-        order.setWorkerId(user);
+        order.setBooster(user);
         order.setStatus(IN_PROGRESS.name());
         order.setStartTimeExecution(OffsetDateTime.now());
         orderRepository.save(order);

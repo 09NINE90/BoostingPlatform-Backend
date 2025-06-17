@@ -33,21 +33,21 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
     /**
      * Запросы для бустера
      */
-    @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.workerId = :booster")
-    List<String> findAllDistinctStatusesByWorkerId(@Param("booster") UserEntity booster);
+    @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.booster = :booster")
+    List<String> findAllDistinctStatusesByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.workerId = :booster")
-    List<String> findAllDistinctGamePlatformsByWorkerId(@Param("booster") UserEntity booster);
+    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.booster = :booster")
+    List<String> findAllDistinctGamePlatformsByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.workerId = :booster")
-    List<String> findAllDistinctGameNamesByWorkerId(@Param("booster") UserEntity booster);
+    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.booster = :booster")
+    List<String> findAllDistinctGameNamesByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.workerId = :booster")
-    Double findMinPriceByWorkerId(@Param("booster") UserEntity booster);
+    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.booster = :booster")
+    Double findMinPriceByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.workerId = :booster")
-    Double findMaxPriceByWorkerId(@Param("booster") UserEntity booster);
+    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.booster = :booster")
+    Double findMaxPriceByBooster(@Param("booster") UserEntity booster);
 
-    @Query("select COUNT(*) from OrderEntity o WHERE o.workerId = :booster AND o.status = 'IN_PROGRESS'")
+    @Query("select COUNT(*) from OrderEntity o WHERE o.booster = :booster AND o.status = 'IN_PROGRESS'")
     long findCountOrdersInWorkByBooster(@Param("booster") UserEntity booster);
 }
