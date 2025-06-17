@@ -128,7 +128,7 @@ public class OrderMapper {
      */
     public OrdersByFiltersRqDto toOrdersByFiltersRqDto(OrdersByBoosterRqDto request) {
         return OrdersByFiltersRqDto.builder()
-                .worker(request.getWorker())
+                .booster(request.getBooster())
                 .status(request.getStatus())
                 .gameName(request.getGameName())
                 .gamePlatform(request.getGamePlatform())

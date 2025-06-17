@@ -28,7 +28,7 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
     public List<BiConsumer<Set<Specification<OrderEntity>>, OrdersByFiltersRqDto>> getSpecificationConsumerList() {
         List<BiConsumer<Set<Specification<OrderEntity>>, OrdersByFiltersRqDto>> result = new ArrayList<>();
         result.add(this::prepareCreator);
-        result.add(this::prepareWorker);
+        result.add(this::prepareBooster);
         result.add(this::prepareGameName);
         result.add(this::prepareStatus);
         result.add(this::preparePrice);
@@ -36,10 +36,10 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
         return result;
     }
 
-    private void prepareWorker(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
-        UserEntity worker = request.getWorker();
-        if (Objects.nonNull(worker)) {
-            set.add(fieldEqualTo(worker, OrderEntity_.WORKER_ID));
+    private void prepareBooster(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
+        UserEntity booster = request.getBooster();
+        if (Objects.nonNull(booster)) {
+            set.add(fieldEqualTo(booster, OrderEntity_.BOOSTER));
         }
     }
 

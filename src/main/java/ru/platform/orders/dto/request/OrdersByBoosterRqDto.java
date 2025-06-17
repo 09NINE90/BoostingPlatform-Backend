@@ -12,7 +12,7 @@ import ru.platform.user.dao.UserEntity;
 public class OrdersByBoosterRqDto {
 
     @Schema(hidden = true)
-    private UserEntity worker;
+    private UserEntity booster;
 
     @Schema(description = "Статус заказа", enumAsRef = true)
     private OrderStatus status;
