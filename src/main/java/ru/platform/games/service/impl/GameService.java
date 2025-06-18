@@ -26,7 +26,7 @@ public class GameService implements IGameService {
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.ALL_GAMES)
     public List<GameMainPageRsDto> getAllGames() {
-        List<GameEntity> allGames = repository.findAllByOrderByRatingDesc();
+        List<GameEntity> allGames = repository.findAllByIsActiveByOrderByRatingDesc();
         return gameMapper.toGameListRs(allGames);
     }
 

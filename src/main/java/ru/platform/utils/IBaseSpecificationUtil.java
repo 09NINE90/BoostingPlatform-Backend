@@ -133,6 +133,12 @@ public interface IBaseSpecificationUtil<T, U>  {
         };
     }
 
+    default Specification<T> fieldEqualTo(boolean value, String field) {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.get(field), value);
+        };
+    }
+
     default Specification<T> fieldEqualTo(UserEntity value, String field) {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.equal(root.get(field), value);

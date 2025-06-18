@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.games.dao.GameEntity;
 import ru.platform.user.dao.UserEntity;
 
 import java.math.BigDecimal;
@@ -27,8 +28,9 @@ public class OfferCartEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "game_name")
-    private String gameName;
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private GameEntity game;
 
     @Column(name = "game_platform")
     private String gamePlatform;
