@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum OrderSortKeys {
     OFFER_NAME("offerName"),
-    PRICE("totalPrice"),
+    TOTAL_PRICE("totalPrice"),
+    BOOSTER_PRICE("boosterSalary"),
     GAME_NAME("gameName"),
     GAME_PLATFORM("gamePlatform"),
     CREATION_AT("createdAt");

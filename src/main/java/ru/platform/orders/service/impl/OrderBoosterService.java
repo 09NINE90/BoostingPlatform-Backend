@@ -10,6 +10,7 @@ import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderSpecification;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
+import ru.platform.orders.dto.response.OrderByBoosterRsDto;
 import ru.platform.orders.dto.response.OrderFiltersRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
@@ -20,6 +21,8 @@ import ru.platform.orders.utils.SortOrderUtils;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -95,25 +98,38 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
-    public List<OrderRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
+    public List<OrderByBoosterRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
         request.setBooster(user);
 
         OrdersByFiltersRqDto preparedRequest = mapper.toOrdersByFiltersRqDto(request);
-        double ratio = user.getBoosterProfile().getPercentageOfOrder();
-        preparationRequest(preparedRequest, ratio);
 
         List<OrderEntity> orders = getServicePageFuncWithSort().apply(preparedRequest);
-        List<OrderRsDto> preparedOrders = orders.stream().map(mapper::toOrderRsDto).toList();
-        return recalculationPrice(preparedOrders, ratio);
+
+        return orders.stream().map(mapper::toOrderByBoosterRsDto).toList();
     }
 
     @Override
     public void acceptOrder(UUID orderId) {
         UserEntity user = authService.getAuthUser();
+        double ratio = user.getBoosterProfile().getPercentageOfOrder();
+
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
+        checkPossibilityToAcceptOrder(order, user);
+
+        order.setBooster(user);
+        order.setStatus(IN_PROGRESS.name());
+        order.setStartTimeExecution(OffsetDateTime.now());
+        order.setBoosterSalary(calculateBoosterSalary(order, ratio));
+        orderRepository.save(order);
+    }
+
+    /**
+     * Проверка возможности взять заказ бустером
+     */
+    void checkPossibilityToAcceptOrder(OrderEntity order,UserEntity user){
         if (!order.getStatus().equals(CREATED.name()) && order.getBooster() != null) {
             throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
         }
@@ -121,10 +137,15 @@ public class OrderBoosterService implements IOrderBoosterService {
         if (getCountOrdersInWork(user) >= BOOSTER_LIMIT_ORDERS_IN_WORK){
             throw new PlatformException(ORDER_LIMIT_EXCEEDED_ERROR);
         }
-        order.setBooster(user);
-        order.setStatus(IN_PROGRESS.name());
-        order.setStartTimeExecution(OffsetDateTime.now());
-        orderRepository.save(order);
+    }
+
+    /**
+     * Расчет суммы, которую бустер получит за заказ
+     * умножаем на процент бустера и округляем до сотых в большую сторону
+     */
+    private BigDecimal calculateBoosterSalary(OrderEntity order, double ratio) {
+        return order.getTotalPrice().multiply(new BigDecimal(String.valueOf(ratio)))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     /**
@@ -138,7 +159,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      * Подготовка запроса (изменение цен относительно процента бустера)
      */
     private void preparationRequest(OrdersByFiltersRqDto request, double ratio) {
-        OrdersByFiltersRqDto.PriceDto requestPrice = request.getPrice();
+        OrdersByFiltersRqDto.PriceDto requestPrice = request.getTotalPrice();
         if (requestPrice != null && requestPrice.getPriceFrom() != null && requestPrice.getPriceTo() != null) {
             requestPrice.setPriceFrom(Math.floor(requestPrice.getPriceFrom() / ratio));
             requestPrice.setPriceTo(Math.floor(requestPrice.getPriceTo() / ratio));

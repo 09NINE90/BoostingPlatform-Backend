@@ -42,10 +42,10 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
     @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.booster = :booster")
     List<String> findAllDistinctGameNamesByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.booster = :booster")
+    @Query("SELECT MIN(o.boosterSalary) FROM OrderEntity o WHERE o.booster = :booster")
     Double findMinPriceByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.booster = :booster")
+    @Query("SELECT MAX(o.boosterSalary) FROM OrderEntity o WHERE o.booster = :booster")
     Double findMaxPriceByBooster(@Param("booster") UserEntity booster);
 
     @Query("select COUNT(*) from OrderEntity o WHERE o.booster = :booster AND o.status = 'IN_PROGRESS'")
