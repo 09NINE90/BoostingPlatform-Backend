@@ -27,7 +27,10 @@ public class OrdersByFiltersRqDto {
     private String gamePlatform;
 
     @Schema(description = "Цена от/до")
-    private PriceDto price;
+    private PriceDto totalPrice;
+
+    @Schema(description = "Цена от/до")
+    private PriceDto boosterPrice;
 
     @Schema(description = "Сортировка", example = "PRICE")
     private OrderSortFilter sort;

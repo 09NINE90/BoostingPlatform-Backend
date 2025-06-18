@@ -31,7 +31,8 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
         result.add(this::prepareBooster);
         result.add(this::prepareGameName);
         result.add(this::prepareStatus);
-        result.add(this::preparePrice);
+        result.add(this::prepareBoosterPrice);
+        result.add(this::prepareTotalPrice);
         result.add(this::preparePlatform);
         return result;
     }
@@ -71,10 +72,18 @@ public class OrderSpecification implements IBaseSpecificationUtil<OrderEntity, O
         }
     }
 
-    private void preparePrice(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
-        OrdersByFiltersRqDto.PriceDto price = request.getPrice();
+    private void prepareTotalPrice(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
+        OrdersByFiltersRqDto.PriceDto price = request.getTotalPrice();
         if (price != null && price.getPriceFrom() != null && price.getPriceTo() != null) {
             set.add(fieldAreBetween(price.getPriceFrom(), price.getPriceTo(), OrderEntity_.TOTAL_PRICE));
         }
     }
+
+    private void prepareBoosterPrice(Set<Specification<OrderEntity>> set, OrdersByFiltersRqDto request) {
+        OrdersByFiltersRqDto.PriceDto price = request.getBoosterPrice();
+        if (price != null && price.getPriceFrom() != null && price.getPriceTo() != null) {
+            set.add(fieldAreBetween(price.getPriceFrom(), price.getPriceTo(), OrderEntity_.BOOSTER_SALARY));
+        }
+    }
+
 }

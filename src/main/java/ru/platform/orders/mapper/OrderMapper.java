@@ -8,6 +8,7 @@ import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
+import ru.platform.orders.dto.response.OrderByBoosterRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
@@ -125,6 +126,33 @@ public class OrderMapper {
                 .build();
     }
 
+    public OrderByBoosterRsDto toOrderByBoosterRsDto(OrderEntity orderEntity) {
+        return OrderByBoosterRsDto.builder()
+                .orderId(orderEntity.getId().toString())
+                .secondId(String.valueOf(orderEntity.getSecondId()))
+                .offerName(orderEntity.getOfferName())
+                .gameName(orderEntity.getGameName())
+                .gamePlatform(orderEntity.getGamePlatform())
+                .orderStatus(orderEntity.getStatus())
+                .totalPrice(orderEntity.getTotalPrice().doubleValue())
+                .boosterSalary(orderEntity.getBoosterSalary().doubleValue())
+                .selectedOptions(toOrderByBoosterListOptionDtoList(orderEntity.getOptionList()))
+                .build();
+    }
+
+    private List<OrderByBoosterRsDto.CartSelectedOptionsDto> toOrderByBoosterListOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
+        if (orderOptionEntities == null || orderOptionEntities.isEmpty()) return emptyList();
+        return orderOptionEntities.stream().map(this::toOrderByBoosterListOptionDto).toList();
+    }
+
+    private OrderByBoosterRsDto.CartSelectedOptionsDto toOrderByBoosterListOptionDto(OrderOptionEntity cartSelectedOptionsDto) {
+        return OrderByBoosterRsDto.CartSelectedOptionsDto.builder()
+                .value(cartSelectedOptionsDto.getValue())
+                .label(cartSelectedOptionsDto.getLabel())
+                .optionTitle(cartSelectedOptionsDto.getOptionTitle())
+                .build();
+    }
+
     /**
      * Маппинг объекта запроса на получения ордеров закрепленных за бустером
      * в объект запроса для получения отфильтрованных и отсортированных ордеров
@@ -135,7 +163,11 @@ public class OrderMapper {
                 .status(request.getStatus())
                 .gameName(request.getGameName())
                 .gamePlatform(request.getGamePlatform())
-                .price(request.getPrice())
+                .boosterPrice(OrdersByFiltersRqDto.PriceDto.builder()
+                        .priceFrom(request.getPrice().getPriceFrom())
+                        .priceTo(request.getPrice().getPriceTo())
+                        .build()
+                )
                 .sort(request.getSort())
                 .build();
     }

@@ -24,7 +24,7 @@ public class OrdersByBoosterRqDto {
     private String gamePlatform;
 
     @Schema(description = "Цена от/до")
-    private OrdersByFiltersRqDto.PriceDto price;
+    private PriceDto price;
 
     @Schema(description = "Сортировка", example = "PRICE")
     private OrderSortFilter sort;

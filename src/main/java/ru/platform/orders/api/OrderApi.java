@@ -10,10 +10,7 @@ import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.request.OrderByStatusRqDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
-import ru.platform.orders.dto.response.OrderFiltersRsDto;
-import ru.platform.orders.dto.response.OrderFromCartRsDto;
-import ru.platform.orders.dto.response.OrderListRsDto;
-import ru.platform.orders.dto.response.OrderRsDto;
+import ru.platform.orders.dto.response.*;
 import ru.platform.orders.service.IOrderBoosterService;
 import ru.platform.orders.service.IOrderCustomerService;
 
@@ -68,7 +65,7 @@ public class OrderApi {
     @PostMapping("/byBooster")
     @RoleRequired(value = "ROLE_BOOSTER")
     @Operation(summary = "Получение списка заказов, закрепленных за бустером")
-    public ResponseEntity<List<OrderRsDto>> getOrdersByBooster(@RequestBody OrdersByBoosterRqDto request) {
+    public ResponseEntity<List<OrderByBoosterRsDto>> getOrdersByBooster(@RequestBody OrdersByBoosterRqDto request) {
         return ResponseEntity.ok(orderBoosterService.getOrdersByBooster(request));
     }
 

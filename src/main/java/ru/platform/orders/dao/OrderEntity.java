@@ -53,6 +53,9 @@ public class OrderEntity {
     @Column(name = "total_price", precision = 19, scale = 4)
     private BigDecimal totalPrice;
 
+    @Column(name = "booster_salary", precision = 19, scale = 4)
+    private BigDecimal boosterSalary;
+
     @Column(name = "total_time")
     private int totalTime;
 
