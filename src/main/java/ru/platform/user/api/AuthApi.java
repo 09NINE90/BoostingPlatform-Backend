@@ -3,6 +3,8 @@ package ru.platform.user.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,6 @@ import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.EmailConfirmationRequest;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
-import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
@@ -35,9 +36,8 @@ public class AuthApi {
 
     @PostMapping("/confirmSignUp")
     @Operation(summary = "Подтверждение регистрации пользователя")
-    public ResponseEntity<AuthRsDto> confirmSignUp(@RequestBody EmailConfirmationRequest confirmationToken) {
-        AuthRsDto result = userService.checkConfirmationSignUp(confirmationToken.getToken());
-        return ResponseEntity.ok(result);
+    public ResponseEntity<?> confirmSignUp(@RequestBody EmailConfirmationRequest confirmationToken, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.checkConfirmationSignUp(confirmationToken.getToken(), response));
     }
 
     @PostMapping("/resendConfirmationEmail")
@@ -49,9 +49,21 @@ public class AuthApi {
 
     @PostMapping("/signIn")
     @Operation(summary = "Авторизация пользователя")
-    public ResponseEntity<AuthRsDto> signIn(@RequestBody LoginUserRqDto user) {
-        AuthRsDto result = authService.trySignIn(user);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<?> signIn(@RequestBody LoginUserRqDto user, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.trySignIn(user, response));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Запрос на выход пользователя из системы")
+    public ResponseEntity<Void> logout( HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Обновление access токена по refresh токену из куки")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.refreshAccessToken(request, response));
     }
 
     @PostMapping("/forgotPassword")
@@ -70,9 +82,8 @@ public class AuthApi {
 
     @PostMapping("/changeUserPassword")
     @Operation(summary = "Запрос на смену пароля")
-    public ResponseEntity<AuthRsDto> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
-        AuthRsDto result = userService.changeUserPassword(confirmation);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<?> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.changeUserPassword(confirmation, response));
     }
 
 }

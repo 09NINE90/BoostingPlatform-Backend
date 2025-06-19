@@ -1,10 +1,15 @@
 package ru.platform.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dto.request.LoginUserRqDto;
-import ru.platform.user.dto.response.AuthRsDto;
+
+import java.util.Map;
 
 public interface IAuthService {
-    AuthRsDto trySignIn(LoginUserRqDto userRqDto);
+    Map<String, String> trySignIn(LoginUserRqDto userRqDto, HttpServletResponse response);
     UserEntity getAuthUser();
+    Map<String, String> refreshAccessToken(HttpServletRequest request, HttpServletResponse response);
+    void logout(HttpServletRequest request, HttpServletResponse response);
 }

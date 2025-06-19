@@ -15,8 +15,6 @@ public class LocalConstants {
         public static final String GAME_TAG_DESCRIPTION = "Получение игр для клментов";
         public static final String CATEGORY_TAG_NAME = "Категории игр";
         public static final String CATEGORY_TAG_DESCRIPTION = "Получение категорий игр";
-        public static final String OFFER_OPTION_TAG_NAME = "Опции предложения";
-        public static final String OFFER_OPTION_TAG_DESCRIPTION = "Получение опций предложений для клиентов";
         public static final String CAROUSEL_TAG_NAME = "Карусель на главной странице";
         public static final String CAROUSEL_TAG_DESCRIPTION = "Получение объектов карусели";
     }
@@ -26,6 +24,7 @@ public class LocalConstants {
         public static final int DEFAULT_PAGE_NUMBER = 0;
         public static final int TEN_MINUTES = 1000 * 60 * 10;
         public static final int TEN_HOURS = 1000 * 60 * 60 * 10;
+        public static final int TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
         public static final String EMPTY_STRING = "";
 
         public static final String DEFAULT_USER_MAIL = "user@mail.com";
