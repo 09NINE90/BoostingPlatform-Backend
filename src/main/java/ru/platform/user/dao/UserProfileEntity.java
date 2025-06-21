@@ -34,10 +34,6 @@ public class UserProfileEntity {
     @Schema(description = "Имя пользователя")
     private String nickname;
 
-    @Column(name = "level")
-    @Schema(description = "Уровень пользователя")
-    private int level;
-
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на аватарку пользователя")
     private String imageUrl;

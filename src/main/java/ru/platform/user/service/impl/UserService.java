@@ -10,13 +10,16 @@ import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
+import ru.platform.user.dao.BoosterProfileEntity;
+import ru.platform.user.dao.CustomerProfileEntity;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
+import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
-import ru.platform.user.dto.response.UserProfileRsDto;
+import ru.platform.user.dto.response.CustomerProfileRsDto;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -34,7 +37,7 @@ import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
-import static ru.platform.user.UserRolesType.ROLE_CUSTOMER;
+import static ru.platform.user.enumz.UserRolesType.ROLE_CUSTOMER;
 
 @Slf4j
 @Service
@@ -101,8 +104,12 @@ public class UserService implements IUserService {
                 .secondId(randomId.getRandomId())
                 .user(userEntity)
                 .build();
+        CustomerProfileEntity customerProfileEntity = CustomerProfileEntity.builder()
+                .user(userEntity)
+                .build();
 
         userEntity.setProfile(profileEntity);
+        userEntity.setCustomerProfile(customerProfileEntity);
         return userEntity;
     }
 
@@ -187,14 +194,45 @@ public class UserService implements IUserService {
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }
 
+    /**
+     * Получение информации о заказчике
+     */
     @Override
-    public UserProfileRsDto getUserProfileData() {
+    public CustomerProfileRsDto getCustomerProfileData() {
         UserEntity userEntity = authService.getAuthUser();
         UserProfileEntity profileEntity = userEntity.getProfile();
-        return UserProfileRsDto.builder()
+        CustomerProfileEntity customerProfile = userEntity.getCustomerProfile();
+
+        return CustomerProfileRsDto.builder()
+                .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
+                .discountPercentage(customerProfile.getDiscountPercentage())
+                .cashbackBalance(customerProfile.getCashbackBalance())
+                .status(customerProfile.getStatus())
+                .build();
+    }
+
+    /**
+     * Получение информации о бустере
+     */
+    @Override
+    public BoosterProfileRsDto getBoosterProfileData() {
+        UserEntity userEntity = authService.getAuthUser();
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
+
+        return BoosterProfileRsDto.builder()
+                .email(userEntity.getUsername())
+                .nickname(profileEntity.getNickname())
+                .imageUrl(profileEntity.getImageUrl())
+                .secondId(profileEntity.getSecondId())
+                .level(boosterProfile.getLevel())
+                .percentageOfOrder(boosterProfile.getPercentageOfOrder() * 100)
+                .balance(boosterProfile.getBalance())
+                .totalIncome(boosterProfile.getTotalIncome())
+                .totalTips(boosterProfile.getTotalTips())
                 .build();
     }
 
