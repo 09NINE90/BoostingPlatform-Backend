@@ -1,5 +1,6 @@
 package ru.platform.user.service.impl;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
-import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.dto.response.UserProfileRsDto;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
@@ -27,6 +27,7 @@ import ru.platform.utils.JwtUtil;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
@@ -52,6 +53,9 @@ public class UserService implements IUserService {
 
     private final static String LOG_PREFIX = "UserService: {}";
 
+    /**
+     * Обработка запроса на регистрацию пользователя
+     */
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
     public ConfirmationRsDto registrationUser(SignupUserRqDto user) {
@@ -102,27 +106,25 @@ public class UserService implements IUserService {
         return userEntity;
     }
 
+    /**
+     * Проверка подтверждения регистрации
+     */
     @Override
-    public AuthRsDto checkConfirmationSignUp(String confirmationToken) {
-        String username;
-        try {
-            username = jwtUtil.extractUsername(confirmationToken);
-        } catch (PlatformException ex) {
-            throw ex;
-        }
+    public Map<String, String> checkConfirmationSignUp(String confirmationToken, HttpServletResponse response) {
+        String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
         String password = jwtUtil.extractUserPassword(confirmationToken);
 
         if (user.getConfirmationToken().equals(confirmationToken)) {
             user.setEnabled(true);
             userRepository.save(user);
-            return authService.trySignIn(new LoginUserRqDto(username, password));
+            return authService.trySignIn(new LoginUserRqDto(username, password), response);
         } else {
             log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getMessage());
             throw new PlatformException(EMAIL_VERIFIED_ERROR);
         }
-
     }
 
     @Override
@@ -141,12 +143,7 @@ public class UserService implements IUserService {
 
     @Override
     public ConfirmationRsDto confirmPasswordRecovery(String confirmationToken) {
-        String username;
-        try {
-            username = jwtUtil.extractUsername(confirmationToken);
-        } catch (PlatformException ex) {
-            throw ex;
-        }
+        String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
@@ -159,7 +156,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation) {
+    public Map<String, String> changeUserPassword(ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
@@ -169,7 +166,7 @@ public class UserService implements IUserService {
         return authService.trySignIn(new LoginUserRqDto(
                 confirmation.getEmail(),
                 confirmation.getPassword()
-        ));
+        ), response);
     }
 
     @Override
@@ -203,10 +200,11 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public String changeNickname(String nickname) {
+    public void changeNickname(String nickname) {
         UserEntity userEntity = authService.getAuthUser();
         userEntity = userRepository.findById(userEntity.getId())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
         UserProfileEntity profileEntity = userEntity.getProfile();
         if (profileEntity == null) {
             profileEntity = new UserProfileEntity();
@@ -215,7 +213,6 @@ public class UserService implements IUserService {
         profileEntity.setNickname(nickname);
         userRepository.save(userEntity);
         userProfileRepository.save(userEntity.getProfile());
-        return "Success";
     }
 
 }

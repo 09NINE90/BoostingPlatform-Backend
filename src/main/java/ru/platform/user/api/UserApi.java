@@ -27,8 +27,8 @@ public class UserApi {
 
     @PostMapping("/changeNickname")
     @Operation(summary = "Запрос на смену никнейма пользователя")
-    public ResponseEntity<?> changeNickname(@RequestParam String nickname) {
-        String result = userService.changeNickname(nickname);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Void> changeNickname(@RequestParam String nickname) {
+        userService.changeNickname(nickname);
+        return ResponseEntity.ok().build();
     }
 }

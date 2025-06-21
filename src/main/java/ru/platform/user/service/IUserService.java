@@ -1,18 +1,20 @@
 package ru.platform.user.service;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.servlet.http.HttpServletResponse;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
-import ru.platform.user.dto.response.AuthRsDto;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.response.UserProfileRsDto;
+
+import java.util.Map;
 
 public interface IUserService {
     @Schema(description = "Создание пользователя")
     ConfirmationRsDto registrationUser(SignupUserRqDto user);
 
     @Schema(description = "Подтверждение регистрации пользователя")
-    AuthRsDto checkConfirmationSignUp(String confirmationToken);
+    Map<String, String> checkConfirmationSignUp(String confirmationToken, HttpServletResponse response);
 
     @Schema(description = "Запрос кода для восстановления пароля")
     ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation);
@@ -21,7 +23,7 @@ public interface IUserService {
     ConfirmationRsDto confirmPasswordRecovery(String confirmationToken);
 
     @Schema(description = "Запрос на смену пароля")
-    AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation);
+    Map<String, String> changeUserPassword(ConfirmationEmailRqDto confirmation, HttpServletResponse response);
 
     @Schema(description = "Запрос на повторное письмо подтверждения почты")
     ConfirmationRsDto resendConfirmationEmail(ConfirmationEmailRqDto email);
@@ -30,5 +32,5 @@ public interface IUserService {
     UserProfileRsDto getUserProfileData();
 
     @Schema(description = "Запрос на смену никнейма пользователя")
-    String changeNickname(String nickname);
+    void changeNickname(String nickname);
 }
