@@ -1,5 +1,7 @@
 package ru.platform;
 
+import java.math.BigDecimal;
+
 public class LocalConstants {
 
     public static class Api {
@@ -36,11 +38,13 @@ public class LocalConstants {
         public static final String DEFAULT_SECOND_UUID = "ABCD-123";
         public static final String DEFAULT_IMAGE_LINK = "https://bb82cdcce70076216efdbdfb864e275d.jpg";
 
-        public static final double BOOSTER_LEVEL_1_PERCENT = 0.5;
-        public static final double BOOSTER_LEVEL_2_PERCENT = 0.55;
-        public static final double BOOSTER_LEVEL_3_PERCENT = 0.6;
+        public static final double BOOSTER_ROOKIE_PERCENT = 0.45;
+        public static final double BOOSTER_VETERAN_PERCENT = 0.5;
+        public static final double BOOSTER_ELITE_PERCENT = 0.55;
+        public static final double BOOSTER_LEGEND_PERCENT = 0.6;
 
         public static final int BOOSTER_LIMIT_ORDERS_IN_WORK = 3;
+        public static final BigDecimal BOOSTER_LEGEND_TOTAL_INCOME = BigDecimal.valueOf(5_000);
     }
 
     public static class Message {

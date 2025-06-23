@@ -20,6 +20,7 @@ import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
 import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.enumz.BoosterLevelName;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -28,15 +29,19 @@ import ru.platform.user.service.IValidationUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
 import ru.platform.utils.JwtUtil;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
 
 import static ru.platform.LocalConstants.Message.*;
+import static ru.platform.LocalConstants.Variables.BOOSTER_LEGEND_TOTAL_INCOME;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
+import static ru.platform.user.enumz.BoosterLevelName.*;
 import static ru.platform.user.enumz.UserRolesType.ROLE_CUSTOMER;
 
 @Slf4j
@@ -229,13 +234,32 @@ public class UserService implements IUserService {
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
                 .level(boosterProfile.getLevel())
+                .nextLevel(getNextLevel(boosterProfile.getLevel()))
                 .percentageOfOrder(boosterProfile.getPercentageOfOrder() * 100)
                 .balance(boosterProfile.getBalance())
                 .totalIncome(boosterProfile.getTotalIncome())
+                .numberOfCompletedOrders(boosterProfile.getNumberOfCompletedOrders())
+                .progressAccountStatus(boosterProfile.getTotalIncome().multiply(BigDecimal.valueOf(100))
+                        .divide(BOOSTER_LEGEND_TOTAL_INCOME, 2, RoundingMode.HALF_UP))
                 .totalTips(boosterProfile.getTotalTips())
                 .build();
     }
 
+    /**
+     * Получение следующего уровня бустера
+     */
+    private BoosterLevelName getNextLevel(BoosterLevelName level) {
+        return switch (level) {
+            case ROOKIE -> VETERAN;
+            case VETERAN -> ELITE;
+            case ELITE -> LEGEND;
+            case LEGEND -> null;
+        };
+    }
+
+    /**
+     * Запрос на изменение никнейма
+     */
     @Override
     @Transactional
     public void changeNickname(String nickname) {

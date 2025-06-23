@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.user.enumz.BoosterLevelName;
 
 import java.math.BigDecimal;
 
@@ -29,13 +30,22 @@ public class BoosterProfileRsDto {
     @Schema(description = "Ссылка на аватарку пользователя", example = DEFAULT_IMAGE_LINK)
     private String imageUrl;
 
-    @Schema(description = "Уровень бустера", example = "1")
-    private int level;
+    @Schema(description = "Уровень бустера", example = "ROOKIE")
+    private BoosterLevelName level;
 
-    @Schema(description = "Процент с заказа бустера", example = "")
+    @Schema(description = "Следующий уровень бустера", example = "VETERAN")
+    private BoosterLevelName nextLevel;
+
+    @Schema(description = "Количество выполненных бустером заказов", example = "10")
+    private Integer numberOfCompletedOrders;
+
+    @Schema(description = "Процент с заказа бустера", example = "50")
     private Double percentageOfOrder;
 
-    @Schema(description = "Баланс бустера", example = "100.00")
+    @Schema(description = "Процент прогресса аккаунта бустера", example = "50")
+    private BigDecimal progressAccountStatus;
+
+    @Schema(description = "Баланс денег бустера, доступных для вывода", example = "100.00")
     private BigDecimal balance;
 
     @Schema(description = "Суммарный заработок бустера", example = "999.99")
