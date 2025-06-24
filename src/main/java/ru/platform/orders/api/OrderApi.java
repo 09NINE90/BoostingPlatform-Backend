@@ -41,7 +41,7 @@ public class OrderApi {
         return ResponseEntity.ok(orderCustomerService.getByCreator(request.getStatus()));
     }
 
-    @PostMapping("/getAll")
+    @PostMapping("/getDashboard")
     @Operation(summary = "Получение списка заказов, которые бустер может взять")
     public ResponseEntity<OrderListRsDto> getAllOrders(@RequestBody OrdersByFiltersRqDto request) {
         return ResponseEntity.ok(orderBoosterService.getAllOrders(request));
