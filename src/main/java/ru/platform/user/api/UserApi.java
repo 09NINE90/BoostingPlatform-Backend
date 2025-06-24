@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.user.dto.response.UserProfileRsDto;
+import ru.platform.user.dto.response.BoosterProfileRsDto;
+import ru.platform.user.dto.response.CustomerProfileRsDto;
 import ru.platform.user.service.IUserService;
 
 import static ru.platform.LocalConstants.Api.*;
@@ -18,10 +19,17 @@ public class UserApi {
 
     private final IUserService userService;
 
-    @GetMapping("/getUserProfileData")
-    @Operation(summary = "Запрос на получение данных профиля пользователя")
-    public ResponseEntity<UserProfileRsDto> getUserProfileData() {
-        UserProfileRsDto result = userService.getUserProfileData();
+    @GetMapping("/getCustomerProfileData")
+    @Operation(summary = "Запрос на получение данных профиля заказчика")
+    public ResponseEntity<CustomerProfileRsDto> getUserProfileData() {
+        CustomerProfileRsDto result = userService.getCustomerProfileData();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/getBoosterProfileData")
+    @Operation(summary = "Запрос на получение данных профиля бустера")
+    public ResponseEntity<BoosterProfileRsDto> getBoosterProfileData() {
+        BoosterProfileRsDto result = userService.getBoosterProfileData();
         return ResponseEntity.ok(result);
     }
 

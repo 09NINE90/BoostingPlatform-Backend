@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.user.enumz.BoosterLevelName;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -26,9 +27,12 @@ public class BoosterProfileEntity {
     @Schema(description = "ID профиля бустера")
     private UUID id;
 
-    @Column(name = "level")
-    @Schema(description = "Уровень бустера")
-    private int level;
+    @Column(name = "level", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BoosterLevelName level = BoosterLevelName.ROOKIE;
+
+    @Column(name = "number_of_completed_orders", nullable = false)
+    private Integer numberOfCompletedOrders;
 
     @Column(name = "percentage_of_order")
     @Schema(description = "Процент с заказа бустера")
