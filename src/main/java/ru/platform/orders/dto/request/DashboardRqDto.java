@@ -5,32 +5,24 @@ import lombok.Builder;
 import lombok.Data;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.sorting.OrderSortFilter;
-import ru.platform.user.dao.UserEntity;
+
+import java.util.Set;
 
 @Data
 @Builder
-public class OrdersByFiltersRqDto {
+public class DashboardRqDto {
 
-    @Schema(hidden = true)
-    private UserEntity creator;
-
-    @Schema(hidden = true)
-    private UserEntity booster;
-
-    @Schema(description = "Статус заказа", enumAsRef = true)
+    @Schema(description = "Статус заказа", enumAsRef = true, hidden = true)
     private OrderStatus status;
 
     @Schema(description = "Название игры", example = "Game name")
-    private String gameName;
+    private Set<String> gameNames;
 
     @Schema(description = "Название платформы для игр", example = "PS")
-    private String gamePlatform;
+    private Set<String> gamePlatforms;
 
     @Schema(description = "Цена от/до")
     private PriceDto totalPrice;
-
-    @Schema(description = "Цена от/до")
-    private PriceDto boosterPrice;
 
     @Schema(description = "Сортировка", example = "PRICE")
     private OrderSortFilter sort;

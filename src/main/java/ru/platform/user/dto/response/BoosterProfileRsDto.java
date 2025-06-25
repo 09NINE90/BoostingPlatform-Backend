@@ -1,5 +1,6 @@
 package ru.platform.user.dto.response;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.platform.user.enumz.BoosterLevelName;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static ru.platform.LocalConstants.Variables.*;
 
@@ -53,4 +55,18 @@ public class BoosterProfileRsDto {
 
     @Schema(description = "Сумма чаевых бустера", example = "666.66")
     private BigDecimal totalTips;
+
+    @ArraySchema(schema = @Schema(description = "Список игровых тегов бустера"))
+    private List<GameTag> gameTags;
+
+    @Data
+    @Builder
+    public static class GameTag {
+
+        @Schema(description = "Идентификатор тега", example = DEFAULT_UUID)
+        private String id;
+
+        @Schema(description = "Название игры", example = "Legend of Eldoria")
+        private String name;
+    }
 }

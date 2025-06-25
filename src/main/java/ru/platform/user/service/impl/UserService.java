@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
+import ru.platform.games.dao.GameTag;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
@@ -33,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 
 import static ru.platform.LocalConstants.Message.*;
@@ -242,6 +244,7 @@ public class UserService implements IUserService {
                 .progressAccountStatus(boosterProfile.getTotalIncome().multiply(BigDecimal.valueOf(100))
                         .divide(BOOSTER_LEGEND_TOTAL_INCOME, 2, RoundingMode.HALF_UP))
                 .totalTips(boosterProfile.getTotalTips())
+                .gameTags(getGameTags(boosterProfile.getGameTags()))
                 .build();
     }
 
@@ -255,6 +258,21 @@ public class UserService implements IUserService {
             case ELITE -> LEGEND;
             case LEGEND -> null;
         };
+    }
+
+    /**
+     * Получение игровых тегов для фронта
+     */
+    private List<BoosterProfileRsDto.GameTag> getGameTags(List<GameTag> gameTags) {
+        if (gameTags == null || gameTags.isEmpty()) return null;
+        return gameTags.stream()
+                .map(gameTag ->
+                        BoosterProfileRsDto.GameTag.builder()
+                                .id(gameTag.getId().toString())
+                                .name(gameTag.getGame().getTitle())
+                                .build()
+                )
+                .toList();
     }
 
     /**

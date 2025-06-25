@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
-import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.dto.response.OrderByBoosterRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
@@ -153,22 +151,4 @@ public class OrderMapper {
                 .build();
     }
 
-    /**
-     * Маппинг объекта запроса на получения ордеров закрепленных за бустером
-     * в объект запроса для получения отфильтрованных и отсортированных ордеров
-     */
-    public OrdersByFiltersRqDto toOrdersByFiltersRqDto(OrdersByBoosterRqDto request) {
-        return OrdersByFiltersRqDto.builder()
-                .booster(request.getBooster())
-                .status(request.getStatus())
-                .gameName(request.getGameName())
-                .gamePlatform(request.getGamePlatform())
-                .boosterPrice(OrdersByFiltersRqDto.PriceDto.builder()
-                        .priceFrom(request.getPrice().getPriceFrom())
-                        .priceTo(request.getPrice().getPriceTo())
-                        .build()
-                )
-                .sort(request.getSort())
-                .build();
-    }
 }

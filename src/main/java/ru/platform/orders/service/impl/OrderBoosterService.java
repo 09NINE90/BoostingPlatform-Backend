@@ -7,27 +7,27 @@ import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
-import ru.platform.orders.dao.specification.OrderSpecification;
+import ru.platform.orders.dao.specification.OrderDashboardSpecification;
+import ru.platform.orders.dao.specification.OrdersByBoosterSpecification;
+import ru.platform.orders.dto.request.DashboardRqDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
-import ru.platform.orders.dto.response.OrderByBoosterRsDto;
-import ru.platform.orders.dto.response.OrderFiltersRsDto;
-import ru.platform.orders.dto.response.OrderListRsDto;
-import ru.platform.orders.dto.response.OrderRsDto;
+import ru.platform.orders.dto.response.*;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderBoosterService;
 import ru.platform.orders.utils.PaginationOrdersUtil;
 import ru.platform.orders.utils.SortOrderUtils;
+import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static java.util.Collections.emptySet;
 import static ru.platform.LocalConstants.Variables.BOOSTER_LIMIT_ORDERS_IN_WORK;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.orders.enumz.OrderStatus.CREATED;
@@ -41,23 +41,26 @@ public class OrderBoosterService implements IOrderBoosterService {
     private final OrderMapper mapper;
     private final IAuthService authService;
     private final OrderRepository orderRepository;
-    private final OrderSpecification specification;
+    private final OrdersByBoosterSpecification ordersByBoosterSpecification;
+    private final OrderDashboardSpecification orderDashboardSpecification;
 
     private final String LOG_PREFIX = "OrderBoosterService: {}";
 
     @Override
-    public OrderFiltersRsDto getFiltersForCreatedOrders() {
-        List<String> statuses = orderRepository.findAllDistinctStatuses();
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms();
-        List<String> gameNames = orderRepository.findAllDistinctGameNames();
-        Double minPrice = orderRepository.findMinPrice();
-        Double maxPrice = orderRepository.findMaxPrice();
+    public DashboardFiltersRsDto getFiltersDashboard() {
+        UserEntity user = authService.getAuthUser();
+        BoosterProfileEntity boosterProfile = user.getBoosterProfile();
 
-        return OrderFiltersRsDto.builder()
+        Set<String> gameNames = getGameTagsByBooster(boosterProfile);
+
+        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms(gameNames);
+        Double minPrice = orderRepository.findMinPrice(gameNames);
+        Double maxPrice = orderRepository.findMaxPrice(gameNames);
+
+        return DashboardFiltersRsDto.builder()
                 .gameNames(gameNames)
                 .gamePlatforms(gamePlatforms)
-                .statuses(statuses)
-                .price(OrderFiltersRsDto.PriceFilterDto.builder()
+                .price(DashboardFiltersRsDto.PriceFilterDto.builder()
                         .priceMin(minPrice)
                         .priceMax(maxPrice)
                         .build())
@@ -85,9 +88,15 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
-    public OrderListRsDto getAllOrders(OrdersByFiltersRqDto request) {
+    public OrderListRsDto getDashboard(DashboardRqDto request) {
         UserEntity user = authService.getAuthUser();
-        double ratio = user.getBoosterProfile().getPercentageOfOrder();
+        BoosterProfileEntity boosterProfile = user.getBoosterProfile();
+
+        if (request.getGameNames().isEmpty()) {
+            request.setGameNames(getGameTagsByBooster(boosterProfile));
+        }
+
+        double ratio = boosterProfile.getPercentageOfOrder();
 
         request.setStatus(CREATED);
         preparationRequest(request, ratio);
@@ -97,15 +106,42 @@ public class OrderBoosterService implements IOrderBoosterService {
         return response;
     }
 
+    /**
+     * Получение игровых тегов бустера
+     */
+    private Set<String> getGameTagsByBooster(BoosterProfileEntity boosterProfile) {
+        if (boosterProfile.getGameTags() == null || boosterProfile.getGameTags().isEmpty()) return emptySet();
+        return boosterProfile.getGameTags().stream()
+                .map(gameTag -> gameTag.getGame().getTitle())
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Подготовка запроса (изменение цен относительно процента бустера)
+     */
+    private void preparationRequest(DashboardRqDto request, double ratio) {
+        DashboardRqDto.PriceDto requestPrice = request.getTotalPrice();
+        if (requestPrice != null && requestPrice.getPriceFrom() != null && requestPrice.getPriceTo() != null) {
+            requestPrice.setPriceFrom(Math.floor(requestPrice.getPriceFrom() / ratio));
+            requestPrice.setPriceTo(Math.floor(requestPrice.getPriceTo() / ratio));
+        }
+    }
+
+    /**
+     * Пересчет цен относительно процента бустера для ответа фронту
+     */
+    private List<OrderRsDto> recalculationPrice(List<OrderRsDto> orders, double ratio) {
+        return orders.stream()
+                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
+                .toList();
+    }
+
     @Override
     public List<OrderByBoosterRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
         request.setBooster(user);
 
-        OrdersByFiltersRqDto preparedRequest = mapper.toOrdersByFiltersRqDto(request);
-
-        List<OrderEntity> orders = getServicePageFuncWithSort().apply(preparedRequest);
-
+        List<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return orders.stream().map(mapper::toOrderByBoosterRsDto).toList();
     }
 
@@ -129,12 +165,12 @@ public class OrderBoosterService implements IOrderBoosterService {
     /**
      * Проверка возможности взять заказ бустером
      */
-    void checkPossibilityToAcceptOrder(OrderEntity order,UserEntity user){
+    void checkPossibilityToAcceptOrder(OrderEntity order, UserEntity user) {
         if (!order.getStatus().equals(CREATED.name()) && order.getBooster() != null) {
             throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
         }
 
-        if (getCountOrdersInWork(user) >= BOOSTER_LIMIT_ORDERS_IN_WORK){
+        if (getCountOrdersInWork(user) >= BOOSTER_LIMIT_ORDERS_IN_WORK) {
             throw new PlatformException(ORDER_LIMIT_EXCEEDED_ERROR);
         }
     }
@@ -156,32 +192,12 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     /**
-     * Подготовка запроса (изменение цен относительно процента бустера)
-     */
-    private void preparationRequest(OrdersByFiltersRqDto request, double ratio) {
-        OrdersByFiltersRqDto.PriceDto requestPrice = request.getTotalPrice();
-        if (requestPrice != null && requestPrice.getPriceFrom() != null && requestPrice.getPriceTo() != null) {
-            requestPrice.setPriceFrom(Math.floor(requestPrice.getPriceFrom() / ratio));
-            requestPrice.setPriceTo(Math.floor(requestPrice.getPriceTo() / ratio));
-        }
-    }
-
-    /**
-     * Пересчет цен относительно процента бустера для ответа фронту
-     */
-    private List<OrderRsDto> recalculationPrice(List<OrderRsDto> orders, double ratio) {
-        return orders.stream()
-                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
-                .toList();
-    }
-
-    /**
      * Запрос на получение списка ордеров с фильтрами, пагинацией и сортировкой
      */
-    private Function<OrdersByFiltersRqDto, Page<OrderEntity>> getServicePageFuncWithSortAndPage() {
+    private Function<DashboardRqDto, Page<OrderEntity>> getServicePageFuncWithSortAndPage() {
         try {
             return request -> orderRepository
-                    .findAll(specification.getFilter(request), PaginationOrdersUtil.getPageRequest(request));
+                    .findAll(orderDashboardSpecification.getFilter(request), PaginationOrdersUtil.getPageRequest(request));
         } catch (Exception e) {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);
@@ -191,10 +207,10 @@ public class OrderBoosterService implements IOrderBoosterService {
     /**
      * Запрос на получение списка ордеров с фильтрами и сортировкой
      */
-    private Function<OrdersByFiltersRqDto, List<OrderEntity>> getServicePageFuncWithSort() {
+    private Function<OrdersByBoosterRqDto, List<OrderEntity>> getServicePageFuncWithSort() {
         try {
             return request -> orderRepository
-                    .findAll(specification.getFilter(request), SortOrderUtils.getSortBy(request));
+                    .findAll(ordersByBoosterSpecification.getFilter(request), SortOrderUtils.getSortBy(request.getSort()));
         } catch (Exception e) {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);

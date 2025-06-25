@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.orders.dto.request.CreateOrderRqDto;
-import ru.platform.orders.dto.request.OrderByStatusRqDto;
-import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
+import ru.platform.orders.dto.request.*;
 import ru.platform.orders.dto.response.*;
 import ru.platform.orders.service.IOrderBoosterService;
 import ru.platform.orders.service.IOrderCustomerService;
@@ -43,14 +40,14 @@ public class OrderApi {
 
     @PostMapping("/getDashboard")
     @Operation(summary = "Получение списка заказов, которые бустер может взять")
-    public ResponseEntity<OrderListRsDto> getAllOrders(@RequestBody OrdersByFiltersRqDto request) {
-        return ResponseEntity.ok(orderBoosterService.getAllOrders(request));
+    public ResponseEntity<OrderListRsDto> getDashboard(@RequestBody DashboardRqDto request) {
+        return ResponseEntity.ok(orderBoosterService.getDashboard(request));
     }
 
-    @GetMapping("/getFiltersForCreatedOrders")
+    @GetMapping("/getFiltersDashboard")
     @Operation(summary = "Получение значений фильтров для заказов")
-    public ResponseEntity<OrderFiltersRsDto> getFiltersForCreatedOrders() {
-        return ResponseEntity.ok(orderBoosterService.getFiltersForCreatedOrders());
+    public ResponseEntity<DashboardFiltersRsDto> getFiltersDashboard() {
+        return ResponseEntity.ok(orderBoosterService.getFiltersDashboard());
     }
 
     @PostMapping("/accept/{orderId}")

@@ -6,29 +6,29 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.platform.orders.dao.OrderEntity;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
-public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaSpecificationExecutor<OrderEntity> {
-    List<OrderEntity> findAllByCreator(UserEntity user);
+public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSpecificationExecutor<OrderEntity> {
+    List<OrderEntity> findAllByCreator(UserEntity creator);
 
-    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o")
-    List<String> findAllDistinctGameNames();
+    @Query("SELECT o FROM OrderEntity o WHERE o.creator = :creator AND o.status = :status")
+    List<OrderEntity> findAllByStatusAndByCreator(@Param("status") String status,
+                                                  @Param("creator") UserEntity creator);
 
-    @Query("SELECT DISTINCT o.status FROM OrderEntity o")
-    List<String> findAllDistinctStatuses();
+    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    List<String> findAllDistinctGamePlatforms(@Param("gameNames") Set<String> gameNames);
 
-    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o")
-    List<String> findAllDistinctGamePlatforms();
+    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    Double findMinPrice(@Param("gameNames") Set<String> gameNames);
 
-    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o")
-    Double findMinPrice();
-
-    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o")
-    Double findMaxPrice();
+    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    Double findMaxPrice(@Param("gameNames") Set<String> gameNames);
 
     /**
      * Запросы для бустера
@@ -50,4 +50,5 @@ public interface OrderRepository  extends JpaRepository<OrderEntity, UUID>, JpaS
 
     @Query("select COUNT(*) from OrderEntity o WHERE o.booster = :booster AND o.status = 'IN_PROGRESS'")
     long findCountOrdersInWorkByBooster(@Param("booster") UserEntity booster);
+
 }

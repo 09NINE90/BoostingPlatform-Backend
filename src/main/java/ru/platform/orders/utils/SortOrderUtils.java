@@ -2,18 +2,13 @@ package ru.platform.orders.utils;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Sort;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.sorting.OrderSortFilter;
 import ru.platform.orders.sorting.OrderSortKeys;
 
 @UtilityClass
 public class SortOrderUtils {
 
-    public static Sort getSortBy(OrdersByFiltersRqDto request) {
-        return getSortBy(request.getSort());
-    }
-
-    private Sort getSortBy(OrderSortFilter sort) {
+    public static Sort getSortBy(OrderSortFilter sort) {
         if (sort == null || sort.getKey() == null) {
             sort = new OrderSortFilter(OrderSortKeys.CREATION_AT, false);
         }
