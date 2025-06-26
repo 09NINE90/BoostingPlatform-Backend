@@ -37,4 +37,7 @@ public interface IUserService {
 
     @Schema(description = "Запрос на получение данных профиля бустера")
     BoosterProfileRsDto getBoosterProfileData();
+
+    @Schema(description = "Запрос на смену описания пользователя")
+    void changeDescription(String description);
 }

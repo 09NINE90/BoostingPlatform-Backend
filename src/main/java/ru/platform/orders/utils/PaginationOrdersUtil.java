@@ -3,16 +3,16 @@ package ru.platform.orders.utils;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.PageRequest;
 import ru.platform.LocalConstants;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
+import ru.platform.orders.dto.request.DashboardRqDto;
 
 @UtilityClass
 public class PaginationOrdersUtil {
     
-    public static PageRequest getPageRequest(OrdersByFiltersRqDto request) {
-        return PageRequest.of(getPageBy(request), getSizeBy(request), SortOrderUtils.getSortBy(request));
+    public static PageRequest getPageRequest(DashboardRqDto request) {
+        return PageRequest.of(getPageBy(request), getSizeBy(request), SortOrderUtils.getSortBy(request.getSort()));
     }
 
-    private int getPageBy(OrdersByFiltersRqDto request) {
+    private int getPageBy(DashboardRqDto request) {
         return getPageBy(request.getPageNumber());
     }
 
@@ -20,7 +20,7 @@ public class PaginationOrdersUtil {
         return pageNumber == null || pageNumber <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_NUMBER : pageNumber - 1;
     }
 
-    private int getSizeBy(OrdersByFiltersRqDto request) {
+    private int getSizeBy(DashboardRqDto request) {
         return getSizeBy(request.getPageSize());
     }
 

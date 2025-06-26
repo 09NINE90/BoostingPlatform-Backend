@@ -39,4 +39,11 @@ public class UserApi {
         userService.changeNickname(nickname);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/changeDescriptionProfile")
+    @Operation(summary = "Запрос на смену описания профиля пользователя")
+    public ResponseEntity<Void> changeDescriptionProfile(@RequestParam String description) {
+        userService.changeDescription(description);
+        return ResponseEntity.ok().build();
+    }
 }

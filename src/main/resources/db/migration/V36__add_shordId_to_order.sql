@@ -1,0 +1,3 @@
+ALTER TABLE orders
+    ADD COLUMN short_id VARCHAR(9);
+COMMIT;

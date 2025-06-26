@@ -34,6 +34,10 @@ public class UserProfileEntity {
     @Schema(description = "Имя пользователя")
     private String nickname;
 
+    @Column(name = "description", columnDefinition="TEXT")
+    @Schema(description = "Статус пользователя")
+    private String description;
+
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на аватарку пользователя")
     private String imageUrl;

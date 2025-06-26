@@ -7,7 +7,8 @@ import ru.platform.exception.ErrorType;
 import ru.platform.exception.PlatformException;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
-import ru.platform.orders.dao.specification.OrderSpecification;
+import ru.platform.orders.dao.specification.OrderDashboardSpecification;
+import ru.platform.orders.dao.specification.OrdersByBoosterSpecification;
 import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
@@ -31,7 +32,6 @@ public class OrderCustomerServiceTest {
     private OrderMapper mapper;
     private IAuthService authService;
     private OrderRepository orderRepository;
-    private OrderSpecification specification;
     private OrderCustomerService orderCustomerService;
     private IValidationOrderService  validationOrderService;
 
@@ -40,11 +40,9 @@ public class OrderCustomerServiceTest {
         mapper = mock(OrderMapper.class);
         authService = mock(IAuthService.class);
         orderRepository = mock(OrderRepository.class);
-        specification = mock(OrderSpecification.class);
         validationOrderService = mock(IValidationOrderService.class);
         orderCustomerService = new OrderCustomerService(
-                mapper, authService, orderRepository,
-                specification, validationOrderService
+                mapper, authService, orderRepository, validationOrderService
         );
     }
 
@@ -54,7 +52,7 @@ public class OrderCustomerServiceTest {
         OrderRsDto expectedDto = CreatorDto.getOrderRsDto();
 
         when(authService.getAuthUser()).thenReturn(CreatorDto.getCustomerUserEntity());
-        when(orderRepository.findAll(specification.getFilter(any()))).thenReturn(CreatorDto.getListOfOrdersEntity());
+        when(orderRepository.findAllByStatusAndByCreator(any(), any())).thenReturn(CreatorDto.getListOfOrdersEntity());
         when(mapper.toOrderRsDto(any())).thenReturn(expectedDto);
 
         List<OrderRsDto> response = orderCustomerService.getByCreator(OrderStatus.IN_PROGRESS);

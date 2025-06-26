@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -32,7 +33,7 @@ public class OrderRsDto {
     private String orderStatus;
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
     @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
     private List<CartSelectedOptionsDto> selectedOptions;

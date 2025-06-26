@@ -6,14 +6,12 @@ import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
-import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
-import ru.platform.orders.dto.request.OrdersByFiltersRqDto;
 import ru.platform.orders.dto.response.OrderByBoosterRsDto;
 import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
-import ru.platform.user.service.IAuthService;
+import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -25,14 +23,11 @@ import static java.util.Collections.emptyList;
 @RequiredArgsConstructor
 public class OrderMapper {
 
-    private final IAuthService authService;
-
     /**
      * Маппинг объекта из корзины в объект сущности БД
      */
     public OrderEntity toOrderEntity(CartItemDto cartItemDto) {
         return OrderEntity.builder()
-                .creator(authService.getAuthUser())
                 .offerName(cartItemDto.getOfferName())
                 .basePrice(BigDecimal.valueOf(cartItemDto.getBasePrice()))
                 .totalPrice(BigDecimal.valueOf(cartItemDto.getTotalPrice()))
@@ -103,12 +98,12 @@ public class OrderMapper {
     public OrderRsDto toOrderRsDto(OrderEntity orderEntity) {
         return OrderRsDto.builder()
                 .orderId(orderEntity.getId().toString())
-                .secondId(String.valueOf(orderEntity.getSecondId()))
+                .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
-                .totalPrice(orderEntity.getTotalPrice().doubleValue())
+                .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
                 .build();
     }
@@ -129,7 +124,7 @@ public class OrderMapper {
     public OrderByBoosterRsDto toOrderByBoosterRsDto(OrderEntity orderEntity) {
         return OrderByBoosterRsDto.builder()
                 .orderId(orderEntity.getId().toString())
-                .secondId(String.valueOf(orderEntity.getSecondId()))
+                .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())
@@ -153,22 +148,4 @@ public class OrderMapper {
                 .build();
     }
 
-    /**
-     * Маппинг объекта запроса на получения ордеров закрепленных за бустером
-     * в объект запроса для получения отфильтрованных и отсортированных ордеров
-     */
-    public OrdersByFiltersRqDto toOrdersByFiltersRqDto(OrdersByBoosterRqDto request) {
-        return OrdersByFiltersRqDto.builder()
-                .booster(request.getBooster())
-                .status(request.getStatus())
-                .gameName(request.getGameName())
-                .gamePlatform(request.getGamePlatform())
-                .boosterPrice(OrdersByFiltersRqDto.PriceDto.builder()
-                        .priceFrom(request.getPrice().getPriceFrom())
-                        .priceTo(request.getPrice().getPriceTo())
-                        .build()
-                )
-                .sort(request.getSort())
-                .build();
-    }
 }

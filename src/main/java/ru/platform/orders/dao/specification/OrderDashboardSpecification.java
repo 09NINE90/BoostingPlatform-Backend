@@ -1,0 +1,63 @@
+package ru.platform.orders.dao.specification;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import ru.platform.orders.dao.OrderEntity;
+import ru.platform.orders.dao.OrderEntity_;
+import ru.platform.orders.dto.request.DashboardRqDto;
+import ru.platform.utils.IBaseSpecificationUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
+
+@Service
+@RequiredArgsConstructor
+public class OrderDashboardSpecification implements IBaseSpecificationUtil<OrderEntity, DashboardRqDto> {
+
+    @Override
+    public Set<Specification<OrderEntity>> prepareSpecificationSet(DashboardRqDto request) {
+        return prepareSpecificationSet(request, Objects::nonNull);
+    }
+
+    @Override
+    public List<BiConsumer<Set<Specification<OrderEntity>>, DashboardRqDto>> getSpecificationConsumerList() {
+        List<BiConsumer<Set<Specification<OrderEntity>>, DashboardRqDto>> result = new ArrayList<>();
+        result.add(this::prepareStatus);
+        result.add(this::prepareGameNames);
+        result.add(this::preparePlatforms);
+        result.add(this::prepareTotalPrice);
+        return result;
+    }
+
+    private void prepareStatus(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
+        if (Objects.nonNull(request.getStatus())) {
+            String status = request.getStatus().name();
+            set.add(fieldAreLike(status, OrderEntity_.STATUS));
+        }
+    }
+
+    private void prepareGameNames(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
+        Set<String> gameNames = request.getGameNames();
+        if (Objects.nonNull(gameNames) && !gameNames.isEmpty()) {
+            set.add(fieldAreIn(gameNames, OrderEntity_.GAME_NAME));
+        }
+    }
+
+    private void preparePlatforms(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
+        Set<String> gamePlatforms = request.getGamePlatforms();
+        if (Objects.nonNull(gamePlatforms) && !gamePlatforms.isEmpty()) {
+            set.add(fieldAreIn(gamePlatforms, OrderEntity_.GAME_PLATFORM));
+        }
+    }
+
+    private void prepareTotalPrice(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
+        DashboardRqDto.PriceDto price = request.getTotalPrice();
+        if (price != null && price.getPriceFrom() != null && price.getPriceTo() != null) {
+            set.add(fieldAreBetween(price.getPriceFrom(), price.getPriceTo(), OrderEntity_.TOTAL_PRICE));
+        }
+    }
+}

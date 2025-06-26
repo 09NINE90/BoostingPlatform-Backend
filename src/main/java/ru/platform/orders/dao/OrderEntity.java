@@ -24,8 +24,11 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "second_id")
-    private long secondId;
+    @Column(name = "second_id", insertable = false, updatable = false)
+    private Long  secondId;
+
+    @Column(name = "short_id", unique = true, length = 9)
+    private String shortId;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")

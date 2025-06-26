@@ -24,6 +24,12 @@ public class CustomerProfileRsDto {
     @Schema(description = "Email пользователя", example = DEFAULT_USER_MAIL)
     private String email;
 
+    @Schema(description = "Статус пользователя (описание профиля)")
+    private String description;
+
+    @Schema(description = "Общее количество заказов, созданных пользователем")
+    private long totalOrders;
+
     @Schema(description = "Имя пользователя", example = DEFAULT_USER_NICKNAME)
     private String nickname;
 
@@ -33,7 +39,7 @@ public class CustomerProfileRsDto {
     @Schema(description = "Процент скидки пользователя", example = "1")
     private Integer discountPercentage;
 
-    @Schema(description = "Статус пользователя", example = "JUNIOR", enumAsRef = true)
+    @Schema(description = "Статус пользователя", example = "EXPLORER", enumAsRef = true)
     private CustomerStatus status;
 
     @Schema(description = "Бонусный баланс пользователя", example = "100.00")
