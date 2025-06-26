@@ -30,6 +30,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.gameName IN :gameNames")
     Double findMaxPrice(@Param("gameNames") Set<String> gameNames);
 
+    @Query("select COUNT(*) from OrderEntity o WHERE o.creator = :creator")
+    long findCountOrdersByCreator(@Param("creator") UserEntity creator);
+
     /**
      * Запросы для бустера
      */
@@ -51,4 +54,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     @Query("select COUNT(*) from OrderEntity o WHERE o.booster = :booster AND o.status = 'IN_PROGRESS'")
     long findCountOrdersInWorkByBooster(@Param("booster") UserEntity booster);
 
+    @Query("SELECT COUNT(*) FROM OrderEntity o WHERE o.booster = :booster AND o.status = 'COMPLETED'")
+    long findCountCompletedOrdersByBooster(@Param("booster") UserEntity booster);
 }

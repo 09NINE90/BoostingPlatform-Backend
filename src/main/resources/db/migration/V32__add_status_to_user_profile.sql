@@ -1,0 +1,4 @@
+BEGIN;
+ALTER TABLE user_profile
+    ADD COLUMN description VARCHAR(255) NULL;
+COMMIT;

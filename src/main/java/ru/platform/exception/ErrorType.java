@@ -41,6 +41,10 @@ public enum ErrorType {
             404,
             "Requested data not found."
     ),
+    NO_GAME_TAGS_ERROR(
+            400,
+            "There are no game tags."
+    ),
     TOKEN_EXPIRED_ERROR(
             410,
             "Confirmation token has expired. Please request a new one."

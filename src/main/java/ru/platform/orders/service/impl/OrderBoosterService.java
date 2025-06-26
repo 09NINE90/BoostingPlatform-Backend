@@ -93,6 +93,9 @@ public class OrderBoosterService implements IOrderBoosterService {
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
 
         if (request.getGameNames().isEmpty()) {
+            if (getGameTagsByBooster(boosterProfile).isEmpty()) {
+                throw new PlatformException(NO_GAME_TAGS_ERROR);
+            }
             request.setGameNames(getGameTagsByBooster(boosterProfile));
         }
 
@@ -132,7 +135,8 @@ public class OrderBoosterService implements IOrderBoosterService {
      */
     private List<OrderRsDto> recalculationPrice(List<OrderRsDto> orders, double ratio) {
         return orders.stream()
-                .peek(o -> o.setTotalPrice(o.getTotalPrice() * ratio))
+                .peek(o -> o.setTotalPrice(o.getTotalPrice().multiply(new BigDecimal(String.valueOf(ratio)))
+                        .setScale(4, RoundingMode.HALF_UP)))
                 .toList();
     }
 
@@ -181,7 +185,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      */
     private BigDecimal calculateBoosterSalary(OrderEntity order, double ratio) {
         return order.getTotalPrice().multiply(new BigDecimal(String.valueOf(ratio)))
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(4, RoundingMode.HALF_UP);
     }
 
     /**

@@ -11,7 +11,7 @@ import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
-import ru.platform.user.service.IAuthService;
+import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -23,14 +23,11 @@ import static java.util.Collections.emptyList;
 @RequiredArgsConstructor
 public class OrderMapper {
 
-    private final IAuthService authService;
-
     /**
      * Маппинг объекта из корзины в объект сущности БД
      */
     public OrderEntity toOrderEntity(CartItemDto cartItemDto) {
         return OrderEntity.builder()
-                .creator(authService.getAuthUser())
                 .offerName(cartItemDto.getOfferName())
                 .basePrice(BigDecimal.valueOf(cartItemDto.getBasePrice()))
                 .totalPrice(BigDecimal.valueOf(cartItemDto.getTotalPrice()))
@@ -101,12 +98,12 @@ public class OrderMapper {
     public OrderRsDto toOrderRsDto(OrderEntity orderEntity) {
         return OrderRsDto.builder()
                 .orderId(orderEntity.getId().toString())
-                .secondId(String.valueOf(orderEntity.getSecondId()))
+                .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
-                .totalPrice(orderEntity.getTotalPrice().doubleValue())
+                .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
                 .build();
     }
@@ -127,7 +124,7 @@ public class OrderMapper {
     public OrderByBoosterRsDto toOrderByBoosterRsDto(OrderEntity orderEntity) {
         return OrderByBoosterRsDto.builder()
                 .orderId(orderEntity.getId().toString())
-                .secondId(String.valueOf(orderEntity.getSecondId()))
+                .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGameName())
                 .gamePlatform(orderEntity.getGamePlatform())

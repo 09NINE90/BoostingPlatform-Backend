@@ -32,9 +32,15 @@ public class CustomerProfileEntity {
     @Column(name = "discount_percentage")
     private Integer discountPercentage = 1;
 
+    @Column(name = "total_orders")
+    private Integer totalOrders = 0;
+
+    @Column(name = "total_amount_of_orders")
+    private BigDecimal totalAmountOfOrders;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private CustomerStatus status = CustomerStatus.JUNIOR;
+    private CustomerStatus status = CustomerStatus.EXPLORER;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

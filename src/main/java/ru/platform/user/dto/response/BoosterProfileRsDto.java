@@ -32,6 +32,9 @@ public class BoosterProfileRsDto {
     @Schema(description = "Ссылка на аватарку пользователя", example = DEFAULT_IMAGE_LINK)
     private String imageUrl;
 
+    @Schema(description = "Статус пользователя (описание профиля)")
+    private String description;
+
     @Schema(description = "Уровень бустера", example = "ROOKIE")
     private BoosterLevelName level;
 
@@ -39,7 +42,7 @@ public class BoosterProfileRsDto {
     private BoosterLevelName nextLevel;
 
     @Schema(description = "Количество выполненных бустером заказов", example = "10")
-    private Integer numberOfCompletedOrders;
+    private long numberOfCompletedOrders;
 
     @Schema(description = "Процент с заказа бустера", example = "50")
     private Double percentageOfOrder;

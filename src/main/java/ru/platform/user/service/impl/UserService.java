@@ -215,9 +215,11 @@ public class UserService implements IUserService {
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
+                .description(profileEntity.getDescription())
                 .discountPercentage(customerProfile.getDiscountPercentage())
                 .cashbackBalance(customerProfile.getCashbackBalance())
                 .status(customerProfile.getStatus())
+                .totalOrders(customerProfile.getTotalOrders())
                 .build();
     }
 
@@ -230,11 +232,15 @@ public class UserService implements IUserService {
         UserProfileEntity profileEntity = userEntity.getProfile();
         BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
 
+        // TODO сделать пересчет значений:
+        //  numberOfCompletedOrders, totalIncome, level, percentageOfOrder, totalTips
+        //  из таблицы с балансами при условии, что заказ становится COMPLETED
         return BoosterProfileRsDto.builder()
                 .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
+                .description(profileEntity.getDescription())
                 .level(boosterProfile.getLevel())
                 .nextLevel(getNextLevel(boosterProfile.getLevel()))
                 .percentageOfOrder(boosterProfile.getPercentageOfOrder() * 100)
@@ -295,4 +301,24 @@ public class UserService implements IUserService {
         userProfileRepository.save(userEntity.getProfile());
     }
 
+
+    /**
+     * Запрос на изменение описания профиля пользователя
+     */
+    @Override
+    @Transactional
+    public void changeDescription(String description) {
+        UserEntity userEntity = authService.getAuthUser();
+        userEntity = userRepository.findById(userEntity.getId())
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        if (profileEntity == null) {
+            profileEntity = new UserProfileEntity();
+            userEntity.setProfile(profileEntity);
+        }
+        profileEntity.setDescription(description);
+        userRepository.save(userEntity);
+        userProfileRepository.save(userEntity.getProfile());
+    }
 }

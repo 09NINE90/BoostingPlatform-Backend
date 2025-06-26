@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CustomerStatus {
-    JUNIOR,
-    MIDDLE,
-    SENIOR
+    EXPLORER,
+    VANGUARD,
+    IMMORTAL
 }
