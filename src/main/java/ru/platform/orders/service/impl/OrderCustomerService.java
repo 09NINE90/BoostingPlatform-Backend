@@ -1,6 +1,6 @@
 package ru.platform.orders.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class OrderCustomerService implements IOrderCustomerService {
         if (status == null) {
             orders = orderRepository.findAllByCreator(user);
         } else {
-            orders = orderRepository.findAllByStatusAndByCreator(status.name(), user);
+            orders = orderRepository.findAllByStatusAndByCreator(status, user);
         }
         return orders.stream().map(mapper::toOrderRsDto).toList();
     }

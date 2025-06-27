@@ -69,7 +69,7 @@ public class OrderCustomerServiceTest {
                             () -> assertEquals(expectedDto.getGameName(), actualDto.getGameName(), "Game name mismatch"),
                             () -> assertEquals(expectedDto.getGamePlatform(), actualDto.getGamePlatform(), "Game platform mismatch"),
                             () -> assertEquals(expectedDto.getOrderStatus(), actualDto.getOrderStatus(), "Order status mismatch"),
-                            () -> assertEquals(expectedDto.getTotalPrice(), actualDto.getTotalPrice(), 0.001, "Total price mismatch"),
+                            () -> assertEquals(expectedDto.getTotalPrice(), actualDto.getTotalPrice()),
                             () -> assertNotNull(actualDto.getSelectedOptions(), "Selected options should not be null"),
                             () -> assertEquals(1, actualDto.getSelectedOptions().size(), "Should have one selected option")
                     );

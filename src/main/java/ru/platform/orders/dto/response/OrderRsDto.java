@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import ru.platform.orders.enumz.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,7 @@ public class OrderRsDto {
     @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
     private String orderId;
 
-    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    @Schema(description = "Идентификатор заказа для UI", example = "Legend of Eldoria")
     private String secondId;
 
     @Schema(description = "Название заказа", example = "Legend of Eldoria")
@@ -30,7 +31,7 @@ public class OrderRsDto {
     private String gamePlatform;
 
     @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private BigDecimal totalPrice;

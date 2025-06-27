@@ -57,6 +57,18 @@ public enum ErrorType {
             400,
             "You cannot take more orders. You have reached the maximum number of orders in progress."
     ),
+    INVALID_ORDER_STATUS_FOR_COMPLETION_ERROR(
+            400,
+            "Order cannot be completed because it's not in IN_PROGRESS status."
+    ),
+    MISSING_REQUIRED_FIELDS_ERROR(
+            400,
+            "Required fields are missing."
+    ),
+    ZERO_AMOUNT_ERROR(
+            400,
+            "Amount cannot be zero."
+    ),
     JSON_LOAD_ERROR(
             400,
             "Failed to load object from JSON."

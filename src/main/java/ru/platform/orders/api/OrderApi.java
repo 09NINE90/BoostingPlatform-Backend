@@ -58,6 +58,13 @@ public class OrderApi {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/complete/{orderId}")
+    @Operation(summary = "Завершение работы над заказом")
+    public ResponseEntity<Void> completeExecutionOrder(@PathVariable("orderId") UUID orderId) {
+        orderBoosterService.completeExecutionOrder(orderId);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/byBooster")
     @Operation(summary = "Получение списка заказов, закрепленных за бустером")
     public ResponseEntity<List<OrderByBoosterRsDto>> getOrdersByBooster(@RequestBody OrdersByBoosterRqDto request) {

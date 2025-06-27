@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import ru.platform.orders.enumz.OrderStatus;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class OrderByBoosterRsDto {
     @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
     private String orderId;
 
-    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    @Schema(description = "Идентификатор заказа для UI", example = "Legend of Eldoria")
     private String secondId;
 
     @Schema(description = "Название заказа", example = "Legend of Eldoria")
@@ -29,13 +30,22 @@ public class OrderByBoosterRsDto {
     private String gamePlatform;
 
     @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private double totalPrice;
 
     @Schema(description = "ЗП бустера за заказ", example = "150.0")
     private double boosterSalary;
+
+    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-06-26 12:00")
+    private String startTimeExecution;
+
+    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-06-26 12:00")
+    private String endTimeExecution;
+
+    @Schema(description = "Дата и время (по UTC) перевода заказа в статус COMPLETED", example = "2025-06-26 12:00")
+    private String completedAt;
 
     @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
     private List<CartSelectedOptionsDto> selectedOptions;

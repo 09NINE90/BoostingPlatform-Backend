@@ -12,8 +12,8 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import static ru.platform.LocalConstants.Variables.TEN_HOURS;
-import static ru.platform.LocalConstants.Variables.TEN_MINUTES;
+import static ru.platform.LocalConstants.DateTimeConstants.TEN_HOURS;
+import static ru.platform.LocalConstants.DateTimeConstants.TEN_MINUTES;
 import static ru.platform.exception.ErrorType.AUTHORIZATION_ERROR;
 import static ru.platform.exception.ErrorType.TOKEN_EXPIRED_ERROR;
 
@@ -130,7 +130,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("password", password)
-                .claim("dateStart", DateUtil.getStringFromDateTime(LocalDateTime.now()))
+                .claim("dateStart", DateTimeUtils.getStringFromDateTime(LocalDateTime.now()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_CONFIRMATION_LINK))
                 .signWith(key, SignatureAlgorithm.HS256)
