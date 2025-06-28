@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderDashboardSpecification;
@@ -49,6 +51,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     private final String LOG_PREFIX = "OrderBoosterService: {}";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_DASHBOARD_FILTERS)
     public DashboardFiltersRsDto getFiltersDashboard() {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
@@ -70,6 +73,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_FILTERS_BY_BOOSTER)
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
         List<String> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
@@ -90,6 +94,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_DASHBOARD_DATA)
     public OrderListRsDto getDashboard(DashboardRqDto request) {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();

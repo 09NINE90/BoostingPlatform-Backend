@@ -69,6 +69,14 @@ public enum ErrorType {
             400,
             "Amount cannot be zero."
     ),
+    WITHDRAWAL_AMOUNT_LESS_THEN_MINIMUM_ERROR(
+            400,
+            "The entered amount is less than the minimum amount."
+    ),
+    WITHDRAWAL_AMOUNT_MORE_THEN_BALANCE_ERROR(
+            400,
+            "The amount entered is more than your balance."
+    ),
     JSON_LOAD_ERROR(
             400,
             "Failed to load object from JSON."

@@ -49,6 +49,22 @@ public enum MonitoringMethodType {
     CREATE_ORDER(
             "create order",
             "Создание заказа из корзины"
+    ),
+    GET_DASHBOARD_FILTERS(
+            "get dashboard filters",
+            "Получение фильтров для дашборда бустера"
+    ),
+    GET_ORDERS_FILTERS_BY_BOOSTER(
+            "get order filters by booster",
+            "Получение фильтров для заказов во вкладке \"мои заказы\""
+    ),
+    GET_DASHBOARD_DATA(
+            "get dashboard data",
+            "Получение данных для дашборда бустера"
+    ),
+    GET_USER_ORDERS_BY_STATUS(
+            "get user orders by status",
+            "Получение заказов пользователя с фильтром по статусу"
     );
 
     private final String name;

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.enumz.RecordType;
 import ru.platform.user.dao.BoosterProfileEntity;
+import ru.platform.user.dao.UserEntity;
 import ru.platform.user.repository.BoosterProfileRepository;
 import ru.platform.user.service.IBoosterService;
 
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static ru.platform.LocalConstants.BoosterSettings.*;
-import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
-import static ru.platform.exception.ErrorType.ZERO_AMOUNT_ERROR;
+import static ru.platform.exception.ErrorType.*;
+import static ru.platform.exception.ErrorType.WITHDRAWAL_AMOUNT_MORE_THEN_BALANCE_ERROR;
 import static ru.platform.user.enumz.BoosterLevelName.*;
 
 @Slf4j
@@ -96,5 +97,26 @@ public class BoosterService implements IBoosterService {
             profile.setPercentageOfOrder(BOOSTER_VETERAN_PERCENT);
             log.debug("Бустер ID: {} повышен до уровня VETERAN", profile.getId());
         }
+    }
+
+    @Override
+    @Transactional
+    public void checkBoosterBalance(UserEntity booster, BigDecimal withdrawalAmount) {
+        if (withdrawalAmount.compareTo(MINIMUM_WITHDRAWAL_AMOUNT) < 0) {
+            log.error("Введенная сумма для вывода средств меньше {}$", MINIMUM_WITHDRAWAL_AMOUNT);
+            throw new PlatformException(WITHDRAWAL_AMOUNT_LESS_THEN_MINIMUM_ERROR);
+        }
+
+        BoosterProfileEntity boosterProfile = boosterProfileRepository.findByIdForUpdate(booster.getBoosterProfile().getId())
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        if (boosterProfile.getBalance().compareTo(withdrawalAmount) < 0) {
+            log.error("Введенная сумма для вывода средств больше баланса бустера");
+            throw new PlatformException(WITHDRAWAL_AMOUNT_MORE_THEN_BALANCE_ERROR);
+        }
+
+        log.debug("Уменьшение суммы баланса бустера на сумму, поданную на вывод средств");
+        boosterProfile.setBalance(boosterProfile.getBalance().subtract(withdrawalAmount));
+        boosterProfileRepository.save(boosterProfile);
     }
 }

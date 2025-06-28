@@ -54,6 +54,7 @@ public class LocalConstants {
         public static final BigDecimal BOOSTER_LEGEND_TOTAL_INCOME = BigDecimal.valueOf(5_000);
 
         public static final int BOOSTER_LIMIT_ORDERS_IN_WORK = 3;
+        public static final BigDecimal MINIMUM_WITHDRAWAL_AMOUNT = BigDecimal.valueOf(50);
 
     }
 

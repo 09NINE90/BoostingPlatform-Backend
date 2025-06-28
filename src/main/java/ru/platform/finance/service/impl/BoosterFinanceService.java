@@ -2,39 +2,36 @@ package ru.platform.finance.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.dao.BoosterFinancialRecordEntity;
 import ru.platform.finance.dao.repository.BoosterFinancialRecordRepository;
-import ru.platform.finance.enumz.PaymentStatus;
+import ru.platform.finance.dto.HandleWithdrawalRqDto;
 import ru.platform.finance.service.IBoosterFinanceService;
 import ru.platform.orders.dao.OrderEntity;
-import ru.platform.orders.service.IOrderForWorkWithFinanceService;
+import ru.platform.user.dao.UserEntity;
+import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IBoosterService;
-import ru.platform.utils.DateTimeUtils;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
 
-import static ru.platform.LocalConstants.DateTimeConstants.TEN_MINUTES;
-import static ru.platform.exception.ErrorType.MISSING_REQUIRED_FIELDS_ERROR;
+import static ru.platform.exception.ErrorType.*;
 import static ru.platform.finance.enumz.PaymentStatus.ON_PENDING;
 import static ru.platform.finance.enumz.RecordType.SALARY;
+import static ru.platform.finance.enumz.RecordType.WITHDRAWAL;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoosterFinanceService implements IBoosterFinanceService {
 
+    private final IAuthService authService;
     private final IBoosterService boosterService;
-    private final IOrderForWorkWithFinanceService orderForWorkWithFinanceService;
     private final BoosterFinancialRecordRepository boosterFinancialRecordRepository;
 
-    private final String LOG_PREFIX = "BoosterFinanceService: {}";
-    private final int TIME_FOR_SCHEDULING_FINANCIAL_RECORDS = TEN_MINUTES;
+    private final String LOG_PREFIX = "Сервис обработки балансов бустера: {}";
 
     /**
      * Создание записи баланса с ЗП бустера
@@ -58,51 +55,27 @@ public class BoosterFinanceService implements IBoosterFinanceService {
                 .build());
     }
 
+    /**
+     * Обработка запроса на вывод средств бустера
+     */
+    @Override
     @Transactional
-    @Scheduled(initialDelay = 5000, fixedRate = TIME_FOR_SCHEDULING_FINANCIAL_RECORDS)
-    public void processFinancialRecords() {
-        log.debug("Начало процесса пересчета балансов бустеров");
-        OffsetDateTime cutoffTime = DateTimeUtils.getRecordOlderThan5Minutes();
-        OffsetDateTime now = OffsetDateTime.now();
-        log.debug("Cutoff time для обработки записей: {}", cutoffTime);
-        int updatedRecords = boosterFinancialRecordRepository.markPendingAsCompleted(
-                cutoffTime,
-                PaymentStatus.COMPLETED,
-                now
-        );
+    public void handleWithdrawal(HandleWithdrawalRqDto request) {
+        log.debug(LOG_PREFIX, "Начало обработки запроса на вывод средств");
+        UserEntity booster = authService.getAuthUser();
 
-        log.debug("Запрос на изменение статусов заказов");
-        orderForWorkWithFinanceService.markPendingAsCompleted(cutoffTime, now);
+        log.debug(LOG_PREFIX, "Валидация суммы из запроса на вывод средств");
+        BigDecimal withdrawalAmount = request.getWithdrawalAmount();
+        boosterService.checkBoosterBalance(booster, withdrawalAmount);
 
-        if (updatedRecords > 0) {
-            log.debug("В статус COMPLETED переведено {} финансовых записей", updatedRecords);
-
-            log.debug("Поиск записей для изменения баланса бустера");
-            List<BoosterFinancialRecordEntity> records = boosterFinancialRecordRepository.findUncalculatedCompleted();
-            log.debug("Найдено {} записей для обработки", records.size());
-
-            records.forEach(this::processRecord);
-        } else {
-            log.debug("Нет записей для перевода в COMPLETED");
-        }
+        log.debug(LOG_PREFIX, "Создание записи о запросе на вывод средств");
+        boosterFinancialRecordRepository.save(BoosterFinancialRecordEntity.builder()
+                .amount(request.getWithdrawalAmount())
+                .createdAt(OffsetDateTime.now())
+                .recordType(WITHDRAWAL)
+                .status(ON_PENDING)
+                .booster(booster)
+                .build());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processRecord(BoosterFinancialRecordEntity record) {
-        try {
-            boosterFinancialRecordRepository.findByIdForUpdate(record.getId())
-                    .ifPresent(lockedRecord -> {
-                        boosterService.updateBalance(
-                                lockedRecord.getBooster().getBoosterProfile().getId(),
-                                lockedRecord.getAmount(),
-                                lockedRecord.getRecordType()
-                        );
-
-                        lockedRecord.setCalculated(true);
-                        boosterFinancialRecordRepository.save(lockedRecord);
-                    });
-        } catch (Exception e) {
-            log.error("Ошибка обработки записи {}: {}", record.getId(), e.getMessage());
-        }
-    }
 }

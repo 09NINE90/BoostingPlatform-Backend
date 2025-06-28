@@ -53,7 +53,8 @@ public class OrderCustomerService implements IOrderCustomerService {
     }
 
     @Override
-    public List<OrderRsDto> getByCreator(OrderStatus status) {
+    @PlatformMonitoring(name = MonitoringMethodType.GET_USER_ORDERS_BY_STATUS)
+    public List<OrderRsDto> getOrdersByCreator(OrderStatus status) {
         UserEntity user = authService.getAuthUser();
         List<OrderEntity> orders;
         if (status == null) {

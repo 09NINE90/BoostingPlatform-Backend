@@ -35,8 +35,8 @@ public class OrderApi {
 
     @PostMapping("/getByCreator")
     @Operation(summary = "Получение списка заказов для пользователя")
-    public ResponseEntity<List<OrderRsDto>> getByCreator(@RequestBody OrderByStatusRqDto request) {
-        return ResponseEntity.ok(orderCustomerService.getByCreator(request.getStatus()));
+    public ResponseEntity<List<OrderRsDto>> getOrdersByCreator(@RequestBody OrderByStatusRqDto request) {
+        return ResponseEntity.ok(orderCustomerService.getOrdersByCreator(request.getStatus()));
     }
 
     @PostMapping("/getDashboard")
