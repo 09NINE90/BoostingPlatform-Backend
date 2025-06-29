@@ -35,8 +35,8 @@ public class OrderApi {
 
     @PostMapping("/getByCreator")
     @Operation(summary = "Получение списка заказов для пользователя")
-    public ResponseEntity<List<OrderRsDto>> getByCreator(@RequestBody OrderByStatusRqDto request) {
-        return ResponseEntity.ok(orderCustomerService.getByCreator(request.getStatus()));
+    public ResponseEntity<List<OrderRsDto>> getOrdersByCreator(@RequestBody OrderByStatusRqDto request) {
+        return ResponseEntity.ok(orderCustomerService.getOrdersByCreator(request.getStatus()));
     }
 
     @PostMapping("/getDashboard")
@@ -55,6 +55,13 @@ public class OrderApi {
     @Operation(summary = "Взятие заказа в работу бустером")
     public ResponseEntity<Void> acceptOrder(@PathVariable("orderId") UUID orderId) {
         orderBoosterService.acceptOrder(orderId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/complete/{orderId}")
+    @Operation(summary = "Завершение работы над заказом")
+    public ResponseEntity<Void> completeExecutionOrder(@PathVariable("orderId") UUID orderId) {
+        orderBoosterService.completeExecutionOrder(orderId);
         return ResponseEntity.ok().build();
     }
 

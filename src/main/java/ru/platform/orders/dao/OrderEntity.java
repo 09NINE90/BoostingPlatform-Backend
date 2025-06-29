@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
 import java.math.BigDecimal;
@@ -35,7 +36,8 @@ public class OrderEntity {
     private UserEntity creator;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "offer_name")
     private String offerName;
@@ -77,6 +79,9 @@ public class OrderEntity {
 
     @Column(name = "end_time_execution")
     private OffsetDateTime endTimeExecution;
+
+    @Column(name = "completed_at")
+    private OffsetDateTime completedAt;
 
 }
 

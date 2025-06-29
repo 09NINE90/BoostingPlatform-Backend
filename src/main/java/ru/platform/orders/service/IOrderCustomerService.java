@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IOrderCustomerService {
     void createOrder(CreateOrderRqDto orderRqDto);
-    List<OrderRsDto> getByCreator(OrderStatus status);
+    List<OrderRsDto> getOrdersByCreator(OrderStatus status);
     long getCountOrdersByCustomer(UserEntity userEntity);
     long getCountCompletedOrdersByBooster(UserEntity userEntity);
 }

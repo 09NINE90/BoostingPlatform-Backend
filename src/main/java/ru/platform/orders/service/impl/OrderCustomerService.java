@@ -1,6 +1,6 @@
 package ru.platform.orders.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,8 @@ public class OrderCustomerService implements IOrderCustomerService {
 
     private final String LOG_PREFIX = "OrderCustomerService: {}";
 
-    // TODO сделать обновление полей total_orders и total_amount_of_orders
+    // TODO сделать обновление полей total_orders, total_amount_of_orders
+    //  и добавить пересчет кэшбека и уровня заказчика
     //  в профиле заказчика при успешном создании заказа
     @Override
     @Transactional
@@ -53,13 +54,14 @@ public class OrderCustomerService implements IOrderCustomerService {
     }
 
     @Override
-    public List<OrderRsDto> getByCreator(OrderStatus status) {
+    @PlatformMonitoring(name = MonitoringMethodType.GET_USER_ORDERS_BY_STATUS)
+    public List<OrderRsDto> getOrdersByCreator(OrderStatus status) {
         UserEntity user = authService.getAuthUser();
         List<OrderEntity> orders;
         if (status == null) {
             orders = orderRepository.findAllByCreator(user);
         } else {
-            orders = orderRepository.findAllByStatusAndByCreator(status.name(), user);
+            orders = orderRepository.findAllByStatusAndByCreator(status, user);
         }
         return orders.stream().map(mapper::toOrderRsDto).toList();
     }

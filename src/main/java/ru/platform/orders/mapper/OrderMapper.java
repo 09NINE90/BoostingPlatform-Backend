@@ -11,6 +11,7 @@ import ru.platform.orders.dto.response.OrderFromCartRsDto;
 import ru.platform.orders.dto.response.OrderListRsDto;
 import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
+import ru.platform.utils.DateTimeUtils;
 import ru.platform.utils.GenerateSecondIdUtil;
 
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ public class OrderMapper {
                 .offerName(cartItemDto.getOfferName())
                 .basePrice(BigDecimal.valueOf(cartItemDto.getBasePrice()))
                 .totalPrice(BigDecimal.valueOf(cartItemDto.getTotalPrice()))
-                .status(OrderStatus.CREATED.name())
+                .status(OrderStatus.CREATED)
                 .gameName(cartItemDto.getGameName())
                 .gamePlatform(cartItemDto.getGamePlatform())
                 .totalTime(cartItemDto.getTotalTime())
@@ -63,7 +64,7 @@ public class OrderMapper {
     public OrderFromCartRsDto toOrderFromCartDto(OrderEntity orderEntity) {
         return OrderFromCartRsDto.builder()
                 .orderName(orderEntity.getOfferName())
-                .orderStatus(OrderStatus.valueOf(orderEntity.getStatus()))
+                .orderStatus(orderEntity.getStatus())
                 .gameName(orderEntity.getGameName())
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .totalTime(orderEntity.getTotalTime())
@@ -132,6 +133,9 @@ public class OrderMapper {
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .boosterSalary(orderEntity.getBoosterSalary().doubleValue())
                 .selectedOptions(toOrderByBoosterListOptionDtoList(orderEntity.getOptionList()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
+                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
                 .build();
     }
 

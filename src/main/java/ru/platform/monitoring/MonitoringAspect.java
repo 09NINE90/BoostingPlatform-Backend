@@ -3,19 +3,22 @@ package ru.platform.monitoring;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import ru.platform.utils.JwtUtil;
+import ru.platform.user.dao.UserEntity;
+import ru.platform.user.service.IAuthService;
 
+@Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class MonitoringAspect {
 
     private final MeterRegistry meterRegistry;
-    private final JwtUtil jwtUtil;
+    private final IAuthService authService;
 
     @Around("@annotation(monitoring)")
     public Object monitor(ProceedingJoinPoint pjp, PlatformMonitoring monitoring) throws Throwable {
@@ -24,9 +27,13 @@ public class MonitoringAspect {
         String status = "success";
         String exceptionName = "none";
 
-        // todo проработать логику, чтобы не выкидывало 500
-//        String token = jwtUtil.extractTokenFromRequest();
-        String username = "username"; // заглушка
+        String username = null;
+        try {
+            UserEntity user = authService.getAuthUser();
+            username = user.getUsername();
+        }catch (Exception e){
+            username = "unauthorized";
+        }
 
         try {
             return pjp.proceed();

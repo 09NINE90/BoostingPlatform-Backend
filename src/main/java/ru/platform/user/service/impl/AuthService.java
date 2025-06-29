@@ -25,7 +25,7 @@ import ru.platform.utils.JwtUtil;
 import java.util.Map;
 import java.util.UUID;
 
-import static ru.platform.LocalConstants.Variables.TEN_HOURS;
+import static ru.platform.LocalConstants.DateTimeConstants.TEN_HOURS;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 

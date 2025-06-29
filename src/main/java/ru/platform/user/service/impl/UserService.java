@@ -1,7 +1,7 @@
 package ru.platform.user.service.impl;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ru.platform.LocalConstants.Message.*;
-import static ru.platform.LocalConstants.Variables.BOOSTER_LEGEND_TOTAL_INCOME;
+import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LEGEND_TOTAL_INCOME;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
@@ -287,18 +287,21 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public void changeNickname(String nickname) {
-        UserEntity userEntity = authService.getAuthUser();
-        userEntity = userRepository.findById(userEntity.getId())
-                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+        log.debug("Начало изменения никнейма на: {}", nickname);
 
-        UserProfileEntity profileEntity = userEntity.getProfile();
-        if (profileEntity == null) {
-            profileEntity = new UserProfileEntity();
-            userEntity.setProfile(profileEntity);
+        UserEntity userEntity = authService.getAuthUser();
+
+        if (!userRepository.existsById(userEntity.getId())) {
+            log.error("Пользователь с ID {} не найден", userEntity.getId());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
-        profileEntity.setNickname(nickname);
-        userRepository.save(userEntity);
-        userProfileRepository.save(userEntity.getProfile());
+
+        UserProfileEntity profile = userEntity.getProfile();
+
+        userProfileRepository.updateNickname(profile.getId(), nickname);
+        profile.setNickname(nickname);
+
+        log.debug("Никнейм успешно изменен на: {}", nickname);
     }
 
 
@@ -308,17 +311,20 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public void changeDescription(String description) {
-        UserEntity userEntity = authService.getAuthUser();
-        userEntity = userRepository.findById(userEntity.getId())
-                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+        log.debug("Начало изменения описания профиля");
 
-        UserProfileEntity profileEntity = userEntity.getProfile();
-        if (profileEntity == null) {
-            profileEntity = new UserProfileEntity();
-            userEntity.setProfile(profileEntity);
+        UserEntity userEntity = authService.getAuthUser();
+
+        if (!userRepository.existsById(userEntity.getId())) {
+            log.error("Пользователь с ID {} не найден", userEntity.getId());
+            throw new PlatformException(NOT_FOUND_ERROR);
         }
-        profileEntity.setDescription(description);
-        userRepository.save(userEntity);
-        userProfileRepository.save(userEntity.getProfile());
+
+        UserProfileEntity profile = userEntity.getProfile();
+
+        userProfileRepository.updateDescription(profile.getId(), description);
+        profile.setDescription(description);
+
+        log.debug("Описание профиля успешно обновлено");
     }
 }

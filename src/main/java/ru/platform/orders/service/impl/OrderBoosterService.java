@@ -1,10 +1,14 @@
 package ru.platform.orders.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
+import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.dao.specification.OrderDashboardSpecification;
@@ -28,10 +32,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
-import static ru.platform.LocalConstants.Variables.BOOSTER_LIMIT_ORDERS_IN_WORK;
+import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LIMIT_ORDERS_IN_WORK;
 import static ru.platform.exception.ErrorType.*;
-import static ru.platform.orders.enumz.OrderStatus.CREATED;
-import static ru.platform.orders.enumz.OrderStatus.IN_PROGRESS;
+import static ru.platform.orders.enumz.OrderStatus.*;
 
 @Slf4j
 @Service
@@ -41,12 +44,14 @@ public class OrderBoosterService implements IOrderBoosterService {
     private final OrderMapper mapper;
     private final IAuthService authService;
     private final OrderRepository orderRepository;
+    private final IBoosterFinanceService boosterFinanceService;
     private final OrdersByBoosterSpecification ordersByBoosterSpecification;
     private final OrderDashboardSpecification orderDashboardSpecification;
 
     private final String LOG_PREFIX = "OrderBoosterService: {}";
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_DASHBOARD_FILTERS)
     public DashboardFiltersRsDto getFiltersDashboard() {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
@@ -68,6 +73,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_FILTERS_BY_BOOSTER)
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
         List<String> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
@@ -88,6 +94,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_DASHBOARD_DATA)
     public OrderListRsDto getDashboard(DashboardRqDto request) {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
@@ -160,7 +167,7 @@ public class OrderBoosterService implements IOrderBoosterService {
         checkPossibilityToAcceptOrder(order, user);
 
         order.setBooster(user);
-        order.setStatus(IN_PROGRESS.name());
+        order.setStatus(IN_PROGRESS);
         order.setStartTimeExecution(OffsetDateTime.now());
         order.setBoosterSalary(calculateBoosterSalary(order, ratio));
         orderRepository.save(order);
@@ -170,7 +177,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      * Проверка возможности взять заказ бустером
      */
     void checkPossibilityToAcceptOrder(OrderEntity order, UserEntity user) {
-        if (!order.getStatus().equals(CREATED.name()) && order.getBooster() != null) {
+        if (!order.getStatus().equals(CREATED) && order.getBooster() != null) {
             throw new PlatformException(ORDER_ALREADY_IN_PROGRESS_ERROR);
         }
 
@@ -219,6 +226,32 @@ public class OrderBoosterService implements IOrderBoosterService {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);
         }
+    }
+
+    /**
+     * Заверение выполнения заказа бустером
+     */
+    @Override
+    @Transactional
+    public void completeExecutionOrder(UUID orderId) {
+        log.debug(LOG_PREFIX, "Поиск заказа для завершения");
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        if (order.getStatus() != IN_PROGRESS) {
+            log.error(LOG_PREFIX, "Заказ с таким статусом не может быть завершен");
+            throw new PlatformException(INVALID_ORDER_STATUS_FOR_COMPLETION_ERROR);
+        }
+
+        log.debug(LOG_PREFIX, "Установка даты/времени завершения выполнения заказа и смена статуса на ON_PENDING");
+        order.setEndTimeExecution(OffsetDateTime.now());
+        order.setStatus(ON_PENDING);
+
+        log.debug(LOG_PREFIX, "Сохранение заказа с обновленными данными");
+        orderRepository.save(order);
+
+        log.debug(LOG_PREFIX, "Запрос на создание записи баланса с ЗП бустера");
+        boosterFinanceService.createNewRecordOfSalaryBooster(order);
     }
 
 }
