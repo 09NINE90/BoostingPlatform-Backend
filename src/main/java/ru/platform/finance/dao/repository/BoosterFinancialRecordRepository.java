@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.platform.finance.dao.BoosterFinancialRecordEntity;
 import ru.platform.finance.enumz.PaymentStatus;
+import ru.platform.user.dao.UserEntity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -37,4 +38,7 @@ public interface BoosterFinancialRecordRepository extends JpaRepository<BoosterF
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.id = :id")
     Optional<BoosterFinancialRecordEntity> findByIdForUpdate(@Param("id") UUID id);
+
+    @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.booster = :booster ORDER BY r.createdAt DESC")
+    List<BoosterFinancialRecordEntity> findAllByBooster(@Param("booster") UserEntity booster);
 }

@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.dao.BoosterFinancialRecordEntity;
 import ru.platform.finance.dao.repository.BoosterFinancialRecordRepository;
-import ru.platform.finance.dto.HandleWithdrawalRqDto;
+import ru.platform.finance.dto.request.HandleWithdrawalRqDto;
+import ru.platform.finance.dto.response.BalanceHistoryRsDto;
+import ru.platform.finance.mapper.BalanceMapper;
 import ru.platform.finance.service.IBoosterFinanceService;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.user.dao.UserEntity;
@@ -16,6 +18,7 @@ import ru.platform.user.service.IBoosterService;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.finance.enumz.PaymentStatus.ON_PENDING;
@@ -28,6 +31,7 @@ import static ru.platform.finance.enumz.RecordType.WITHDRAWAL;
 public class BoosterFinanceService implements IBoosterFinanceService {
 
     private final IAuthService authService;
+    private final BalanceMapper balanceMapper;
     private final IBoosterService boosterService;
     private final BoosterFinancialRecordRepository boosterFinancialRecordRepository;
 
@@ -76,6 +80,22 @@ public class BoosterFinanceService implements IBoosterFinanceService {
                 .status(ON_PENDING)
                 .booster(booster)
                 .build());
+    }
+
+    /**
+     * Получение данных об истории баланса бустера
+     */
+    @Override
+    public List<BalanceHistoryRsDto> getBalanceHistoryByBooster() {
+        log.debug(LOG_PREFIX, "Начало обработки запроса на получение истории баланса бустера");
+        UserEntity booster = authService.getAuthUser();
+
+        log.debug(LOG_PREFIX, "Получение записей о балансах бустера из БД");
+        List<BoosterFinancialRecordEntity> balanceList = boosterFinancialRecordRepository.findAllByBooster(booster);
+
+        return balanceList.stream()
+                .map(balanceMapper::toBalanceHistoryRsDto)
+                .toList();
     }
 
 }
