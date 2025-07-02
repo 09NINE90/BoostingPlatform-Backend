@@ -21,6 +21,7 @@ import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
 import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 import ru.platform.user.enumz.BoosterLevelName;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
@@ -36,6 +37,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LEGEND_TOTAL_INCOME;
@@ -326,5 +328,22 @@ public class UserService implements IUserService {
         profile.setDescription(description);
 
         log.debug("Описание профиля успешно обновлено");
+    }
+
+    /**
+     * Получение краткой информации о бустере
+     */
+    @Override
+    public MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId) {
+        UserEntity booster = userRepository.findById(boosterId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        return MiniBoosterProfileRsDto.builder()
+                .boosterName(booster.getProfile().getNickname())
+                .boosterDescription(booster.getProfile().getDescription())
+                .avatarUrl(booster.getProfile().getImageUrl())
+                .boosterLevel(booster.getBoosterProfile().getLevel())
+                .numberOfCompletedOrders(booster.getBoosterProfile().getNumberOfCompletedOrders())
+                .build();
     }
 }

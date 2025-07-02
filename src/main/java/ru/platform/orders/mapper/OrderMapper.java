@@ -8,6 +8,7 @@ import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.response.*;
 import ru.platform.orders.enumz.OrderStatus;
+import ru.platform.user.dao.UserEntity;
 import ru.platform.utils.DateTimeUtils;
 import ru.platform.utils.GenerateSecondIdUtil;
 
@@ -94,7 +95,9 @@ public class OrderMapper {
     }
 
     public OrderRsDto toOrderRsDto(OrderEntity orderEntity) {
+        UserEntity booster = orderEntity.getBooster();
         return OrderRsDto.builder()
+                .boosterId(booster != null ? booster.getId().toString() : null)
                 .orderId(orderEntity.getId().toString())
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())

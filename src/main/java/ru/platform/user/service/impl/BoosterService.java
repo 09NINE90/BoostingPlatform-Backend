@@ -99,6 +99,9 @@ public class BoosterService implements IBoosterService {
         }
     }
 
+    /**
+     * Проверка баланса бустера перед обработкой заявки на вывод средств
+     */
     @Override
     @Transactional
     public void checkBoosterBalance(UserEntity booster, BigDecimal withdrawalAmount) {

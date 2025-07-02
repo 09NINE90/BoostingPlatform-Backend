@@ -7,8 +7,10 @@ import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 
 import java.util.Map;
+import java.util.UUID;
 
 public interface IUserService {
     @Schema(description = "Создание пользователя")
@@ -40,4 +42,7 @@ public interface IUserService {
 
     @Schema(description = "Запрос на смену описания пользователя")
     void changeDescription(String description);
+
+    @Schema(description = "Запрос получение краткой информации о бустере")
+    MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId);
 }
