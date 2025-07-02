@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LIMIT_ORDERS_IN_WORK;
 import static ru.platform.exception.ErrorType.*;
@@ -252,6 +253,22 @@ public class OrderBoosterService implements IOrderBoosterService {
 
         log.debug(LOG_PREFIX, "Запрос на создание записи баланса с ЗП бустера");
         boosterFinanceService.createNewRecordOfSalaryBooster(order);
+    }
+
+    /**
+     * Получение истории выполненных заказов бустером
+     */
+    @Override
+    public List<BoosterOrderHistoryRsDto> getBoosterOrdersHistory() {
+        UserEntity user = authService.getAuthUser();
+
+        List<OrderEntity> orders = orderRepository.findAllCompletedOrdersByBooster(user);
+
+        if (orders.isEmpty()) return emptyList();
+
+        return orders.stream()
+                .map(mapper::toBoosterOrderHistoryRsDto)
+                .toList();
     }
 
 }

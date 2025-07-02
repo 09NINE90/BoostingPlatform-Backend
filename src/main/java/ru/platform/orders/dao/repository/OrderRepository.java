@@ -67,4 +67,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
             @Param("newStatus") OrderStatus newStatus,
             @Param("completedAt") OffsetDateTime completedAt
     );
+
+    @Query("SELECT o FROM OrderEntity o WHERE o.booster = :booster AND o.status = 'COMPLETED' " +
+            "ORDER BY o.completedAt DESC")
+    List<OrderEntity> findAllCompletedOrdersByBooster(@Param("booster") UserEntity booster);
 }

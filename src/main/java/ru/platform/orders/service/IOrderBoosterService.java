@@ -14,4 +14,5 @@ public interface IOrderBoosterService {
     OrderFiltersRsDto getFiltersForOrdersByBooster();
     void acceptOrder(UUID orderId);
     void completeExecutionOrder(UUID orderId);
+    List<BoosterOrderHistoryRsDto> getBoosterOrdersHistory();
 }
