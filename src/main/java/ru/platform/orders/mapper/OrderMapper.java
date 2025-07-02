@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
-import ru.platform.orders.dto.response.OrderByBoosterRsDto;
-import ru.platform.orders.dto.response.OrderFromCartRsDto;
-import ru.platform.orders.dto.response.OrderListRsDto;
-import ru.platform.orders.dto.response.OrderRsDto;
+import ru.platform.orders.dto.response.*;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.utils.DateTimeUtils;
 import ru.platform.utils.GenerateSecondIdUtil;
@@ -152,4 +149,15 @@ public class OrderMapper {
                 .build();
     }
 
+    public BoosterOrderHistoryRsDto toBoosterOrderHistoryRsDto(OrderEntity orderEntity) {
+        return BoosterOrderHistoryRsDto.builder()
+                .id(orderEntity.getId().toString())
+                .orderId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
+                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
+                .salary(orderEntity.getBoosterSalary())
+                .orderName(orderEntity.getOfferName())
+                .orderStatus(orderEntity.getStatus())
+                .gameName(orderEntity.getGameName())
+                .build();
+    }
 }

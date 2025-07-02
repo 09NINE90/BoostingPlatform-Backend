@@ -76,4 +76,9 @@ public class OrderApi {
     public ResponseEntity<OrderFiltersRsDto> getFiltersForOrdersByBooster() {
         return ResponseEntity.ok(orderBoosterService.getFiltersForOrdersByBooster());
     }
+
+    @GetMapping("/boosterOrdersHistory")
+    public ResponseEntity<List<BoosterOrderHistoryRsDto>> getBoosterOrdersHistory() {
+        return ResponseEntity.ok(orderBoosterService.getBoosterOrdersHistory());
+    }
 }
