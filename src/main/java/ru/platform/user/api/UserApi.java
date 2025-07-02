@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 import ru.platform.user.service.IUserService;
+
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.*;
 
@@ -45,5 +48,10 @@ public class UserApi {
     public ResponseEntity<Void> changeDescriptionProfile(@RequestParam String description) {
         userService.changeDescription(description);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getBoosterMiniProfile/{boosterId}")
+    public ResponseEntity<MiniBoosterProfileRsDto> getBoosterMiniProfile(@PathVariable("boosterId") UUID  boosterId) {
+        return ResponseEntity.ok(userService.getBoosterMiniProfile(boosterId));
     }
 }

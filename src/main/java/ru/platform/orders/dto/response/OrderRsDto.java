@@ -10,10 +10,15 @@ import ru.platform.orders.enumz.OrderStatus;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
+
 @Data
 @Builder
 @Jacksonized
 public class OrderRsDto {
+
+    @Schema(description = "Идентификатор бустера, прикрепленного к заказу", example = DEFAULT_UUID)
+    private String boosterId;
 
     @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
     private String orderId;
