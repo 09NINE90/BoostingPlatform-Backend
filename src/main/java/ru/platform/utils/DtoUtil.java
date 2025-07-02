@@ -14,6 +14,10 @@ public class DtoUtil {
         return SafelyGet.safelyGet(dto, getter);
     }
 
+    public <T, V, U> U safelyGet(T dto, Function<T, V> getter, Function<V, U> secondGetter) {
+        return SafelyGet.safelyGet(dto, getter, secondGetter);
+    }
+
     public <T, V> boolean isDeepEmpty(T dto, Function<T, V> getter) {
         return DeepEmpty.isDeepEmpty(dto, getter);
     }
