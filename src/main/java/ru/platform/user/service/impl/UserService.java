@@ -23,6 +23,7 @@ import ru.platform.user.dao.UserProfileEntity;
 import ru.platform.user.dto.response.CustomerProfileRsDto;
 import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 import ru.platform.user.enumz.BoosterLevelName;
+import ru.platform.user.enumz.CustomerStatus;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -114,7 +115,12 @@ public class UserService implements IUserService {
                 .user(userEntity)
                 .build();
         CustomerProfileEntity customerProfileEntity = CustomerProfileEntity.builder()
+                .totalAmountOfOrders(BigDecimal.ZERO)
+                .cashbackBalance(BigDecimal.ZERO)
+                .status(CustomerStatus.EXPLORER)
+                .discountPercentage(1)
                 .user(userEntity)
+                .totalOrders(0)
                 .build();
 
         userEntity.setProfile(profileEntity);
