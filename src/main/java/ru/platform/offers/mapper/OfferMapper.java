@@ -70,11 +70,13 @@ public class OfferMapper implements IOfferMapper {
     @Override
     public OfferCartRsDto toOfferCartRsDto(OfferCartEntity offerCartEntity) {
         return OfferCartRsDto.builder()
+                .id(offerCartEntity.getId())
                 .offerId(offerCartEntity.getOffer().getId())
                 .gameName(offerCartEntity.getGame().getTitle())
                 .gamePlatform(offerCartEntity.getGamePlatform())
                 .offerName(offerCartEntity.getOffer().getTitle())
-                .totalPrice(offerCartEntity.getTotalPrice().doubleValue())
+                .basePrice(offerCartEntity.getBasePrice())
+                .totalPrice(offerCartEntity.getTotalPrice())
                 .totalTime(offerCartEntity.getTotalTime())
                 .selectedOptions(toSelectionOptionsCartList(offerCartEntity.getOptionCarts()))
                 .build();

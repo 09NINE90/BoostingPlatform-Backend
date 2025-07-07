@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.chat.dao.ChatRoomEntity;
+import ru.platform.games.dao.GameEntity;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
@@ -47,8 +48,9 @@ public class OrderEntity {
     @JoinColumn(name = "booster")
     private UserEntity booster;
 
-    @Column(name = "game_name")
-    private String gameName;
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private GameEntity game;
 
     @Column(name = "game_platform")
     private String gamePlatform;

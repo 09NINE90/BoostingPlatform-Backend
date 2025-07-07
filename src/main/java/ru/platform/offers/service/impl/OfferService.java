@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.games.repository.GameRepository;
@@ -155,6 +156,15 @@ public class OfferService implements IOfferService {
     public int getCountCartItems() {
         UserEntity user = authService.getAuthUser();
         return (int) offerCartRepository.countByCreator(user);
+    }
+
+    /**
+     * Удаление элемента из корзины по id
+     */
+    @Override
+    @Transactional
+    public void deleteCartItemById(UUID itemId) {
+        offerCartRepository.deleteById(itemId);
     }
 
     /**

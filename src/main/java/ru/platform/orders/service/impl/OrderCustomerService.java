@@ -7,20 +7,26 @@ import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
+import ru.platform.offers.dao.OfferCartEntity;
+import ru.platform.offers.dao.repository.OfferCartRepository;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
-import ru.platform.orders.dto.request.CreateOrderRqDto;
 import ru.platform.orders.dto.response.OrderRsDto;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderCustomerService;
-import ru.platform.orders.service.IValidationOrderService;
+import ru.platform.user.dao.CustomerProfileEntity;
 import ru.platform.user.dao.UserEntity;
+import ru.platform.user.enumz.CustomerStatus;
 import ru.platform.user.service.IAuthService;
+import ru.platform.user.service.ICustomerService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
+import static ru.platform.LocalConstants.CustomerSettings.*;
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 
 @Slf4j
@@ -31,7 +37,8 @@ public class OrderCustomerService implements IOrderCustomerService {
     private final OrderMapper mapper;
     private final IAuthService authService;
     private final OrderRepository orderRepository;
-    private final IValidationOrderService validationOrderService;
+    private final ICustomerService customerService;
+    private final OfferCartRepository offerCartRepository;
 
     private final String LOG_PREFIX = "OrderCustomerService: {}";
 
@@ -41,11 +48,13 @@ public class OrderCustomerService implements IOrderCustomerService {
     @Override
     @Transactional
     @PlatformMonitoring(name = MonitoringMethodType.CREATE_ORDER)
-    public void createOrder(CreateOrderRqDto orderRqDto) {
-        validationOrderService.validateCreateOrderRqDto(orderRqDto);
+    public void createOrder(List<UUID> itemsIds) {
+
+        // Получение заказов из таблицы по списку id
+        List<OfferCartEntity> cartEntities = offerCartRepository.findAllById(itemsIds);
 
         UserEntity user = authService.getAuthUser();
-        List<OrderEntity> ordersToSave = orderRqDto.getItems().stream()
+        List<OrderEntity> ordersToSave = cartEntities.stream()
                 .map(item -> {
                     OrderEntity entity = mapper.toOrderEntity(item);
                     entity.setCreator(user);
@@ -53,7 +62,54 @@ public class OrderCustomerService implements IOrderCustomerService {
                 })
                 .toList();
 
+        // Сохранение заказов из корзины
         orderRepository.saveAll(ordersToSave);
+
+        updateCustomerProfile(user.getCustomerProfile(), ordersToSave);
+        // Удаление из корзины объектов, по которым созданы заказы
+        offerCartRepository.deleteAllById(itemsIds);
+    }
+
+    /**
+     * Обновление профиля заказчика
+     */
+    private void updateCustomerProfile(CustomerProfileEntity customerProfile, List<OrderEntity> createdOrders) {
+        BigDecimal cashbackPercent = customerProfile.getDiscountPercentage();
+
+        BigDecimal totalAmount = customerProfile.getTotalAmountOfOrders();
+        for (OrderEntity order : createdOrders) {
+            totalAmount = totalAmount.add(order.getTotalPrice());
+        }
+        int totalOrders = customerProfile.getTotalOrders() + createdOrders.size();
+
+        BigDecimal cashbackToAdd = totalAmount
+                .multiply(cashbackPercent)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal cashbackBalance = customerProfile.getCashbackBalance().add(cashbackToAdd);
+
+        customerProfile.setTotalOrders(totalOrders);
+        customerProfile.setTotalAmountOfOrders(totalAmount);
+        customerProfile.setCashbackBalance(cashbackBalance);
+
+        updateCustomerRating(customerProfile);
+    }
+
+    /**
+     * Обновление статуса заказчика
+     */
+    private void updateCustomerRating(CustomerProfileEntity customerProfile) {
+        int totalOrders = customerProfile.getTotalOrders();
+
+        if (totalOrders >= COUNT_ORDERS_FOR_IMMORTAL_STATUS) {
+            customerProfile.setStatus(CustomerStatus.IMMORTAL);
+            customerProfile.setDiscountPercentage(DISCOUNT_PERCENTAGE_FOR_IMMORTAL_STATUS);
+        } else if (totalOrders >= COUNT_ORDERS_FOR_VANGUARD_STATUS) {
+            customerProfile.setStatus(CustomerStatus.VANGUARD);
+            customerProfile.setDiscountPercentage(DISCOUNT_PERCENTAGE_FOR_VANGUARD_STATUS);
+        }
+
+        customerService.updateCustomerProfile(customerProfile);
     }
 
     @Override

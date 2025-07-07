@@ -39,6 +39,16 @@ public class LocalConstants {
         public static final int TWENTY_FOUR_HOURS = ONE_HOUR * 24;
     }
 
+    public static class CustomerSettings {
+
+        public static final int COUNT_ORDERS_FOR_VANGUARD_STATUS = 40;
+        public static final int COUNT_ORDERS_FOR_IMMORTAL_STATUS = 100;
+
+        public static final BigDecimal DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS = BigDecimal.valueOf(0.01);
+        public static final BigDecimal DISCOUNT_PERCENTAGE_FOR_VANGUARD_STATUS = BigDecimal.valueOf(0.05);
+        public static final BigDecimal DISCOUNT_PERCENTAGE_FOR_IMMORTAL_STATUS = BigDecimal.valueOf(0.1);
+    }
+
     public static class BoosterSettings {
         public static final double BOOSTER_ROOKIE_PERCENT = 0.45;
         public static final double BOOSTER_VETERAN_PERCENT = 0.5;

@@ -28,8 +28,8 @@ public class OrderApi {
 
     @PostMapping("/create")
     @Operation(summary = "Создание заказа")
-    public ResponseEntity<Void> createOrder(@RequestBody CreateOrderRqDto request) {
-        orderCustomerService.createOrder(request);
+    public ResponseEntity<Void> createOrder(@RequestBody List<UUID> itemsIds) {
+        orderCustomerService.createOrder(itemsIds);
         return ResponseEntity.ok().build();
     }
 

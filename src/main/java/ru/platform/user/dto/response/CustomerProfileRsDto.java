@@ -37,12 +37,18 @@ public class CustomerProfileRsDto {
     private String imageUrl;
 
     @Schema(description = "Процент скидки пользователя", example = "1")
-    private Integer discountPercentage;
+    private BigDecimal discountPercentage;
 
     @Schema(description = "Статус пользователя", example = "EXPLORER", enumAsRef = true)
     private CustomerStatus status;
 
+    @Schema(description = "Следующий статус пользователя", example = "VANGUARD", enumAsRef = true)
+    private CustomerStatus nextStatus;
+
     @Schema(description = "Бонусный баланс пользователя", example = "100.00")
     private BigDecimal cashbackBalance;
+
+    @Schema(description = "Процент прогресса аккаунта заказчика", example = "50")
+    private BigDecimal progressAccountStatus;
 
 }

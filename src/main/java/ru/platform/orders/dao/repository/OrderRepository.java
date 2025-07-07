@@ -23,13 +23,13 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     List<OrderEntity> findAllByStatusAndByCreator(@Param("status") OrderStatus status,
                                                   @Param("creator") UserEntity creator);
 
-    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.game.title IN :gameNames")
     List<String> findAllDistinctGamePlatforms(@Param("gameNames") Set<String> gameNames);
 
-    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.game.title IN :gameNames")
     Double findMinPrice(@Param("gameNames") Set<String> gameNames);
 
-    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.gameName IN :gameNames")
+    @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.game.title IN :gameNames")
     Double findMaxPrice(@Param("gameNames") Set<String> gameNames);
 
     @Query("select COUNT(*) from OrderEntity o WHERE o.creator = :creator")
@@ -44,7 +44,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.booster = :booster")
     List<String> findAllDistinctGamePlatformsByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT DISTINCT o.gameName FROM OrderEntity o WHERE o.booster = :booster")
+    @Query("SELECT DISTINCT o.game.title FROM OrderEntity o WHERE o.booster = :booster")
     List<String> findAllDistinctGameNamesByBooster(@Param("booster") UserEntity booster);
 
     @Query("SELECT MIN(o.boosterSalary) FROM OrderEntity o WHERE o.booster = :booster")

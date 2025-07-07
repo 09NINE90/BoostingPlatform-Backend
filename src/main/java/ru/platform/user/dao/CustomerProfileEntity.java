@@ -29,8 +29,8 @@ public class CustomerProfileEntity {
     @Column(name = "cashback_balance", precision = 19, scale = 4)
     private BigDecimal cashbackBalance = BigDecimal.ZERO;
 
-    @Column(name = "discount_percentage")
-    private Integer discountPercentage = 1;
+    @Column(name = "discount_percentage", precision = 5, scale = 2)
+    private BigDecimal discountPercentage = BigDecimal.valueOf(0.01);
 
     @Column(name = "total_orders")
     private Integer totalOrders = 0;
