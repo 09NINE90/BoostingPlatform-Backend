@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
@@ -82,6 +83,9 @@ public class OrderEntity {
 
     @Column(name = "completed_at")
     private OffsetDateTime completedAt;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ChatRoomEntity chatRoom;
 
 }
 

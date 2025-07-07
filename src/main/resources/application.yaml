@@ -1,5 +1,8 @@
 server:
   port: 6969
+  jetty:
+    connection-idle-timeout: 300000
+    max-http-form-post-size: 2000000B
 spring:
   application:
     name: boosting_platform_java

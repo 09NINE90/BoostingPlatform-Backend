@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.service.IBoosterFinanceService;
 import ru.platform.monitoring.MonitoringMethodType;
@@ -171,6 +172,16 @@ public class OrderBoosterService implements IOrderBoosterService {
         order.setStatus(IN_PROGRESS);
         order.setStartTimeExecution(OffsetDateTime.now());
         order.setBoosterSalary(calculateBoosterSalary(order, ratio));
+
+        if (order.getChatRoom() == null) {
+            ChatRoomEntity chatRoom = new ChatRoomEntity();
+            chatRoom.setTitle("Order " + order.getSecondId());
+            chatRoom.setParticipants(List.of(order.getCreator(), user));
+            chatRoom.setOrder(order); // важная связь
+
+            order.setChatRoom(chatRoom); // чтобы двусторонняя связь сохранялась каскадно
+        }
+
         orderRepository.save(order);
     }
 
@@ -269,6 +280,15 @@ public class OrderBoosterService implements IOrderBoosterService {
         return orders.stream()
                 .map(mapper::toBoosterOrderHistoryRsDto)
                 .toList();
+    }
+
+    @Override
+    public OrderByBoosterRsDto getOrderById(UUID orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(
+                () -> new PlatformException(NOT_FOUND_ERROR)
+        );
+
+        return mapper.toOrderByBoosterRsDto(orderEntity);
     }
 
 }

@@ -3,6 +3,7 @@ package ru.platform.orders.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
 import ru.platform.orders.dto.request.CartItemDto;
@@ -96,7 +97,9 @@ public class OrderMapper {
 
     public OrderRsDto toOrderRsDto(OrderEntity orderEntity) {
         UserEntity booster = orderEntity.getBooster();
+        ChatRoomEntity chatRoom = orderEntity.getChatRoom();
         return OrderRsDto.builder()
+                .chatId(chatRoom != null ? chatRoom.getId().toString() : null)
                 .boosterId(booster != null ? booster.getId().toString() : null)
                 .orderId(orderEntity.getId().toString())
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
@@ -106,6 +109,8 @@ public class OrderMapper {
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
                 .build();
     }
 
@@ -124,6 +129,7 @@ public class OrderMapper {
 
     public OrderByBoosterRsDto toOrderByBoosterRsDto(OrderEntity orderEntity) {
         return OrderByBoosterRsDto.builder()
+                .chatId(orderEntity.getChatRoom() != null ? orderEntity.getChatRoom().getId().toString() : null)
                 .orderId(orderEntity.getId().toString())
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())

@@ -65,6 +65,18 @@ public class OrderApi {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/booster/{orderId}")
+    @Operation(summary = "Получение заказа по id")
+    public ResponseEntity<OrderByBoosterRsDto> getBoosterOrderById(@PathVariable("orderId") UUID orderId) {
+        return ResponseEntity.ok(orderBoosterService.getOrderById(orderId));
+    }
+
+    @GetMapping("/{orderId}")
+    @Operation(summary = "Получение заказа по id")
+    public ResponseEntity<OrderRsDto> getCustomerOrderById(@PathVariable("orderId") UUID orderId) {
+        return ResponseEntity.ok(orderCustomerService.getOrderById(orderId));
+    }
+
     @PostMapping("/byBooster")
     @Operation(summary = "Получение списка заказов, закрепленных за бустером")
     public ResponseEntity<List<OrderByBoosterRsDto>> getOrdersByBooster(@RequestBody OrdersByBoosterRqDto request) {

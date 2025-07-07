@@ -35,6 +35,8 @@ public class SecurityConfig {
                                 "/swagger-ui/index.html",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
+                                "/api/chat/room/**",
+                                "/ws/**",
                                 "/boosting-platform/**",
                                 "/actuator/**",
                                 "/api/auth/**",
