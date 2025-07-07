@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.platform.LocalConstants.CustomerSettings.COUNT_ORDERS_FOR_IMMORTAL_STATUS;
 import static ru.platform.LocalConstants.CustomerSettings.DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS;
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LEGEND_TOTAL_INCOME;
@@ -48,6 +49,8 @@ import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
 import static ru.platform.user.enumz.BoosterLevelName.*;
+import static ru.platform.user.enumz.CustomerStatus.IMMORTAL;
+import static ru.platform.user.enumz.CustomerStatus.VANGUARD;
 import static ru.platform.user.enumz.UserRolesType.ROLE_CUSTOMER;
 
 @Slf4j
@@ -227,8 +230,23 @@ public class UserService implements IUserService {
                 .discountPercentage(customerProfile.getDiscountPercentage().multiply(BigDecimal.valueOf(100)))
                 .cashbackBalance(customerProfile.getCashbackBalance())
                 .status(customerProfile.getStatus())
+                .nextStatus(getNextStatus(customerProfile.getStatus()))
                 .totalOrders(customerProfile.getTotalOrders())
+                .progressAccountStatus(BigDecimal.valueOf(customerProfile.getTotalOrders())
+                        .multiply(BigDecimal.valueOf(100))
+                        .divide(BigDecimal.valueOf(COUNT_ORDERS_FOR_IMMORTAL_STATUS), 2, RoundingMode.HALF_UP))
                 .build();
+    }
+
+    /**
+     * Получение следующего статуса заказчика
+     */
+    private CustomerStatus getNextStatus(CustomerStatus status) {
+        return switch (status) {
+            case EXPLORER -> VANGUARD;
+            case VANGUARD -> IMMORTAL;
+            case IMMORTAL -> null;
+        };
     }
 
     /**
