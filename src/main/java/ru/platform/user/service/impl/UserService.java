@@ -1,22 +1,29 @@
 package ru.platform.user.service.impl;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
+import ru.platform.games.dao.GameTag;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
+import ru.platform.user.dao.BoosterProfileEntity;
+import ru.platform.user.dao.CustomerProfileEntity;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
+import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
-import ru.platform.user.dto.response.AuthRsDto;
-import ru.platform.user.dto.response.UserProfileRsDto;
+import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
+import ru.platform.user.enumz.BoosterLevelName;
+import ru.platform.user.enumz.CustomerStatus;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -25,15 +32,26 @@ import ru.platform.user.service.IValidationUserService;
 import ru.platform.utils.GenerateSecondIdUtil;
 import ru.platform.utils.JwtUtil;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import static ru.platform.LocalConstants.CustomerSettings.COUNT_ORDERS_FOR_IMMORTAL_STATUS;
+import static ru.platform.LocalConstants.CustomerSettings.DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS;
 import static ru.platform.LocalConstants.Message.*;
+import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LEGEND_TOTAL_INCOME;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.notification.MailType.PASSWORD_RECOVERY;
 import static ru.platform.notification.MailType.REGISTRATION;
-import static ru.platform.user.UserRolesType.ROLE_CUSTOMER;
+import static ru.platform.user.enumz.BoosterLevelName.*;
+import static ru.platform.user.enumz.CustomerStatus.IMMORTAL;
+import static ru.platform.user.enumz.CustomerStatus.VANGUARD;
+import static ru.platform.user.enumz.UserRolesType.ROLE_CUSTOMER;
 
 @Slf4j
 @Service
@@ -49,9 +67,11 @@ public class UserService implements IUserService {
     private final IMailService mailService;
     private final JwtUtil jwtUtil;
 
-
     private final static String LOG_PREFIX = "UserService: {}";
 
+    /**
+     * Обработка запроса на регистрацию пользователя
+     */
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
     public ConfirmationRsDto registrationUser(SignupUserRqDto user) {
@@ -97,32 +117,39 @@ public class UserService implements IUserService {
                 .secondId(randomId.getRandomId())
                 .user(userEntity)
                 .build();
+        CustomerProfileEntity customerProfileEntity = CustomerProfileEntity.builder()
+                .totalAmountOfOrders(BigDecimal.ZERO)
+                .cashbackBalance(BigDecimal.ZERO)
+                .status(CustomerStatus.EXPLORER)
+                .discountPercentage(DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS)
+                .user(userEntity)
+                .totalOrders(0)
+                .build();
 
         userEntity.setProfile(profileEntity);
+        userEntity.setCustomerProfile(customerProfileEntity);
         return userEntity;
     }
 
+    /**
+     * Проверка подтверждения регистрации
+     */
     @Override
-    public AuthRsDto checkConfirmationSignUp(String confirmationToken) {
-        String username;
-        try {
-            username = jwtUtil.extractUsername(confirmationToken);
-        } catch (PlatformException ex) {
-            throw ex;
-        }
+    public Map<String, String> checkConfirmationSignUp(String confirmationToken, HttpServletResponse response) {
+        String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
         String password = jwtUtil.extractUserPassword(confirmationToken);
 
         if (user.getConfirmationToken().equals(confirmationToken)) {
             user.setEnabled(true);
             userRepository.save(user);
-            return authService.trySignIn(new LoginUserRqDto(username, password));
+            return authService.trySignIn(new LoginUserRqDto(username, password), response);
         } else {
             log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getMessage());
             throw new PlatformException(EMAIL_VERIFIED_ERROR);
         }
-
     }
 
     @Override
@@ -141,12 +168,7 @@ public class UserService implements IUserService {
 
     @Override
     public ConfirmationRsDto confirmPasswordRecovery(String confirmationToken) {
-        String username;
-        try {
-            username = jwtUtil.extractUsername(confirmationToken);
-        } catch (PlatformException ex) {
-            throw ex;
-        }
+        String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
@@ -159,7 +181,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public AuthRsDto changeUserPassword(ConfirmationEmailRqDto confirmation) {
+    public Map<String, String> changeUserPassword(ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
@@ -169,7 +191,7 @@ public class UserService implements IUserService {
         return authService.trySignIn(new LoginUserRqDto(
                 confirmation.getEmail(),
                 confirmation.getPassword()
-        ));
+        ), response);
     }
 
     @Override
@@ -190,32 +212,159 @@ public class UserService implements IUserService {
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }
 
+    /**
+     * Получение информации о заказчике
+     */
     @Override
-    public UserProfileRsDto getUserProfileData() {
+    public CustomerProfileRsDto getCustomerProfileData() {
         UserEntity userEntity = authService.getAuthUser();
         UserProfileEntity profileEntity = userEntity.getProfile();
-        return UserProfileRsDto.builder()
+        CustomerProfileEntity customerProfile = userEntity.getCustomerProfile();
+
+        return CustomerProfileRsDto.builder()
+                .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
+                .description(profileEntity.getDescription())
+                .discountPercentage(customerProfile.getDiscountPercentage().multiply(BigDecimal.valueOf(100)))
+                .cashbackBalance(customerProfile.getCashbackBalance())
+                .status(customerProfile.getStatus())
+                .nextStatus(getNextStatus(customerProfile.getStatus()))
+                .totalOrders(customerProfile.getTotalOrders())
+                .progressAccountStatus(BigDecimal.valueOf(customerProfile.getTotalOrders())
+                        .multiply(BigDecimal.valueOf(100))
+                        .divide(BigDecimal.valueOf(COUNT_ORDERS_FOR_IMMORTAL_STATUS), 2, RoundingMode.HALF_UP))
                 .build();
     }
 
-    @Override
-    @Transactional
-    public String changeNickname(String nickname) {
-        UserEntity userEntity = authService.getAuthUser();
-        userEntity = userRepository.findById(userEntity.getId())
-                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
-        UserProfileEntity profileEntity = userEntity.getProfile();
-        if (profileEntity == null) {
-            profileEntity = new UserProfileEntity();
-            userEntity.setProfile(profileEntity);
-        }
-        profileEntity.setNickname(nickname);
-        userRepository.save(userEntity);
-        userProfileRepository.save(userEntity.getProfile());
-        return "Success";
+    /**
+     * Получение следующего статуса заказчика
+     */
+    private CustomerStatus getNextStatus(CustomerStatus status) {
+        return switch (status) {
+            case EXPLORER -> VANGUARD;
+            case VANGUARD -> IMMORTAL;
+            case IMMORTAL -> null;
+        };
     }
 
+    /**
+     * Получение информации о бустере
+     */
+    @Override
+    public BoosterProfileRsDto getBoosterProfileData() {
+        UserEntity userEntity = authService.getAuthUser();
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
+
+        return BoosterProfileRsDto.builder()
+                .email(userEntity.getUsername())
+                .nickname(profileEntity.getNickname())
+                .imageUrl(profileEntity.getImageUrl())
+                .secondId(profileEntity.getSecondId())
+                .description(profileEntity.getDescription())
+                .level(boosterProfile.getLevel())
+                .nextLevel(getNextLevel(boosterProfile.getLevel()))
+                .percentageOfOrder((double) Math.round(boosterProfile.getPercentageOfOrder() * 100))
+                .balance(boosterProfile.getBalance())
+                .totalIncome(boosterProfile.getTotalIncome())
+                .numberOfCompletedOrders(boosterProfile.getNumberOfCompletedOrders())
+                .progressAccountStatus(boosterProfile.getTotalIncome().multiply(BigDecimal.valueOf(100))
+                        .divide(BOOSTER_LEGEND_TOTAL_INCOME, 2, RoundingMode.HALF_UP))
+                .totalTips(boosterProfile.getTotalTips())
+                .gameTags(getGameTags(boosterProfile.getGameTags()))
+                .build();
+    }
+
+    /**
+     * Получение следующего уровня бустера
+     */
+    private BoosterLevelName getNextLevel(BoosterLevelName level) {
+        return switch (level) {
+            case ROOKIE -> VETERAN;
+            case VETERAN -> ELITE;
+            case ELITE -> LEGEND;
+            case LEGEND -> null;
+        };
+    }
+
+    /**
+     * Получение игровых тегов для фронта
+     */
+    private List<BoosterProfileRsDto.GameTag> getGameTags(List<GameTag> gameTags) {
+        if (gameTags == null || gameTags.isEmpty()) return null;
+        return gameTags.stream()
+                .map(gameTag ->
+                        BoosterProfileRsDto.GameTag.builder()
+                                .id(gameTag.getId().toString())
+                                .name(gameTag.getGame().getTitle())
+                                .build()
+                )
+                .toList();
+    }
+
+    /**
+     * Запрос на изменение никнейма
+     */
+    @Override
+    @Transactional
+    public void changeNickname(String nickname) {
+        log.debug("Начало изменения никнейма на: {}", nickname);
+
+        UserEntity userEntity = authService.getAuthUser();
+
+        if (!userRepository.existsById(userEntity.getId())) {
+            log.error("Пользователь с ID {} не найден", userEntity.getId());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
+
+        UserProfileEntity profile = userEntity.getProfile();
+
+        userProfileRepository.updateNickname(profile.getId(), nickname);
+        profile.setNickname(nickname);
+
+        log.debug("Никнейм успешно изменен на: {}", nickname);
+    }
+
+
+    /**
+     * Запрос на изменение описания профиля пользователя
+     */
+    @Override
+    @Transactional
+    public void changeDescription(String description) {
+        log.debug("Начало изменения описания профиля");
+
+        UserEntity userEntity = authService.getAuthUser();
+
+        if (!userRepository.existsById(userEntity.getId())) {
+            log.error("Пользователь с ID {} не найден", userEntity.getId());
+            throw new PlatformException(NOT_FOUND_ERROR);
+        }
+
+        UserProfileEntity profile = userEntity.getProfile();
+
+        userProfileRepository.updateDescription(profile.getId(), description);
+        profile.setDescription(description);
+
+        log.debug("Описание профиля успешно обновлено");
+    }
+
+    /**
+     * Получение краткой информации о бустере
+     */
+    @Override
+    public MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId) {
+        UserEntity booster = userRepository.findById(boosterId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        return MiniBoosterProfileRsDto.builder()
+                .boosterName(booster.getProfile().getNickname())
+                .boosterDescription(booster.getProfile().getDescription())
+                .avatarUrl(booster.getProfile().getImageUrl())
+                .boosterLevel(booster.getBoosterProfile().getLevel())
+                .numberOfCompletedOrders(booster.getBoosterProfile().getNumberOfCompletedOrders())
+                .build();
+    }
 }

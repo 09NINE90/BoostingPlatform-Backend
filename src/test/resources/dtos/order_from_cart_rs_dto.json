@@ -1,0 +1,15 @@
+{
+  "offerId": "6bcfca82-3cff-499a-97cc-90ca36121ce1",
+  "orderName": "Kingdoms Rise Boosting",
+  "gameName": "Kingdoms Rise",
+  "orderStatus": "CREATED",
+  "selectedOptions": [
+    {
+      "optionTitle": "Collection of achievements",
+      "value": "[All achievements, Rare trophies]",
+      "label": "All achievements, Rare trophies"
+    }
+  ],
+  "totalPrice": 143.0,
+  "totalTime": 32
+}

@@ -17,8 +17,8 @@ public class OfferToCartRqDto {
     @Schema(description = "Идентификатор предложения, которое добавляется в корзину", example = DEFAULT_UUID)
     private UUID offerId;
 
-    @Schema(description = "Название игры", example = "Legend of Eldoria")
-    private String gameName;
+    @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
+    private String gameId;
 
     @Schema(description = "Название платформы", example = "XBOX")
     private String gamePlatform;

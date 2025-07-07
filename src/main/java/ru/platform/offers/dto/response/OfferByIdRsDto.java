@@ -19,6 +19,9 @@ public class OfferByIdRsDto {
     @Schema(description = "Идентификатор игры, привязанной к предложению", example = DEFAULT_UUID)
     private String gameId;
 
+    @Schema(description = "Идентификатор игры, привязанной к предложению", example = "LoE")
+    private String secondGameId;
+
     @Schema(description = "Второй идентификатор предложения", example = DEFAULT_SECOND_UUID)
     private String secondId;
 

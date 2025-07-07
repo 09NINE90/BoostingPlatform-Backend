@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
+import ru.platform.games.dao.GameEntity;
+import ru.platform.games.repository.GameRepository;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
@@ -26,6 +29,7 @@ import ru.platform.offers.service.IOfferService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +47,7 @@ public class OfferService implements IOfferService {
     private final OfferRepository offerRepository;
     private final OfferSpecification specification;
     private final OfferCartRepository offerCartRepository;
+    private final GameRepository gameRepository;
     private final PaginationOffersUtil paginationOffersUtil;
     private final IAuthService authService;
     private final IOfferMapper offerMapper;
@@ -102,7 +107,8 @@ public class OfferService implements IOfferService {
 
         return OfferByIdRsDto.builder()
                 .offerId(offerEntity.getId().toString())
-                .gameId(offerEntity.getGame().getSecondId())
+                .gameId(offerEntity.getGame().getId().toString())
+                .secondGameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
                 .gamePlatforms(Arrays.stream(offerEntity.getGame().getPlatforms().split(",")).map(String::trim).toList())
@@ -120,15 +126,19 @@ public class OfferService implements IOfferService {
     public List<OfferCartRsDto> addOfferToCart(OfferToCartRqDto offer) {
         Optional<OfferEntity> offerEntityOptional = offerRepository.findById(offer.getOfferId());
         UserEntity user = authService.getAuthUser();
+        GameEntity game = gameRepository.findById(UUID.fromString(offer.getGameId()))
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
         OfferCartEntity offerCartEntity = OfferCartEntity.builder()
                 .offer(offerEntityOptional.orElse(null))
                 .creator(authService.getAuthUser())
-                .gameName(offer.getGameName())
+                .game(game)
                 .gamePlatform(offer.getGamePlatform())
                 .basePrice(offer.getBasePrice())
                 .totalPrice(offer.getTotalPrice())
                 .totalTime(offer.getTotalTime())
+                .createdAt(OffsetDateTime.now())
+                .updatedAt(OffsetDateTime.now())
                 .optionCarts(toOptionCarts(offer.getSelectedOptions()))
                 .build();
         offerCartRepository.save(offerCartEntity);
@@ -146,6 +156,15 @@ public class OfferService implements IOfferService {
     public int getCountCartItems() {
         UserEntity user = authService.getAuthUser();
         return (int) offerCartRepository.countByCreator(user);
+    }
+
+    /**
+     * Удаление элемента из корзины по id
+     */
+    @Override
+    @Transactional
+    public void deleteCartItemById(UUID itemId) {
+        offerCartRepository.deleteById(itemId);
     }
 
     /**

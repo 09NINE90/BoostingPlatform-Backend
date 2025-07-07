@@ -1,0 +1,25 @@
+[
+  {
+    "id": "d26515bf-d06a-4218-8cf2-1a5866c38931",
+    "title": "Legend of Eldoria",
+    "secondId": "LoE",
+    "description": "Фэнтезийная ролевая игра в открытом мире с захватывающим сюжетом.",
+    "imageUrl": "https://i.ibb.co/xq87ZbJz/cfc10b491c50a272b45d7455b85aef047742ac6b.png",
+    "rating": 10,
+    "platforms": "PS, PC, XBOX",
+    "miniImageUrl": "https://example.com/images/eldoria.jpg",
+    "creator": {
+      "id": "79c1d1cd-0be9-4f98-a6be-8974edad3cde",
+      "roles": "ROLE_CUSTOMER",
+      "username": "test@mail.ru",
+      "password": "$2a$10$P8UX8zNcrUlKbwdp7c6qjuOMpyPGp08CwREBmiaSN9lknfNWCUrZO",
+      "enabled": true
+    },
+    "categories": [
+      {
+        "id": 20,
+        "name": "Шутер"
+      }
+    ]
+  }
+]

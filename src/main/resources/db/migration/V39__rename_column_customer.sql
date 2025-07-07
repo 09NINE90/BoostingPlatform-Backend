@@ -1,0 +1,4 @@
+BEGIN;
+ALTER TABLE customer_profile
+    ALTER COLUMN status SET DEFAULT 'EXPLORER';
+COMMIT;

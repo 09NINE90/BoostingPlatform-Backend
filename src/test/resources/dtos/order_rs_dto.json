@@ -1,0 +1,16 @@
+{
+  "orderId": "a26515bf-d06a-4218-8cf2-1a5866c38931",
+  "secondId": "12345",
+  "offerName": "Legendary Boost",
+  "gameName": "Legend of Eldoria",
+  "gamePlatform": "PC",
+  "orderStatus": "IN_PROGRESS",
+  "totalPrice": 59.99,
+  "selectedOptions": [
+    {
+      "optionTitle": "Fast Delivery",
+      "value": "fast_delivery",
+      "label": "Express completion within 24h"
+    }
+  ]
+}

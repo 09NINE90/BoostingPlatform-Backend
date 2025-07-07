@@ -1,0 +1,15 @@
+{
+  "offerId": null,
+  "orderName": null,
+  "gameName": null,
+  "orderStatus": null,
+  "selectedOptions": [
+    {
+      "optionTitle": "Collection of achievements",
+      "value": "[All achievements, Rare trophies]",
+      "label": "All achievements, Rare trophies"
+    }
+  ],
+  "totalPrice": 143.0,
+  "totalTime": 32
+}

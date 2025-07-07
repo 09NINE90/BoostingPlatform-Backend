@@ -18,5 +18,5 @@ public interface IOfferService {
     List<OfferCartRsDto> addOfferToCart(OfferToCartRqDto offer);
     List<OfferCartRsDto> getCartItems();
     int getCountCartItems();
-
+    void deleteCartItemById(UUID itemId);
 }

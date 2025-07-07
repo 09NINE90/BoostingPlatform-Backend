@@ -5,8 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.user.dto.response.UserProfileRsDto;
+import ru.platform.user.dto.response.BoosterProfileRsDto;
+import ru.platform.user.dto.response.CustomerProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 import ru.platform.user.service.IUserService;
+
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.*;
 
@@ -18,17 +22,36 @@ public class UserApi {
 
     private final IUserService userService;
 
-    @GetMapping("/getUserProfileData")
-    @Operation(summary = "Запрос на получение данных профиля пользователя")
-    public ResponseEntity<UserProfileRsDto> getUserProfileData() {
-        UserProfileRsDto result = userService.getUserProfileData();
+    @GetMapping("/getCustomerProfileData")
+    @Operation(summary = "Запрос на получение данных профиля заказчика")
+    public ResponseEntity<CustomerProfileRsDto> getUserProfileData() {
+        CustomerProfileRsDto result = userService.getCustomerProfileData();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/getBoosterProfileData")
+    @Operation(summary = "Запрос на получение данных профиля бустера")
+    public ResponseEntity<BoosterProfileRsDto> getBoosterProfileData() {
+        BoosterProfileRsDto result = userService.getBoosterProfileData();
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/changeNickname")
     @Operation(summary = "Запрос на смену никнейма пользователя")
-    public ResponseEntity<?> changeNickname(@RequestParam String nickname) {
-        String result = userService.changeNickname(nickname);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Void> changeNickname(@RequestParam String nickname) {
+        userService.changeNickname(nickname);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/changeDescriptionProfile")
+    @Operation(summary = "Запрос на смену описания профиля пользователя")
+    public ResponseEntity<Void> changeDescriptionProfile(@RequestParam String description) {
+        userService.changeDescription(description);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getBoosterMiniProfile/{boosterId}")
+    public ResponseEntity<MiniBoosterProfileRsDto> getBoosterMiniProfile(@PathVariable("boosterId") UUID  boosterId) {
+        return ResponseEntity.ok(userService.getBoosterMiniProfile(boosterId));
     }
 }

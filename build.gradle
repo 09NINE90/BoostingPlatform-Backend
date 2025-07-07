@@ -17,6 +17,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // Исключаем встроенный Tomcat для WebSocket
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
 }
 
 repositories {
@@ -24,48 +28,55 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Основные зависимости Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.5'
-    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
-    implementation 'org.freemarker:freemarker:2.3.34'
-    implementation 'io.minio:minio:8.5.12'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.8'
-    implementation 'org.flywaydb:flyway-core:11.3.4'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.14.5'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // WebSocket с Jetty вместо Tomcat
+    implementation 'org.springframework.boot:spring-boot-starter-jetty'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework:spring-messaging'
+    implementation 'org.springframework.security:spring-security-messaging'
 
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.hibernate:hibernate-jpamodelgen:6.6.4.Final'
-
-    runtimeOnly 'org.flywaydb:flyway-database-postgresql:11.3.4'
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    // База данных и миграции
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql'
     runtimeOnly 'org.postgresql:postgresql'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    // Другие утилиты
+    implementation 'org.modelmapper:modelmapper:3.2.0'
+    implementation 'io.minio:minio:8.5.12'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.hibernate:hibernate-jpamodelgen:6.6.4.Final'
+
+    // Devtools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Тестирование
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-
+    testImplementation 'org.slf4j:slf4j-simple:1.6.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {

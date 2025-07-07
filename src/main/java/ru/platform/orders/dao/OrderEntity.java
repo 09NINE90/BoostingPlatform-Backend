@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.platform.chat.dao.ChatRoomEntity;
+import ru.platform.games.dao.GameEntity;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
 import java.math.BigDecimal;
@@ -24,15 +27,19 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "second_id")
-    private long secondId;
+    @Column(name = "second_id", insertable = false, updatable = false)
+    private Long  secondId;
+
+    @Column(name = "short_id", unique = true, length = 9)
+    private String shortId;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private UserEntity creator;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "offer_name")
     private String offerName;
@@ -41,8 +48,9 @@ public class OrderEntity {
     @JoinColumn(name = "booster")
     private UserEntity booster;
 
-    @Column(name = "game_name")
-    private String gameName;
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private GameEntity game;
 
     @Column(name = "game_platform")
     private String gamePlatform;
@@ -52,6 +60,9 @@ public class OrderEntity {
 
     @Column(name = "total_price", precision = 19, scale = 4)
     private BigDecimal totalPrice;
+
+    @Column(name = "booster_salary", precision = 19, scale = 4)
+    private BigDecimal boosterSalary;
 
     @Column(name = "total_time")
     private int totalTime;
@@ -71,6 +82,12 @@ public class OrderEntity {
 
     @Column(name = "end_time_execution")
     private OffsetDateTime endTimeExecution;
+
+    @Column(name = "completed_at")
+    private OffsetDateTime completedAt;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ChatRoomEntity chatRoom;
 
 }
 

@@ -54,6 +54,10 @@ public class GameEntity {
     @Schema(description = "Значение популярности игры для сортировки")
     private Integer rating;
 
+    @Column(name = "is_active")
+    @Schema(description = "Флаг, отвечающий за отображение игры")
+    private boolean isActive;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private UserEntity creator;

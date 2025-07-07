@@ -35,9 +35,4 @@ public class OrderFiltersRsDto {
         private Double priceMax;
     }
 
-    @Data
-    @Builder
-    public static class StatusFilterDto {
-
-    }
 }

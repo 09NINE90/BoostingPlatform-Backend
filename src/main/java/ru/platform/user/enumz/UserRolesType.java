@@ -1,4 +1,4 @@
-package ru.platform.user;
+package ru.platform.user.enumz;
 
 import lombok.Getter;
 

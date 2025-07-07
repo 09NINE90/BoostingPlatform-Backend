@@ -23,9 +23,14 @@ public class OfferSpecification implements IBaseSpecificationUtil<OfferEntity, O
     @Override
     public List<BiConsumer<Set<Specification<OfferEntity>>, OfferRqDto>> getSpecificationConsumerList() {
         List<BiConsumer<Set<Specification<OfferEntity>>, OfferRqDto>> result = new ArrayList<>();
+        result.add(this::prepareIsActive);
         result.add(this::prepareGame);
         result.add(this::prepareCategory);
         return result;
+    }
+
+    private void prepareIsActive(Set<Specification<OfferEntity>> set, OfferRqDto request) {
+        set.add(fieldEqualTo(true, OfferEntity_.IS_ACTIVE));
     }
 
     private void prepareGame(Set<Specification<OfferEntity>> set, OfferRqDto request) {

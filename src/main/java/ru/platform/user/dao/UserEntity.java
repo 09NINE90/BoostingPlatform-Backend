@@ -34,11 +34,11 @@ public class UserEntity {
     private String password;
 
     @Column(name = "confirmation_token")
-    @Schema(description = "Пароль пользователя")
+    @Schema(description = "Токен подтверждения регистрации")
     private String confirmationToken;
 
     @Column(name = "enabled")
-    @Schema(description = "Пароль пользователя")
+    @Schema(description = "Флаг подтверждения регистрации")
     private boolean enabled;
 
     @Column(name = "roles")
@@ -51,4 +51,8 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private BoosterProfileEntity boosterProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private CustomerProfileEntity customerProfile;
 }

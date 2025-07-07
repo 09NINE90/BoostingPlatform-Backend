@@ -7,6 +7,8 @@ import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.sorting.OrderSortFilter;
 import ru.platform.user.dao.UserEntity;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class OrdersByBoosterRqDto {
@@ -15,16 +17,16 @@ public class OrdersByBoosterRqDto {
     private UserEntity booster;
 
     @Schema(description = "Статус заказа", enumAsRef = true)
-    private OrderStatus status;
+    private Set<OrderStatus> statuses;
 
     @Schema(description = "Название игры", example = "Game name")
-    private String gameName;
+    private Set<String> gameNames;
 
     @Schema(description = "Название платформы для игр", example = "PS")
-    private String gamePlatform;
+    private Set<String> gamePlatforms;
 
     @Schema(description = "Цена от/до")
-    private OrdersByFiltersRqDto.PriceDto price;
+    private PriceDto price;
 
     @Schema(description = "Сортировка", example = "PRICE")
     private OrderSortFilter sort;

@@ -48,6 +48,10 @@ public class OfferEntity {
     @Schema(description = "Базовая стоимость заказа")
     private BigDecimal price;
 
+    @Column(name = "is_active")
+    @Schema(description = "Флаг, отвечающий за отображение предложения")
+    private boolean isActive;
+
     @Column(name = "categories")
     private String categories;
 

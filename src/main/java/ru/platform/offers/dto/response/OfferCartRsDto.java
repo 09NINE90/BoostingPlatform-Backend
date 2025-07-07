@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,8 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 @Data
 @Builder
 public class OfferCartRsDto {
+
+    private UUID id;
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
     private UUID offerId;
@@ -31,8 +34,11 @@ public class OfferCartRsDto {
     @Size(min = 1, max = 100)
     private List<SelectedOptionToCartDto> selectedOptions;
 
+    @Schema(description = "Стоимость без учёта выбранных опций", example = "100.0")
+    private BigDecimal basePrice;
+
     @Schema(description = "Общая стоимость с учётом выбранных опций", example = "150.0")
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
     @Schema(description = "Общее время выполнения услуги (в часах)", example = "120")
     private int totalTime;
