@@ -63,7 +63,6 @@ public class UserService implements IUserService {
     private final IMailService mailService;
     private final JwtUtil jwtUtil;
 
-
     private final static String LOG_PREFIX = "UserService: {}";
 
     /**
@@ -240,9 +239,6 @@ public class UserService implements IUserService {
         UserProfileEntity profileEntity = userEntity.getProfile();
         BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
 
-        // TODO сделать пересчет значений:
-        //  numberOfCompletedOrders, totalIncome, level, percentageOfOrder, totalTips
-        //  из таблицы с балансами при условии, что заказ становится COMPLETED
         return BoosterProfileRsDto.builder()
                 .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
@@ -251,7 +247,7 @@ public class UserService implements IUserService {
                 .description(profileEntity.getDescription())
                 .level(boosterProfile.getLevel())
                 .nextLevel(getNextLevel(boosterProfile.getLevel()))
-                .percentageOfOrder(boosterProfile.getPercentageOfOrder() * 100)
+                .percentageOfOrder((double) Math.round(boosterProfile.getPercentageOfOrder() * 100))
                 .balance(boosterProfile.getBalance())
                 .totalIncome(boosterProfile.getTotalIncome())
                 .numberOfCompletedOrders(boosterProfile.getNumberOfCompletedOrders())

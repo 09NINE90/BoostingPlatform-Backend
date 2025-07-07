@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.platform.exception.PlatformException;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
@@ -18,6 +19,9 @@ import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 
 import java.util.List;
+import java.util.UUID;
+
+import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
 
 @Slf4j
 @Service
@@ -73,6 +77,15 @@ public class OrderCustomerService implements IOrderCustomerService {
     @Override
     public long getCountCompletedOrdersByBooster(UserEntity user) {
         return orderRepository.findCountCompletedOrdersByBooster(user);
+    }
+
+    @Override
+    public OrderRsDto getOrderById(UUID orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(
+                () -> new PlatformException(NOT_FOUND_ERROR)
+        );
+
+        return mapper.toOrderRsDto(orderEntity);
     }
 
 }

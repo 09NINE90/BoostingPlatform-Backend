@@ -14,6 +14,9 @@ import java.util.List;
 @Jacksonized
 public class OrderByBoosterRsDto {
 
+    @Schema(description = "Идентификатор чата", example = "UUID")
+    private String chatId;
+
     @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
     private String orderId;
 

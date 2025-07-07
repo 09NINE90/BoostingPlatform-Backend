@@ -17,6 +17,9 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 @Jacksonized
 public class OrderRsDto {
 
+    @Schema(description = "Идентификатор чата", example = "UUID")
+    private String chatId;
+
     @Schema(description = "Идентификатор бустера, прикрепленного к заказу", example = DEFAULT_UUID)
     private String boosterId;
 
@@ -40,6 +43,12 @@ public class OrderRsDto {
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private BigDecimal totalPrice;
+
+    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-06-26 12:00")
+    private String startTimeExecution;
+
+    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-06-26 12:00")
+    private String endTimeExecution;
 
     @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
     private List<CartSelectedOptionsDto> selectedOptions;
