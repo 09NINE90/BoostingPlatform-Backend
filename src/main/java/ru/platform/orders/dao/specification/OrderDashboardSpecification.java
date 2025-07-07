@@ -1,8 +1,12 @@
 package ru.platform.orders.dao.specification;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.platform.games.dao.GameEntity;
+import ru.platform.games.dao.GameEntity_;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderEntity_;
 import ru.platform.orders.dto.request.DashboardRqDto;
@@ -43,7 +47,10 @@ public class OrderDashboardSpecification implements IBaseSpecificationUtil<Order
     private void prepareGameNames(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
         Set<String> gameNames = request.getGameNames();
         if (Objects.nonNull(gameNames) && !gameNames.isEmpty()) {
-            set.add(fieldAreIn(gameNames, OrderEntity_.GAME_NAME));
+            set.add((root, query, criteriaBuilder) -> {
+                Join<OrderEntity, GameEntity> gameJoin = root.join(OrderEntity_.GAME, JoinType.LEFT);
+                return gameJoin.get(GameEntity_.TITLE).in(gameNames);
+            });
         }
     }
 

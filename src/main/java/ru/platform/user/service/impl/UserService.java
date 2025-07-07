@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.platform.LocalConstants.CustomerSettings.DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS;
 import static ru.platform.LocalConstants.Message.*;
 import static ru.platform.LocalConstants.BoosterSettings.BOOSTER_LEGEND_TOTAL_INCOME;
 import static ru.platform.LocalConstants.Variables.EMPTY_STRING;
@@ -117,7 +118,7 @@ public class UserService implements IUserService {
                 .totalAmountOfOrders(BigDecimal.ZERO)
                 .cashbackBalance(BigDecimal.ZERO)
                 .status(CustomerStatus.EXPLORER)
-                .discountPercentage(1)
+                .discountPercentage(DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS)
                 .user(userEntity)
                 .totalOrders(0)
                 .build();
@@ -223,7 +224,7 @@ public class UserService implements IUserService {
                 .imageUrl(profileEntity.getImageUrl())
                 .secondId(profileEntity.getSecondId())
                 .description(profileEntity.getDescription())
-                .discountPercentage(customerProfile.getDiscountPercentage())
+                .discountPercentage(customerProfile.getDiscountPercentage().multiply(BigDecimal.valueOf(100)))
                 .cashbackBalance(customerProfile.getCashbackBalance())
                 .status(customerProfile.getStatus())
                 .totalOrders(customerProfile.getTotalOrders())

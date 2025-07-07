@@ -4,16 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.platform.chat.dao.ChatRoomEntity;
+import ru.platform.offers.dao.OfferCartEntity;
+import ru.platform.offers.dao.OfferOptionCartEntity;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderOptionEntity;
-import ru.platform.orders.dto.request.CartItemDto;
 import ru.platform.orders.dto.response.*;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.utils.DateTimeUtils;
 import ru.platform.utils.GenerateSecondIdUtil;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -26,25 +26,25 @@ public class OrderMapper {
     /**
      * Маппинг объекта из корзины в объект сущности БД
      */
-    public OrderEntity toOrderEntity(CartItemDto cartItemDto) {
+    public OrderEntity toOrderEntity(OfferCartEntity cartItemDto) {
         return OrderEntity.builder()
-                .offerName(cartItemDto.getOfferName())
-                .basePrice(BigDecimal.valueOf(cartItemDto.getBasePrice()))
-                .totalPrice(BigDecimal.valueOf(cartItemDto.getTotalPrice()))
+                .offerName(cartItemDto.getOffer().getTitle())
+                .basePrice(cartItemDto.getBasePrice())
+                .totalPrice(cartItemDto.getTotalPrice())
                 .status(OrderStatus.CREATED)
-                .gameName(cartItemDto.getGameName())
+                .game(cartItemDto.getGame())
                 .gamePlatform(cartItemDto.getGamePlatform())
                 .totalTime(cartItemDto.getTotalTime())
                 .createdAt(OffsetDateTime.now())
                 .updatedAt(OffsetDateTime.now())
-                .optionList(toOrderOptionList(cartItemDto.getSelectedOptions()))
+                .optionList(toOrderOptionList(cartItemDto.getOptionCarts()))
                 .build();
     }
 
     /**
      * Маппинг списка опций объекта из корзины в список опций объекта сущности БД
      */
-    private List<OrderOptionEntity> toOrderOptionList(List<CartItemDto.CartSelectedOptionsDto> cartSelectedOptionsList) {
+    private List<OrderOptionEntity> toOrderOptionList(List<OfferOptionCartEntity> cartSelectedOptionsList) {
         if (cartSelectedOptionsList == null || cartSelectedOptionsList.isEmpty()) return emptyList();
         return cartSelectedOptionsList.stream().map(this::toOrderOption).toList();
     }
@@ -52,10 +52,10 @@ public class OrderMapper {
     /**
      * Маппинг объекта опции корзины в объект опции сущности БД
      */
-    private OrderOptionEntity toOrderOption(CartItemDto.CartSelectedOptionsDto cartSelectedOptionsDto) {
+    private OrderOptionEntity toOrderOption(OfferOptionCartEntity cartSelectedOptionsDto) {
         return OrderOptionEntity.builder()
-                .value(cartSelectedOptionsDto.getValue().toString())
-                .label(cartSelectedOptionsDto.getLabel().toString())
+                .value(cartSelectedOptionsDto.getValue())
+                .label(cartSelectedOptionsDto.getLabel())
                 .optionTitle(cartSelectedOptionsDto.getOptionTitle())
                 .build();
     }
@@ -64,7 +64,7 @@ public class OrderMapper {
         return OrderFromCartRsDto.builder()
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(orderEntity.getStatus())
-                .gameName(orderEntity.getGameName())
+                .gameName(orderEntity.getGame().getTitle())
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .totalTime(orderEntity.getTotalTime())
                 .selectedOptions(toOrderOptionDtoList(orderEntity.getOptionList()))
@@ -104,7 +104,7 @@ public class OrderMapper {
                 .orderId(orderEntity.getId().toString())
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
-                .gameName(orderEntity.getGameName())
+                .gameName(orderEntity.getGame().getTitle())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
@@ -133,7 +133,7 @@ public class OrderMapper {
                 .orderId(orderEntity.getId().toString())
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
-                .gameName(orderEntity.getGameName())
+                .gameName(orderEntity.getGame().getTitle())
                 .gamePlatform(orderEntity.getGamePlatform())
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
@@ -166,7 +166,7 @@ public class OrderMapper {
                 .salary(orderEntity.getBoosterSalary())
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(orderEntity.getStatus())
-                .gameName(orderEntity.getGameName())
+                .gameName(orderEntity.getGame().getTitle())
                 .build();
     }
 }

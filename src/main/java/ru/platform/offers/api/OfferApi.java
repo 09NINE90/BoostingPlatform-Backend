@@ -10,6 +10,7 @@ import ru.platform.offers.dto.response.OfferCartRsDto;
 import ru.platform.offers.service.IOfferService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Api.OFFER_TAG_DESCRIPTION;
 import static ru.platform.LocalConstants.Api.OFFER_TAG_NAME;
@@ -38,6 +39,13 @@ public class OfferApi {
     @Operation(summary = "Получение содержания корзины пользователя")
     public ResponseEntity<Integer> getCountCartItems() {
         return ResponseEntity.ok(service.getCountCartItems());
+    }
+
+    @PostMapping("/deleteCartItem/{itemId}")
+    @Operation(summary = "Удаление элемента корзины")
+    public  ResponseEntity<Void> deleteCartItem(@PathVariable UUID itemId) {
+        service.deleteCartItemById(itemId);
+        return ResponseEntity.ok().build();
     }
 
 }
