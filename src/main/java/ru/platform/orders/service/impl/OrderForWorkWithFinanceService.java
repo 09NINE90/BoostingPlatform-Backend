@@ -4,10 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.platform.exception.ErrorType;
+import ru.platform.exception.PlatformException;
+import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
 import ru.platform.orders.service.IOrderForWorkWithFinanceService;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 import static ru.platform.orders.enumz.OrderStatus.COMPLETED;
 
@@ -34,5 +38,12 @@ public class OrderForWorkWithFinanceService implements IOrderForWorkWithFinanceS
         } else {
             log.debug("В статус COMPLETED переведено {} заказов", updatedOrders);
         }
+    }
+
+    @Override
+    public OrderEntity getOrderById(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new PlatformException(ErrorType.NOT_FOUND_ERROR)
+        );
     }
 }

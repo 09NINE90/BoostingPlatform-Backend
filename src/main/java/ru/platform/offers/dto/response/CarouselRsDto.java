@@ -10,6 +10,9 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_IMAGE_LINK;
 @Builder
 public class CarouselRsDto {
 
+    @Schema(description = "Идентификатор объекта карусели", example = "1")
+    private long id;
+
     @Schema(description = "Заголовок карусели", example = "It is CS2!")
     private String title;
 

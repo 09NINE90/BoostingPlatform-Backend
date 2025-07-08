@@ -232,10 +232,20 @@ public class UserService implements IUserService {
                 .status(customerProfile.getStatus())
                 .nextStatus(getNextStatus(customerProfile.getStatus()))
                 .totalOrders(customerProfile.getTotalOrders())
-                .progressAccountStatus(BigDecimal.valueOf(customerProfile.getTotalOrders())
-                        .multiply(BigDecimal.valueOf(100))
-                        .divide(BigDecimal.valueOf(COUNT_ORDERS_FOR_IMMORTAL_STATUS), 2, RoundingMode.HALF_UP))
+                .progressAccountStatus(getProgressAccountStatus(customerProfile.getTotalOrders()))
                 .build();
+    }
+
+    /**
+     * Получение прогресса статуса заказчика
+     * если процент прогресса больше 100, возвращаем ровно 100
+     */
+    private BigDecimal getProgressAccountStatus(Integer totalOrders) {
+        BigDecimal result = BigDecimal.valueOf(totalOrders)
+                .multiply(BigDecimal.valueOf(100))
+                .divide(BigDecimal.valueOf(COUNT_ORDERS_FOR_IMMORTAL_STATUS), 2, RoundingMode.HALF_UP);
+
+        return result.compareTo(BigDecimal.valueOf(100)) > 0 ? BigDecimal.valueOf(100) : result;
     }
 
     /**
