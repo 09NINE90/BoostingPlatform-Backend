@@ -20,6 +20,7 @@ public class CarouselService implements ICarouselService {
         List<CarouselEntity> entity = carouselRepository.findAllByIsActive(true);
         return entity.stream()
                 .map(e -> CarouselRsDto.builder()
+                        .id(e.getId())
                         .title(e.getTitle())
                         .description(e.getDescription())
                         .imageUrl(e.getImageUrl())

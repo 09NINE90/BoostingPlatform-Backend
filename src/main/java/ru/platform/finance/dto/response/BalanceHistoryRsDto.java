@@ -7,12 +7,17 @@ import ru.platform.finance.enumz.PaymentStatus;
 import ru.platform.finance.enumz.RecordType;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
 public class BalanceHistoryRsDto {
 
-    private String id;
+    @Schema(description = "Идентификатор записи", example = DEFAULT_UUID)
+    private UUID id;
 
     @Schema(description = "Идентификатор заказа", example = "AAAA-0000")
     private String orderId;
@@ -26,9 +31,9 @@ public class BalanceHistoryRsDto {
     @Schema(description = "Сумма операции", example = "99.99")
     private BigDecimal amount;
 
-    @Schema(description = "Дата и время (UTC) создания операции", example = "2025-06-26 12:00")
-    private String createdAt;
+    @Schema(description = "Дата и время (UTC) создания операции", example = "2025-07-07 11:56:09.176 +0500")
+    private OffsetDateTime createdAt;
 
-    @Schema(description = "Дата и время (UTC) завершения операции", example = "2025-06-26 12:00")
-    private String completedAt;
+    @Schema(description = "Дата и время (UTC) завершения операции", example = "2025-07-07 11:56:09.176 +0500")
+    private OffsetDateTime completedAt;
 }

@@ -37,10 +37,21 @@ public class DateTimeUtils {
         }
     }
 
+    /**
+     * Возвращает строку дату и время с UTC time zone
+     */
     public static String offsetDateTimeToStringUTC(OffsetDateTime offsetDateTime) {
         if (offsetDateTime == null) return null;
         OffsetDateTime utcDateTime = offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
         return utcDateTime.format(STRING_DATE_TIME_FORMAT);
+    }
+
+    /**
+     * Возвращает дату и время в offsetDateTime с UTC time zone
+     */
+    public static OffsetDateTime offsetDateTimeUTC(OffsetDateTime offsetDateTime) {
+        if (offsetDateTime == null) return null;
+        return offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC);
     }
 
     // Методы возвращают OffsetDateTime "текущее время минус указанный интервал"

@@ -138,7 +138,6 @@ public class AuthService implements IAuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() ||
                 authentication instanceof AnonymousAuthenticationToken) {
-            log.error(LOG_PREFIX, AUTHORIZATION_ERROR.getMessage());
             throw new PlatformException(AUTHORIZATION_ERROR);
         }
         String username = authentication.getName();

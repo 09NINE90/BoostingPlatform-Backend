@@ -8,6 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 import ru.platform.orders.enumz.OrderStatus;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
@@ -17,7 +18,7 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 @Jacksonized
 public class OrderRsDto {
 
-    @Schema(description = "Идентификатор чата", example = "UUID")
+    @Schema(description = "Идентификатор чата", example = DEFAULT_UUID)
     private String chatId;
 
     @Schema(description = "Идентификатор бустера, прикрепленного к заказу", example = DEFAULT_UUID)
@@ -44,11 +45,11 @@ public class OrderRsDto {
     @Schema(description = "Общая стоимость заказа", example = "150.0")
     private BigDecimal totalPrice;
 
-    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-06-26 12:00")
-    private String startTimeExecution;
+    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-07-07 11:49:57.595 +0500")
+    private OffsetDateTime startTimeExecution;
 
-    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-06-26 12:00")
-    private String endTimeExecution;
+    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-07-07 11:49:57.595 +0500")
+    private OffsetDateTime endTimeExecution;
 
     @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
     private List<CartSelectedOptionsDto> selectedOptions;

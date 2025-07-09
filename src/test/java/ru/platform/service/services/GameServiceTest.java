@@ -15,6 +15,7 @@ import ru.platform.service.CreatorDto;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -58,11 +59,11 @@ public class GameServiceTest {
         when(repository.findBySecondId(secondId)).thenReturn(CreatorDto.getGameEntity());
         when(gameMapper.toGameBySecondId(any())).thenReturn(CreatorDto.getGameBySecondIdRsDto());
 
-        GameBySecondIdRsDto response = gameService.getGameBySecondId(secondId);
+        GameBySecondIdRsDto response = gameService.getGameWithCategories(secondId);
 
         assertAll(
                 () -> assertNotNull(response),
-                () -> assertEquals("d26515bf-d06a-4218-8cf2-1a5866c38931", response.getId()),
+                () -> assertEquals(UUID.fromString("d26515bf-d06a-4218-8cf2-1a5866c38931"), response.getId()),
                 () -> assertEquals("LoE", response.getSecondId())
         );
     }
@@ -74,7 +75,7 @@ public class GameServiceTest {
 
         when(repository.findBySecondId(secondId)).thenReturn(Optional.empty());
 
-        PlatformException exception = assertThrows(PlatformException.class, () -> gameService.getGameBySecondId(secondId));
+        PlatformException exception = assertThrows(PlatformException.class, () -> gameService.getGameWithCategories(secondId));
 
         assertEquals(ErrorType.NOT_FOUND_ERROR, exception.getErrorType());
     }

@@ -7,17 +7,20 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import ru.platform.orders.enumz.OrderStatus;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
 @Jacksonized
 public class OrderByBoosterRsDto {
 
-    @Schema(description = "Идентификатор чата", example = "UUID")
+    @Schema(description = "Идентификатор чата", example = DEFAULT_UUID)
     private String chatId;
 
-    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    @Schema(description = "Идентификатор заказа", example = DEFAULT_UUID)
     private String orderId;
 
     @Schema(description = "Идентификатор заказа для UI", example = "Legend of Eldoria")
@@ -41,14 +44,14 @@ public class OrderByBoosterRsDto {
     @Schema(description = "ЗП бустера за заказ", example = "150.0")
     private double boosterSalary;
 
-    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-06-26 12:00")
-    private String startTimeExecution;
+    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-07-07 11:56:09.176 +0500")
+    private OffsetDateTime startTimeExecution;
 
-    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-06-26 12:00")
-    private String endTimeExecution;
+    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-07-07 11:56:09.176 +0500")
+    private OffsetDateTime endTimeExecution;
 
-    @Schema(description = "Дата и время (по UTC) перевода заказа в статус COMPLETED", example = "2025-06-26 12:00")
-    private String completedAt;
+    @Schema(description = "Дата и время (по UTC) перевода заказа в статус COMPLETED", example = "2025-07-07 11:56:09.176 +0500")
+    private OffsetDateTime completedAt;
 
     @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
     private List<CartSelectedOptionsDto> selectedOptions;

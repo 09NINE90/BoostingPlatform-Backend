@@ -1,7 +1,7 @@
 ﻿# Backend V-Boosting
 - - -
-[Ссылка localhost swagger](http://localhost:6969/swagger-ui/index.html#/)
-
+- [Ссылка localhost swagger](http://localhost:6969/swagger-ui/index.html#/)
+- [Ссылка на yaml doc](http://localhost:6969/boosting-platform/api-docs.yaml)
 ### Нагрузка
 - - -
 

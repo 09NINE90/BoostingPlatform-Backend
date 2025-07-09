@@ -4,18 +4,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.platform.LocalConstants;
-import ru.platform.offers.dto.request.OfferRqDto;
+import ru.platform.offers.dto.request.OfferFilterRqDto;
 import ru.platform.offers.sorting.OfferSortKeys;
 import ru.platform.offers.sorting.SortFilter;
 
 @Component
 public class PaginationOffersUtil {
 
-    public PageRequest getPageRequest(OfferRqDto request) {
+    public PageRequest getPageRequest(OfferFilterRqDto request) {
         return PageRequest.of(getPageBy(request), getSizeBy(request), getSortBy(request));
     }
 
-    private Sort getSortBy(OfferRqDto request) {
+    private Sort getSortBy(OfferFilterRqDto request) {
         return getSortBy(request.getSort());
     }
 
@@ -28,7 +28,7 @@ public class PaginationOffersUtil {
         return Sort.by(direction, sort.getKey().getName());
     }
 
-    private int getPageBy(OfferRqDto request) {
+    private int getPageBy(OfferFilterRqDto request) {
         return getPageBy(request.getPageNumber());
     }
 
@@ -36,7 +36,7 @@ public class PaginationOffersUtil {
         return pageNumber == null || pageNumber <= 0 ? LocalConstants.Variables.DEFAULT_PAGE_NUMBER : pageNumber - 1;
     }
 
-    private int getSizeBy(OfferRqDto request) {
+    private int getSizeBy(OfferFilterRqDto request) {
         return getSizeBy(request.getPageSize());
     }
 

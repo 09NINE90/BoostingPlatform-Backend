@@ -26,7 +26,7 @@ public class OfferOptionRsDto {
     @Schema(description = "Название опции", example = "Region")
     private String title;
 
-    @Schema(description = "Тип опции", example = "BUTTONS")
+    @Schema(description = "Тип опции", example = "BUTTONS", enumAsRef = true)
     private OfferOptionType type;
 
     @Schema(description = "Флаг множественного выбора", example = "false")

@@ -41,4 +41,7 @@ public interface BoosterFinancialRecordRepository extends JpaRepository<BoosterF
 
     @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.booster = :booster ORDER BY r.createdAt DESC")
     List<BoosterFinancialRecordEntity> findAllByBooster(@Param("booster") UserEntity booster);
+
+    @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.order.id = :orderId AND r.recordType = 'TIP' ORDER BY r.createdAt DESC")
+    List<BoosterFinancialRecordEntity> findAllTipByOrderId(@Param("orderId") UUID orderId);
 }

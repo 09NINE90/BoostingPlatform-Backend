@@ -19,7 +19,7 @@ public class GameMapper implements IGameMapper {
         List<GameMainPageRsDto> games = new ArrayList<>();
         allGames.forEach(e ->
             games.add(new GameMainPageRsDto(
-                    e.getId().toString(),
+                    e.getId(),
                     e.getSecondId(),
                     e.getTitle(),
                     e.getMiniImageUrl()))
@@ -30,7 +30,7 @@ public class GameMapper implements IGameMapper {
     @Override
     public GameBySecondIdRsDto toGameBySecondId(GameEntity gameEntity) {
         return GameBySecondIdRsDto.builder()
-                .id(gameEntity.getId().toString())
+                .id(gameEntity.getId())
                 .secondId(gameEntity.getSecondId())
                 .name(gameEntity.getTitle())
                 .categories(gameEntity.getCategories()
@@ -42,7 +42,7 @@ public class GameMapper implements IGameMapper {
 
     private CategoryRsDto toCategoryRsDto(CategoryEntity categoryEntity) {
         return CategoryRsDto.builder()
-                .id(categoryEntity.getId().toString())
+                .id(categoryEntity.getId())
                 .name(categoryEntity.getName())
                 .build();
     }

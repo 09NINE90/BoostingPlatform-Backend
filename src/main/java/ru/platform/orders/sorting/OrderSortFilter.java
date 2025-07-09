@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderSortFilter {
 
-    @Schema(description = "Ключ сортировки", example = "PRICE")
+    @Schema(description = "Ключ сортировки", example = "PRICE", enumAsRef = true)
     private OrderSortKeys key;
 
     @Schema(description = "Направлние сортировки", example = "true")

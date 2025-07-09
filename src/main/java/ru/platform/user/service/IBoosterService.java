@@ -7,6 +7,13 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface IBoosterService {
+    /**
+     * Увеличение баланса бустера на указанную сумму
+     */
     void updateBalance(UUID boosterId, BigDecimal amount, RecordType recordType);
+
+    /**
+     * Проверяет, достаточно ли средств на балансе бустера для выполнения операции.
+     */
     void checkBoosterBalance(UserEntity booster, BigDecimal withdrawalAmount);
 }

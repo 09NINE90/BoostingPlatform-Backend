@@ -31,7 +31,7 @@ public class CategoryService implements ICategoryService {
 
     private CategoryRsDto toCategoryRsDto(CategoryEntity category) {
         return CategoryRsDto.builder()
-                .id(category.getId().toString())
+                .id(category.getId())
                 .name(category.getName())
                 .build();
     }

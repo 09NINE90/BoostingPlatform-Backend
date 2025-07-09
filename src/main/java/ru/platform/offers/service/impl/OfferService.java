@@ -15,12 +15,12 @@ import ru.platform.offers.PaginationOffersUtil;
 import ru.platform.offers.dao.OfferCartEntity;
 import ru.platform.offers.dao.OfferOptionCartEntity;
 import ru.platform.offers.dao.repository.OfferCartRepository;
-import ru.platform.offers.dto.request.OfferRqDto;
-import ru.platform.offers.dto.request.OfferToCartRqDto;
-import ru.platform.offers.dto.response.OfferByIdRsDto;
-import ru.platform.offers.dto.response.OfferCartRsDto;
-import ru.platform.offers.dto.response.OffersByGameIdRsDto;
-import ru.platform.offers.dto.response.OffersListRsDto;
+import ru.platform.offers.dto.request.OfferFilterRqDto;
+import ru.platform.offers.dto.request.AddToCartRequestDto;
+import ru.platform.offers.dto.response.OfferDetailsRsDto;
+import ru.platform.offers.dto.response.CartItemRsDto;
+import ru.platform.offers.dto.response.GameOffersRsDto;
+import ru.platform.offers.dto.response.FilteredOffersRsDto;
 import ru.platform.offers.mapper.IOfferMapper;
 import ru.platform.offers.dao.OfferEntity;
 import ru.platform.offers.dao.repository.OfferRepository;
@@ -56,7 +56,7 @@ public class OfferService implements IOfferService {
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.OFFERS_BY_GAME_ID)
-    public List<OffersByGameIdRsDto> getOffersByGameId(UUID gameId) {
+    public List<GameOffersRsDto> getOffersByGameId(UUID gameId) {
         try {
             List<OfferEntity> offersByGame = offerRepository.findAllByGameId(gameId);
             log.debug(LOG_PREFIX, "Preparing a response for the frontend");
@@ -71,17 +71,17 @@ public class OfferService implements IOfferService {
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.OFFERS_WITH_FILTERS)
-    public OffersListRsDto getOffersByRequest(OfferRqDto request) {
+    public FilteredOffersRsDto getOffersByRequest(OfferFilterRqDto request) {
         return mapToResponse(getServicePageFunc().apply(request));
     }
 
-    private OffersListRsDto mapToResponse(Page<OfferEntity> entities) {
-        List<OffersByGameIdRsDto> mappedOffers = entities
+    private FilteredOffersRsDto mapToResponse(Page<OfferEntity> entities) {
+        List<GameOffersRsDto> mappedOffers = entities
                 .stream()
                 .map(offerMapper::toOfferByGameIdRsDto)
                 .toList();
 
-        return OffersListRsDto.builder()
+        return FilteredOffersRsDto.builder()
                 .offers(mappedOffers)
                 .pageSize(entities.getSize())
                 .pageTotal(entities.getTotalPages())
@@ -90,7 +90,7 @@ public class OfferService implements IOfferService {
                 .build();
     }
 
-    private Function<OfferRqDto, Page<OfferEntity>> getServicePageFunc() {
+    private Function<OfferFilterRqDto, Page<OfferEntity>> getServicePageFunc() {
         try {
             return request -> offerRepository
                     .findAll(specification.getFilter(request), paginationOffersUtil.getPageRequest(request));
@@ -101,13 +101,13 @@ public class OfferService implements IOfferService {
     }
 
     @Override
-    public OfferByIdRsDto getOfferById(UUID offerId) {
+    public OfferDetailsRsDto getOfferById(UUID offerId) {
         OfferEntity offerEntity = offerRepository.findById(offerId).orElse(null);
         if (offerEntity == null) return null;
 
-        return OfferByIdRsDto.builder()
-                .offerId(offerEntity.getId().toString())
-                .gameId(offerEntity.getGame().getId().toString())
+        return OfferDetailsRsDto.builder()
+                .offerId(offerEntity.getId())
+                .gameId(offerEntity.getGame().getId())
                 .secondGameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
@@ -123,7 +123,7 @@ public class OfferService implements IOfferService {
 
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.ADD_OFFER_TO_CART)
-    public List<OfferCartRsDto> addOfferToCart(OfferToCartRqDto offer) {
+    public List<CartItemRsDto> addOfferToCart(AddToCartRequestDto offer) {
         Optional<OfferEntity> offerEntityOptional = offerRepository.findById(offer.getOfferId());
         UserEntity user = authService.getAuthUser();
         GameEntity game = gameRepository.findById(UUID.fromString(offer.getGameId()))
@@ -147,7 +147,7 @@ public class OfferService implements IOfferService {
     }
 
     @Override
-    public List<OfferCartRsDto> getCartItems() {
+    public List<CartItemRsDto> getCartItems() {
         UserEntity user = authService.getAuthUser();
         return getAllOfferCartByUser(user);
     }
@@ -170,12 +170,12 @@ public class OfferService implements IOfferService {
     /**
      * Получение списка объектов корзины конкретного пользователя
      */
-    private List<OfferCartRsDto> getAllOfferCartByUser(UserEntity user) {
+    private List<CartItemRsDto> getAllOfferCartByUser(UserEntity user) {
         List<OfferCartEntity> offerCartEntities = offerCartRepository.findAllByCreator(user);
         return offerCartEntities.stream().map(offerMapper::toOfferCartRsDto).toList();
     }
 
-    private List<OfferOptionCartEntity> toOptionCarts(List<OfferToCartRqDto.SelectedOptionToCartDto> options) {
+    private List<OfferOptionCartEntity> toOptionCarts(List<AddToCartRequestDto.SelectedOptionToCartDto> options) {
         if (options == null || options.isEmpty()) return emptyList();
 
         return options.stream()
@@ -183,7 +183,7 @@ public class OfferService implements IOfferService {
                 .toList();
     }
 
-    private OfferOptionCartEntity toOfferOptionCartEntity(OfferToCartRqDto.SelectedOptionToCartDto selectedOptionToCartDto) {
+    private OfferOptionCartEntity toOfferOptionCartEntity(AddToCartRequestDto.SelectedOptionToCartDto selectedOptionToCartDto) {
         return OfferOptionCartEntity.builder()
                 .optionTitle(selectedOptionToCartDto.getOptionTitle())
                 .label(selectedOptionToCartDto.getValue().toString())

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Variables.DEFAULT_SECOND_UUID;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
@@ -17,7 +18,7 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 public class GameBySecondIdRsDto {
 
     @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
-    private String id;
+    private UUID id;
 
     @Schema(description = "Второй идентификатор игры", example = DEFAULT_SECOND_UUID)
     private String secondId;
