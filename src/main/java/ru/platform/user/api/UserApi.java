@@ -23,35 +23,36 @@ public class UserApi {
     private final IUserService userService;
 
     @GetMapping("/getCustomerProfileData")
-    @Operation(summary = "Запрос на получение данных профиля заказчика")
+    @Operation(summary = "Получить профиль заказчика")
     public ResponseEntity<CustomerProfileRsDto> getUserProfileData() {
         CustomerProfileRsDto result = userService.getCustomerProfileData();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/getBoosterProfileData")
-    @Operation(summary = "Запрос на получение данных профиля бустера")
+    @Operation(summary = "Получить профиль бустера")
     public ResponseEntity<BoosterProfileRsDto> getBoosterProfileData() {
         BoosterProfileRsDto result = userService.getBoosterProfileData();
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/changeNickname")
-    @Operation(summary = "Запрос на смену никнейма пользователя")
+    @Operation(summary = "Изменить никнейм")
     public ResponseEntity<Void> changeNickname(@RequestParam String nickname) {
         userService.changeNickname(nickname);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/changeDescriptionProfile")
-    @Operation(summary = "Запрос на смену описания профиля пользователя")
+    @Operation(summary = "Изменить описание профиля")
     public ResponseEntity<Void> changeDescriptionProfile(@RequestParam String description) {
         userService.changeDescription(description);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/getBoosterMiniProfile/{boosterId}")
-    public ResponseEntity<MiniBoosterProfileRsDto> getBoosterMiniProfile(@PathVariable("boosterId") UUID  boosterId) {
+    @Operation(summary = "Получить краткий профиль бустера")
+    public ResponseEntity<MiniBoosterProfileRsDto> getBoosterMiniProfile(@PathVariable("boosterId") UUID boosterId) {
         return ResponseEntity.ok(userService.getBoosterMiniProfile(boosterId));
     }
 }

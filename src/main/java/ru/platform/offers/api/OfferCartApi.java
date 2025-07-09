@@ -5,47 +5,46 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.offers.dto.request.OfferToCartRqDto;
-import ru.platform.offers.dto.response.OfferCartRsDto;
+import ru.platform.offers.dto.request.AddToCartRequestDto;
+import ru.platform.offers.dto.response.CartItemRsDto;
 import ru.platform.offers.service.IOfferService;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.platform.LocalConstants.Api.OFFER_TAG_DESCRIPTION;
-import static ru.platform.LocalConstants.Api.OFFER_TAG_NAME;
+import static ru.platform.LocalConstants.Api.OFFER_CART_TAG_DESCRIPTION;
+import static ru.platform.LocalConstants.Api.OFFER_CART_TAG_NAME;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/offer")
-@Tag(name = OFFER_TAG_NAME, description = OFFER_TAG_DESCRIPTION)
-public class OfferApi {
+@Tag(name = OFFER_CART_TAG_NAME, description = OFFER_CART_TAG_DESCRIPTION)
+public class OfferCartApi {
 
     private final IOfferService service;
 
     @PostMapping("/addToCart")
-    @Operation(summary = "Добавление предложенияв корзину")
-    public ResponseEntity<List<OfferCartRsDto>> addOfferToCart(@RequestBody OfferToCartRqDto request) {
+    @Operation(summary = "Добавить предложение в корзину")
+    public ResponseEntity<List<CartItemRsDto>> addOfferToCart(@RequestBody AddToCartRequestDto request) {
         return ResponseEntity.ok(service.addOfferToCart(request));
     }
 
     @GetMapping("/getCartItems")
-    @Operation(summary = "Получение содержания корзины пользователя")
-    public ResponseEntity<List<OfferCartRsDto>> getCartItems() {
+    @Operation(summary = "Получить содержимое корзины")
+    public ResponseEntity<List<CartItemRsDto>> getCartItems() {
         return ResponseEntity.ok(service.getCartItems());
     }
 
     @GetMapping("/getCountCartItems")
-    @Operation(summary = "Получение содержания корзины пользователя")
+    @Operation(summary = "Получить количество элементов в корзине")
     public ResponseEntity<Integer> getCountCartItems() {
         return ResponseEntity.ok(service.getCountCartItems());
     }
 
     @PostMapping("/deleteCartItem/{itemId}")
-    @Operation(summary = "Удаление элемента корзины")
-    public  ResponseEntity<Void> deleteCartItem(@PathVariable UUID itemId) {
+    @Operation(summary = "Удалить предложение из корзины")
+    public ResponseEntity<Void> removeFromCart(@PathVariable UUID itemId) {
         service.deleteCartItemById(itemId);
         return ResponseEntity.ok().build();
     }
-
 }

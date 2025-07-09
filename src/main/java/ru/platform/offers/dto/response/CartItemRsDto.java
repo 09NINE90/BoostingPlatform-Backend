@@ -14,8 +14,9 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
-public class OfferCartRsDto {
+public class CartItemRsDto {
 
+    @Schema(description = "Идентификатор объекта корзины", example = DEFAULT_UUID)
     private UUID id;
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)

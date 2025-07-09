@@ -9,10 +9,13 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
+
 @Data
 @Builder
 public class OrderTipHistoryRsDto {
 
+    @Schema(description = "Идентификатор записи", example = DEFAULT_UUID)
     private UUID id;
 
     @Schema(description = "Статус чаевых", example = "ON_PENDING")

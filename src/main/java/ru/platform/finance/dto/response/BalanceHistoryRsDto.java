@@ -8,12 +8,16 @@ import ru.platform.finance.enumz.RecordType;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
 @Builder
 public class BalanceHistoryRsDto {
 
-    private String id;
+    @Schema(description = "Идентификатор записи", example = DEFAULT_UUID)
+    private UUID id;
 
     @Schema(description = "Идентификатор заказа", example = "AAAA-0000")
     private String orderId;

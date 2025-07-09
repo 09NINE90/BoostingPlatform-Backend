@@ -10,15 +10,17 @@ import ru.platform.orders.enumz.OrderStatus;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
+
 @Data
 @Builder
 @Jacksonized
 public class OrderByBoosterRsDto {
 
-    @Schema(description = "Идентификатор чата", example = "UUID")
+    @Schema(description = "Идентификатор чата", example = DEFAULT_UUID)
     private String chatId;
 
-    @Schema(description = "Идентификатор заказа", example = "Legend of Eldoria")
+    @Schema(description = "Идентификатор заказа", example = DEFAULT_UUID)
     private String orderId;
 
     @Schema(description = "Идентификатор заказа для UI", example = "Legend of Eldoria")

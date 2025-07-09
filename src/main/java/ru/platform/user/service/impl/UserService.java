@@ -307,7 +307,7 @@ public class UserService implements IUserService {
         return gameTags.stream()
                 .map(gameTag ->
                         BoosterProfileRsDto.GameTag.builder()
-                                .id(gameTag.getId().toString())
+                                .id(gameTag.getId())
                                 .name(gameTag.getGame().getTitle())
                                 .build()
                 )

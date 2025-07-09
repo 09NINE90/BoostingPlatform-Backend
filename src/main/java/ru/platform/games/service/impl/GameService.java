@@ -31,7 +31,7 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameBySecondIdRsDto getGameBySecondId(String secondId) {
+    public GameBySecondIdRsDto getGameWithCategories(String secondId) {
         Optional<GameEntity> game = repository.findBySecondId(secondId);
         if (game.isEmpty()) throw new PlatformException(NOT_FOUND_ERROR);
         return gameMapper.toGameBySecondId(game.get());

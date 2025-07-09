@@ -16,7 +16,7 @@ public class BalanceMapper {
 
     public BalanceHistoryRsDto toBalanceHistoryRsDto(BoosterFinancialRecordEntity entity){
         return BalanceHistoryRsDto.builder()
-                .id(entity.getId().toString())
+                .id(entity.getId())
                 .orderId(getOrderId(entity.getOrder()))
                 .recordType(entity.getRecordType())
                 .paymentStatus(entity.getStatus())

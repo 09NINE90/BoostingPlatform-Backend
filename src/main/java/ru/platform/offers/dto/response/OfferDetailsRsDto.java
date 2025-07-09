@@ -6,18 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Variables.*;
 
 @Data
 @Builder
-public class OfferByIdRsDto {
+public class OfferDetailsRsDto {
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
-    private String offerId;
+    private UUID offerId;
 
     @Schema(description = "Идентификатор игры, привязанной к предложению", example = DEFAULT_UUID)
-    private String gameId;
+    private UUID gameId;
 
     @Schema(description = "Идентификатор игры, привязанной к предложению", example = "LoE")
     private String secondGameId;

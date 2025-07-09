@@ -7,7 +7,7 @@ import ru.platform.offers.sorting.SortFilter;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
-public class OfferRqDto {
+public class OfferFilterRqDto {
 
     @Schema(description = "Идентификатор игры, к которой относится предложение", example = DEFAULT_UUID)
     private String gameId;

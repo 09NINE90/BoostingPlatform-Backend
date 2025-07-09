@@ -18,7 +18,7 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 @Jacksonized
 public class OrderRsDto {
 
-    @Schema(description = "Идентификатор чата", example = "UUID")
+    @Schema(description = "Идентификатор чата", example = DEFAULT_UUID)
     private String chatId;
 
     @Schema(description = "Идентификатор бустера, прикрепленного к заказу", example = DEFAULT_UUID)

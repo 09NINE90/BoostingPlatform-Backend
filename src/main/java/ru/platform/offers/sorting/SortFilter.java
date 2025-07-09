@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SortFilter {
-    @Schema(description = "Ключ сортировки", example = "PRICE")
+
+    @Schema(description = "Ключ сортировки", example = "PRICE", enumAsRef = true)
     private OfferSortKeys key;
+
     @Schema(description = "Направлние сортировки", example = "true")
     private Boolean asc;
 }

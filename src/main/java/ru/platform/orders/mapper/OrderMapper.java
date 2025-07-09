@@ -160,7 +160,7 @@ public class OrderMapper {
 
     public BoosterOrderHistoryRsDto toBoosterOrderHistoryRsDto(OrderEntity orderEntity) {
         return BoosterOrderHistoryRsDto.builder()
-                .id(orderEntity.getId().toString())
+                .id(orderEntity.getId())
                 .orderId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .completedAt(DateTimeUtils.offsetDateTimeUTC(orderEntity.getCompletedAt()))
                 .salary(orderEntity.getBoosterSalary())

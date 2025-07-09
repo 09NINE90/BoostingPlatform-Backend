@@ -1,5 +1,6 @@
 package ru.platform.orders.dto.request;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +17,13 @@ public class OrdersByBoosterRqDto {
     @Schema(hidden = true)
     private UserEntity booster;
 
-    @Schema(description = "Статус заказа", enumAsRef = true)
+    @ArraySchema(schema = @Schema(description = "Статус заказа", enumAsRef = true))
     private Set<OrderStatus> statuses;
 
-    @Schema(description = "Название игры", example = "Game name")
+    @ArraySchema(schema = @Schema(description = "Название игры", example = "Game name"))
     private Set<String> gameNames;
 
-    @Schema(description = "Название платформы для игр", example = "PS")
+    @ArraySchema(schema = @Schema(description = "Название платформы для игр", example = "PS"))
     private Set<String> gamePlatforms;
 
     @Schema(description = "Цена от/до")

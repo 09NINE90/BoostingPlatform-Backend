@@ -12,7 +12,7 @@ import java.util.UUID;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
-public class OfferToCartRqDto {
+public class AddToCartRequestDto {
 
     @Schema(description = "Идентификатор предложения, которое добавляется в корзину", example = DEFAULT_UUID)
     private UUID offerId;

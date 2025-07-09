@@ -34,6 +34,7 @@ public class ChatRoomService implements IChatRoomService {
                 .title(chatRoom.getTitle())
                 .messages(messages.stream()
                         .map(msg -> ChatMessageDto.builder()
+                                .id(msg.getId())
                                 .text(msg.getText())
                                 .sender(msg.getSender().getProfile().getNickname())
                                 .createdAt(msg.getCreatedAt())
