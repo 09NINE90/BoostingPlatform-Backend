@@ -6,6 +6,7 @@ import lombok.Data;
 import ru.platform.orders.enumz.OrderStatus;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -24,7 +25,7 @@ public class BoosterOrderHistoryRsDto {
     private String orderName;
 
     @Schema(description = "Дата и время, когда заказ стал выполненным")
-    private String completedAt;
+    private OffsetDateTime completedAt;
 
     @Schema(description = "Зарплата бустера за заказ")
     private BigDecimal salary;

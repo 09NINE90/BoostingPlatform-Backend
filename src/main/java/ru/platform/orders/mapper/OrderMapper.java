@@ -109,8 +109,8 @@ public class OrderMapper {
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
-                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
-                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getEndTimeExecution()))
                 .build();
     }
 
@@ -139,9 +139,9 @@ public class OrderMapper {
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .boosterSalary(orderEntity.getBoosterSalary().doubleValue())
                 .selectedOptions(toOrderByBoosterListOptionDtoList(orderEntity.getOptionList()))
-                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
-                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
-                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getEndTimeExecution()))
+                .completedAt(DateTimeUtils.offsetDateTimeUTC(orderEntity.getCompletedAt()))
                 .build();
     }
 
@@ -162,7 +162,7 @@ public class OrderMapper {
         return BoosterOrderHistoryRsDto.builder()
                 .id(orderEntity.getId().toString())
                 .orderId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
-                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
+                .completedAt(DateTimeUtils.offsetDateTimeUTC(orderEntity.getCompletedAt()))
                 .salary(orderEntity.getBoosterSalary())
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(orderEntity.getStatus())

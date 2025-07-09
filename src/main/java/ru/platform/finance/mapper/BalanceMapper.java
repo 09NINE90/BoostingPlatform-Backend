@@ -21,8 +21,8 @@ public class BalanceMapper {
                 .recordType(entity.getRecordType())
                 .paymentStatus(entity.getStatus())
                 .amount(getAmount(entity))
-                .createdAt(DateTimeUtils.offsetDateTimeToStringUTC(entity.getCreatedAt()))
-                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(entity.getCompletedAt()))
+                .createdAt(DateTimeUtils.offsetDateTimeUTC(entity.getCreatedAt()))
+                .completedAt(DateTimeUtils.offsetDateTimeUTC(entity.getCompletedAt()))
                 .build();
     }
 

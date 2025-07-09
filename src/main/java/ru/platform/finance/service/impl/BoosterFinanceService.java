@@ -141,7 +141,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
                 .id(entity.getId())
                 .amount(entity.getAmount())
                 .status(entity.getStatus())
-                .createdAt(DateTimeUtils.offsetDateTimeToStringUTC(entity.getCreatedAt()))
+                .createdAt(DateTimeUtils.offsetDateTimeUTC(entity.getCreatedAt()))
                 .build();
     }
 

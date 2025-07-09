@@ -6,6 +6,7 @@ import lombok.Data;
 import ru.platform.finance.enumz.PaymentStatus;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,5 +22,5 @@ public class OrderTipHistoryRsDto {
     private BigDecimal amount;
 
     @Schema(description = "Дата и время (UTC) создания операции", example = "2025-06-26 12:00")
-    private String createdAt;
+    private OffsetDateTime createdAt;
 }
