@@ -233,7 +233,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     private Function<OrdersByBoosterRqDto, List<OrderEntity>> getServicePageFuncWithSort() {
         try {
             return request -> orderRepository
-                    .findAll(ordersByBoosterSpecification.getFilter(request), SortOrderUtils.getSortBy(request.getSort()));
+                    .findAll(ordersByBoosterSpecification.getFilter(request), SortOrderUtils.getSortByWithDefaultStartTimeExecution(request.getSort()));
         } catch (Exception e) {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);
