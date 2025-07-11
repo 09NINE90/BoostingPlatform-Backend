@@ -21,21 +21,21 @@ import static ru.platform.LocalConstants.Api.OFFER_TAG_NAME;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/offer/public")
+@RequestMapping("/api/public/offers")
 @Tag(name = OFFER_TAG_NAME, description = OFFER_TAG_DESCRIPTION)
 public class OfferPublicApi {
 
     private final IOfferService service;
     private final IOfferOptionService offerOptionService;
 
-    @GetMapping("/getOffersByGameId/{gameId}")
+    @GetMapping("/games/{gameId}")
     @Operation(summary = "Получить предложения по ID игры")
     public ResponseEntity<List<GameOffersRsDto>> getOffersByGameId(@PathVariable("gameId") UUID gameId) {
         List<GameOffersRsDto> result = service.getOffersByGameId(gameId);
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/getOffersByRequest")
+    @PostMapping
     @Operation(summary = "Найти предложения с фильтрами")
     public ResponseEntity<FilteredOffersRsDto> getOffersByRequest(@RequestBody OfferFilterRqDto request) {
         return ResponseEntity.ok(service.getOffersByRequest(request));
@@ -47,7 +47,7 @@ public class OfferPublicApi {
         return ResponseEntity.ok(service.getOfferById(offerId));
     }
 
-    @GetMapping("/option/byOfferId/{offerId}")
+    @GetMapping("/{offerId}/options")
     @Operation(summary = "Получить доступные опции предложения")
     public List<OfferOptionRsDto> getOptionsByOfferId(@PathVariable("offerId") String offerId) {
         return offerOptionService.getOptionsByOfferId(UUID.fromString(offerId));

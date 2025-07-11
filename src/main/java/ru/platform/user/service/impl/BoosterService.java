@@ -6,12 +6,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.enumz.RecordType;
+import ru.platform.games.dao.GameTag;
 import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.UserEntity;
+import ru.platform.user.dao.UserProfileEntity;
+import ru.platform.user.dto.response.BoosterProfileRsDto;
+import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
+import ru.platform.user.enumz.BoosterLevelName;
 import ru.platform.user.repository.BoosterProfileRepository;
+import ru.platform.user.repository.UserRepository;
+import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IBoosterService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 import java.util.UUID;
 
 import static ru.platform.LocalConstants.BoosterSettings.*;
@@ -24,6 +33,8 @@ import static ru.platform.user.enumz.BoosterLevelName.*;
 @RequiredArgsConstructor
 public class BoosterService implements IBoosterService {
 
+    private final IAuthService authService;
+    private final UserRepository userRepository;
     private final BoosterProfileRepository boosterProfileRepository;
 
     @Override
@@ -121,5 +132,77 @@ public class BoosterService implements IBoosterService {
         log.debug("Уменьшение суммы баланса бустера на сумму, поданную на вывод средств");
         boosterProfile.setBalance(boosterProfile.getBalance().subtract(withdrawalAmount));
         boosterProfileRepository.save(boosterProfile);
+    }
+
+    /**
+     * Получение информации о бустере
+     */
+    @Override
+    public BoosterProfileRsDto getBoosterProfileData() {
+        UserEntity userEntity = authService.getAuthUser();
+        UserProfileEntity profileEntity = userEntity.getProfile();
+        BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
+
+        return BoosterProfileRsDto.builder()
+                .email(userEntity.getUsername())
+                .nickname(profileEntity.getNickname())
+                .imageUrl(profileEntity.getImageUrl())
+                .secondId(profileEntity.getSecondId())
+                .description(profileEntity.getDescription())
+                .level(boosterProfile.getLevel())
+                .nextLevel(getNextLevel(boosterProfile.getLevel()))
+                .percentageOfOrder((double) Math.round(boosterProfile.getPercentageOfOrder() * 100))
+                .balance(boosterProfile.getBalance())
+                .totalIncome(boosterProfile.getTotalIncome())
+                .numberOfCompletedOrders(boosterProfile.getNumberOfCompletedOrders())
+                .progressAccountStatus(boosterProfile.getTotalIncome().multiply(BigDecimal.valueOf(100))
+                        .divide(BOOSTER_LEGEND_TOTAL_INCOME, 2, RoundingMode.HALF_UP))
+                .totalTips(boosterProfile.getTotalTips())
+                .gameTags(getGameTags(boosterProfile.getGameTags()))
+                .build();
+    }
+
+    /**
+     * Получение следующего уровня бустера
+     */
+    private BoosterLevelName getNextLevel(BoosterLevelName level) {
+        return switch (level) {
+            case ROOKIE -> VETERAN;
+            case VETERAN -> ELITE;
+            case ELITE -> LEGEND;
+            case LEGEND -> null;
+        };
+    }
+
+    /**
+     * Получение игровых тегов для фронта
+     */
+    private List<BoosterProfileRsDto.GameTag> getGameTags(List<GameTag> gameTags) {
+        if (gameTags == null || gameTags.isEmpty()) return null;
+        return gameTags.stream()
+                .map(gameTag ->
+                        BoosterProfileRsDto.GameTag.builder()
+                                .id(gameTag.getId())
+                                .name(gameTag.getGame().getTitle())
+                                .build()
+                )
+                .toList();
+    }
+
+    /**
+     * Получение краткой информации о бустере
+     */
+    @Override
+    public MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId) {
+        UserEntity booster = userRepository.findById(boosterId)
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        return MiniBoosterProfileRsDto.builder()
+                .boosterName(booster.getProfile().getNickname())
+                .boosterDescription(booster.getProfile().getDescription())
+                .avatarUrl(booster.getProfile().getImageUrl())
+                .boosterLevel(booster.getBoosterProfile().getLevel())
+                .numberOfCompletedOrders(booster.getBoosterProfile().getNumberOfCompletedOrders())
+                .build();
     }
 }

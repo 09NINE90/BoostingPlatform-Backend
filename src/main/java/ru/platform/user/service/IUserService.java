@@ -43,27 +43,12 @@ public interface IUserService {
     ConfirmationRsDto resendConfirmationEmail(ConfirmationEmailRqDto email);
 
     /**
-     * Получение профиля пользователя (заказчика)
-     */
-    CustomerProfileRsDto getCustomerProfileData();
-
-    /**
      * Обновление никнейма пользователя
      */
     void changeNickname(String nickname);
 
     /**
-     * Получение профиля пользователя (бустера)
-     */
-    BoosterProfileRsDto getBoosterProfileData();
-
-    /**
      * Обновление описания профиля пользователя
      */
     void changeDescription(String description);
-
-    /**
-     * Получение краткой информации о бустере
-     */
-    MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId);
 }

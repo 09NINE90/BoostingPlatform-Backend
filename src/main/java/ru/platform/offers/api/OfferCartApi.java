@@ -17,31 +17,31 @@ import static ru.platform.LocalConstants.Api.OFFER_CART_TAG_NAME;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/offer")
+@RequestMapping("/api/cart")
 @Tag(name = OFFER_CART_TAG_NAME, description = OFFER_CART_TAG_DESCRIPTION)
 public class OfferCartApi {
 
     private final IOfferService service;
 
-    @PostMapping("/addToCart")
+    @PostMapping("/items")
     @Operation(summary = "Добавить предложение в корзину")
     public ResponseEntity<List<CartItemRsDto>> addOfferToCart(@RequestBody AddToCartRequestDto request) {
         return ResponseEntity.ok(service.addOfferToCart(request));
     }
 
-    @GetMapping("/getCartItems")
+    @GetMapping("/items")
     @Operation(summary = "Получить содержимое корзины")
     public ResponseEntity<List<CartItemRsDto>> getCartItems() {
         return ResponseEntity.ok(service.getCartItems());
     }
 
-    @GetMapping("/getCountCartItems")
+    @GetMapping("/items/count")
     @Operation(summary = "Получить количество элементов в корзине")
     public ResponseEntity<Integer> getCountCartItems() {
         return ResponseEntity.ok(service.getCountCartItems());
     }
 
-    @PostMapping("/deleteCartItem/{itemId}")
+    @PostMapping("/items/{itemId}")
     @Operation(summary = "Удалить предложение из корзины")
     public ResponseEntity<Void> removeFromCart(@PathVariable UUID itemId) {
         service.deleteCartItemById(itemId);

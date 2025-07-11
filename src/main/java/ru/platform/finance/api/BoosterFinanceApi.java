@@ -19,33 +19,33 @@ import static ru.platform.LocalConstants.Api.FINANCE_TAG_NAME;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/finance")
+@RequestMapping("/api/boosters/finance")
 @Tag(name = FINANCE_TAG_NAME, description = FINANCE_TAG_DESCRIPTION)
 public class BoosterFinanceApi {
 
     private final IBoosterFinanceService boosterFinanceService;
 
-    @PostMapping("/handleWithdrawal")
+    @PostMapping("/withdrawals")
     @Operation(summary = "Запросить вывод средств")
     public ResponseEntity<Void> handleWithdrawal(@RequestBody HandleWithdrawalRqDto request) {
         boosterFinanceService.handleWithdrawal(request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/postHandleSendTip")
+    @PostMapping("/tips")
     @Operation(summary = "Отправить чаевые")
     public ResponseEntity<Void> sendTip(@RequestBody HandleSendTipRqDto request) {
         boosterFinanceService.postHandleSendTip(request);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/balanceHistory")
+    @GetMapping("/balance/history")
     @Operation(summary = "Получить историю баланса")
     public ResponseEntity<List<BalanceHistoryRsDto>> getBalanceHistory() {
         return ResponseEntity.ok(boosterFinanceService.getBalanceHistoryByBooster());
     }
 
-    @GetMapping("/orderTipHistory/{orderId}")
+    @GetMapping("/orders/{orderId}/tips")
     @Operation(summary = "Получить историю чаевых по заказу")
     public ResponseEntity<List<OrderTipHistoryRsDto>> getOrderTipHistory(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(boosterFinanceService.getOrderTipHistory(orderId));
