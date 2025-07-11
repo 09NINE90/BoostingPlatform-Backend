@@ -88,7 +88,7 @@ public class MailService implements IMailService {
     private String getPasswordRecoveryEmailContent(UserEntity user){
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        model.put("confirmationToken", user.getConfirmationToken());
+        model.put("confirmationCode", user.getConfirmationCode());
         configuration.getTemplate("recoveryPassword.html")
                 .process(model,stringWriter);
         return stringWriter.getBuffer().toString();

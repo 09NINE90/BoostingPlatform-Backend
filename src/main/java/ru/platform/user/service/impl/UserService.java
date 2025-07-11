@@ -13,6 +13,7 @@ import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
 import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.CustomerProfileEntity;
+import ru.platform.user.dto.request.ConfirmPasswordRecoveryRqDto;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
@@ -29,11 +30,13 @@ import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
 import ru.platform.user.service.IValidationUserService;
+import ru.platform.utils.ConfirmationCodeUtil;
 import ru.platform.utils.GenerateSecondIdUtil;
 import ru.platform.utils.JwtUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -153,28 +156,23 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation) {
+    public void forgotPassword(ConfirmationEmailRqDto confirmation) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
-        String confirmationToken = jwtUtil.generateConfirmationToken(user.getUsername(), EMPTY_STRING);
+        String confirmationCode = ConfirmationCodeUtil.generateConfirmationCode(6);
 
-        user.setConfirmationToken(confirmationToken);
+        user.setConfirmationCode(confirmationCode);
         userRepository.save(user);
         mailService.sendMail(user, PASSWORD_RECOVERY);
-
-        return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }
 
     @Override
-    public ConfirmationRsDto confirmPasswordRecovery(String confirmationToken) {
-        String username = jwtUtil.extractUsername(confirmationToken);
-        UserEntity user = userRepository.findByUsername(username)
+    public void confirmPasswordRecovery(ConfirmPasswordRecoveryRqDto request) {
+        UserEntity user = userRepository.findByUsername(request.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
-        if (user.getConfirmationToken().equals(confirmationToken)) {
-            return new ConfirmationRsDto(SUCCESS_PASSWORD_RECOVERY, username);
-        } else {
+        if (!user.getConfirmationCode().equals(request.getCode())) {
             log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getMessage());
             throw new PlatformException(EMAIL_VERIFIED_ERROR);
         }
