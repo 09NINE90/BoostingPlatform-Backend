@@ -7,10 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.user.dto.request.ConfirmationEmailRqDto;
-import ru.platform.user.dto.request.EmailConfirmationRequest;
-import ru.platform.user.dto.request.SignupUserRqDto;
-import ru.platform.user.dto.request.LoginUserRqDto;
+import ru.platform.user.dto.request.*;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
@@ -67,20 +64,20 @@ public class AuthApi {
 
     @PostMapping("/password-reset/request")
     @Operation(summary = "Запрос восстановления пароля")
-    public ResponseEntity<ConfirmationRsDto> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
-        ConfirmationRsDto result = userService.forgotPassword(confirmation);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Void> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
+        userService.forgotPassword(confirmation);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/password-reset/validate/{token}")
+    @PostMapping("/password-reset/validate")
     @Operation(summary = "Подтверждение восстановления пароля")
-    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@PathVariable("token") String token) {
-        ConfirmationRsDto result = userService.confirmPasswordRecovery(token);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@RequestBody ConfirmPasswordRecoveryRqDto request) {
+        userService.confirmPasswordRecovery(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password-change")
-    @Operation(summary = "Смена пароля (для аутентифицированных пользователей)")
+    @Operation(summary = "Смена пароля")
     public ResponseEntity<?> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         return ResponseEntity.ok(userService.changeUserPassword(confirmation, response));
     }

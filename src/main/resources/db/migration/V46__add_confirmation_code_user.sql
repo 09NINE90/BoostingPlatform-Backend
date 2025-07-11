@@ -1,0 +1,2 @@
+ALTER TABLE users
+    ADD COLUMN confirmation_code VARCHAR(6) DEFAULT NULL;

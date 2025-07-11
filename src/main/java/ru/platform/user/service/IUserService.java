@@ -1,6 +1,7 @@
 package ru.platform.user.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import ru.platform.user.dto.request.ConfirmPasswordRecoveryRqDto;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
@@ -25,12 +26,12 @@ public interface IUserService {
     /**
      * Инициирование процесса восстановления пароля
      */
-    ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation);
+    void forgotPassword(ConfirmationEmailRqDto confirmation);
 
     /**
      * Подтверждение смены пароля по токену восстановления
      */
-    ConfirmationRsDto confirmPasswordRecovery(String confirmationToken);
+    void confirmPasswordRecovery(ConfirmPasswordRecoveryRqDto request);
 
     /**
      * Смена пароля пользователя

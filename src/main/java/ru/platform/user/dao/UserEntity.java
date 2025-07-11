@@ -37,6 +37,10 @@ public class UserEntity {
     @Schema(description = "Токен подтверждения регистрации")
     private String confirmationToken;
 
+    @Column(name = "confirmation_code")
+    @Schema(description = "Код подтверждения восстановления пароля")
+    private String confirmationCode;
+
     @Column(name = "enabled")
     @Schema(description = "Флаг подтверждения регистрации")
     private boolean enabled;
