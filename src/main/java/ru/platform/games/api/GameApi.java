@@ -22,13 +22,13 @@ public class GameApi {
 
     private final IGameService service;
 
-    @GetMapping("/getAllGames")
+    @GetMapping
     @Operation(summary = "Получить все игры (сортировка по рейтингу)")
     public ResponseEntity<List<GameMainPageRsDto>> getAllGames() {
         return ResponseEntity.ok(service.getAllGames());
     }
 
-    @GetMapping("/getBySecondId/{secondId}")
+    @GetMapping("/{secondId}")
     @Operation(summary = "Получить игру с категориями по ID")
     public ResponseEntity<GameBySecondIdRsDto> getGameWithCategories (@PathVariable String secondId) {
         return ResponseEntity.ok(service.getGameWithCategories (secondId));
