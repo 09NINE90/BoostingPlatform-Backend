@@ -39,7 +39,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
      * Запросы для бустера
      */
     @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.booster = :booster")
-    List<String> findAllDistinctStatusesByBooster(@Param("booster") UserEntity booster);
+    List<OrderStatus> findAllDistinctStatusesByBooster(@Param("booster") UserEntity booster);
 
     @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.booster = :booster")
     List<String> findAllDistinctGamePlatformsByBooster(@Param("booster") UserEntity booster);

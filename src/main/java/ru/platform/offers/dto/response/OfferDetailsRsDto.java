@@ -12,6 +12,7 @@ import static ru.platform.LocalConstants.Variables.*;
 
 @Data
 @Builder
+@Schema(description = "Детальная информация по предложению")
 public class OfferDetailsRsDto {
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
@@ -29,7 +30,18 @@ public class OfferDetailsRsDto {
     @Schema(description = "Название игры", example = "Destiny 2")
     private String gameName;
 
-    @ArraySchema(schema = @Schema(description = "Платформы для игр", example = "PC"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Доступные игровые платформы",
+                    example = "[\"PC\", \"PS\"]"
+            ),
+            schema = @Schema(
+                    description = "Платформа",
+                    example = "PC",
+                    minLength = 1,
+                    maxLength = 10
+            )
+    )
     private List<String> gamePlatforms;
 
     @Schema(description = "Название предложения", example = "Rank boosting")
@@ -47,6 +59,18 @@ public class OfferDetailsRsDto {
     @Schema(description = "Категории предложения", example = "PVP, PVE")
     private String categories;
 
-    @ArraySchema(schema = @Schema(description = "Список секций для предложения"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Секции с дополнительной информацией о предложении",
+                    example = """
+                [{
+                  "title": "Что вы получите",
+                  "type": "ACCORDION",
+                  "description": "Описание преимуществ",
+                  "items": []
+                }]"""
+            ),
+            schema = @Schema(implementation = OfferSectionRsDto.class)
+    )
     private List<OfferSectionRsDto> sections;
 }

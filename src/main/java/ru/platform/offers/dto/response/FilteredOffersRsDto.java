@@ -13,9 +13,23 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Пагинированный список предложений")
 public class FilteredOffersRsDto {
 
-    @ArraySchema(schema = @Schema(description = "Список предложений"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Отфильтрованные предложения",
+                    example = """
+                [{
+                  "id": "550e8400-e29b-41d4-a716-446655440000",
+                  "title": "Rank boosting",
+                  "description": "Профессиональный буст вашего ранга",
+                  "imageUrl": "https://example.com/image.jpg",
+                  "price": 100.00
+                }]"""
+            ),
+            schema = @Schema(implementation = GameOffersRsDto.class)
+    )
     List<GameOffersRsDto> offers;
 
     @Schema(description = "Всего страниц", example = "5")

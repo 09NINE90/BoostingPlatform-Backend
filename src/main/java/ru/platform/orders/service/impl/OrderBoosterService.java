@@ -17,6 +17,7 @@ import ru.platform.orders.dao.specification.OrdersByBoosterSpecification;
 import ru.platform.orders.dto.request.DashboardRqDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.orders.dto.response.*;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderBoosterService;
 import ru.platform.orders.utils.PaginationOrdersUtil;
@@ -78,7 +79,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_FILTERS_BY_BOOSTER)
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
-        List<String> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
+        List<OrderStatus> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
         List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
         List<String> gameNames = orderRepository.findAllDistinctGameNamesByBooster(user);
         Double minPrice = orderRepository.findMinPriceByBooster(user);

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@Schema(description = "Объект списка истории выполненных заказов бустера")
 public class BoosterOrderHistoryRsDto {
 
     @Schema(description = "Идентификатор заказа", example = "123e4567-e89b-12d3-a456-426614174000")

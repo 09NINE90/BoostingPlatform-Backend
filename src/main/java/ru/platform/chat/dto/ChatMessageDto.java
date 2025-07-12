@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@Schema(description = "Сообщение в чате")
 public class ChatMessageDto {
 
     @Schema(description = "ID сообщения", example = LocalConstants.Variables.DEFAULT_UUID)

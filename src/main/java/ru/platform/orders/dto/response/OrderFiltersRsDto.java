@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.orders.enumz.OrderStatus;
 
 import java.util.List;
 
@@ -11,13 +12,26 @@ import java.util.List;
 @Builder
 public class OrderFiltersRsDto {
 
-    @ArraySchema(schema = @Schema(description = "Статусы заказов для фильтров", enumAsRef = true))
-    private List<String> statuses;
+    @ArraySchema(
+            arraySchema = @Schema(description = "Доступные статусы заказов"),
+            schema = @Schema(
+                    description = "Статус заказа",
+                    implementation = OrderStatus.class,
+                    enumAsRef = true
+            )
+    )
+    private List<OrderStatus> statuses;
 
-    @ArraySchema(schema =  @Schema(description = "Названия игр для фильтров", example = "Game name"))
+    @ArraySchema(
+            arraySchema = @Schema(description = "Доступные игры"),
+            schema = @Schema(description = "Название игры", example = "Destiny 2")
+    )
     private List<String> gameNames;
 
-    @ArraySchema(schema =  @Schema(description = "Названия игровых платформ для фильтров", example = "PS"))
+    @ArraySchema(
+            arraySchema = @Schema(description = "Доступные платформы"),
+            schema = @Schema(description = "Платформа", example = "PS")
+    )
     private List<String> gamePlatforms;
 
     @Schema(description = "Цена min/max для фильтров")
@@ -26,6 +40,7 @@ public class OrderFiltersRsDto {
 
     @Data
     @Builder
+    @Schema(description = "Диапазон цен")
     public static class PriceFilterDto {
 
         @Schema(description = "Минимальная стоимость заказа для фильтра", example = "100")
