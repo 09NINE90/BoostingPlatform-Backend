@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.finance.dao.BoosterFinancialRecordEntity;
 import ru.platform.finance.dao.repository.BoosterFinancialRecordRepository;
 import ru.platform.finance.enumz.PaymentStatus;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.service.IOrderForWorkWithFinanceService;
 import ru.platform.user.service.IBoosterService;
 import ru.platform.utils.DateTimeUtils;
@@ -33,6 +35,7 @@ public class BoosterFinanceScheduleService {
     private final int INITIAL_DELAY_SCHEDULING = ONE_MINUTE;
 
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_PROCESS_RECORDS)
     @Scheduled(initialDelay = INITIAL_DELAY_SCHEDULING, fixedRate = FIXED_RATE_SCHEDULING)
     public void processFinancialRecords() {
         log.debug("Начало процесса пересчета балансов бустеров");

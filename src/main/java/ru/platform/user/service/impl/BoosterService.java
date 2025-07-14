@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.enumz.RecordType;
 import ru.platform.games.dao.GameTag;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.user.dao.BecomeBoosterRequestEntity;
 import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.UserEntity;
@@ -144,6 +146,7 @@ public class BoosterService implements IBoosterService {
      * Получение информации о бустере
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_PROFILE_GET)
     public BoosterProfileRsDto getBoosterProfileData() {
         UserEntity userEntity = authService.getAuthUser();
         UserProfileEntity profileEntity = userEntity.getProfile();
@@ -199,6 +202,7 @@ public class BoosterService implements IBoosterService {
      * Получение краткой информации о бустере
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_MINI_PROFILE_GET)
     public MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId) {
         UserEntity booster = userRepository.findById(boosterId)
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
@@ -216,6 +220,7 @@ public class BoosterService implements IBoosterService {
      * Оформление заявки на становление бустером
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_BECOME_REQUEST)
     public void becomeBoosterRequest(BecomeBoosterRqDto becomeBoosterRqDto) {
         becomeBoosterRequestRepository.save(toEntity(becomeBoosterRqDto));
     }

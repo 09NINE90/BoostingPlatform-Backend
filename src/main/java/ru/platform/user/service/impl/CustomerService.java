@@ -3,6 +3,8 @@ package ru.platform.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.user.dao.CustomerProfileEntity;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
@@ -36,6 +38,7 @@ public class CustomerService implements ICustomerService {
      * Получение информации о заказчике
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.CUSTOMER_PROFILE_GET)
     public CustomerProfileRsDto getCustomerProfileData() {
         UserEntity userEntity = authService.getAuthUser();
         UserProfileEntity profileEntity = userEntity.getProfile();

@@ -160,6 +160,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_ACCEPT)
     public void acceptOrder(UUID orderId) {
         UserEntity user = authService.getAuthUser();
         double ratio = user.getBoosterProfile().getPercentageOfOrder();
@@ -246,6 +247,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_COMPLETE)
     public void completeExecutionOrder(UUID orderId) {
         log.debug(LOG_PREFIX, "Поиск заказа для завершения");
         OrderEntity order = orderRepository.findById(orderId)
@@ -271,6 +273,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      * Получение истории выполненных заказов бустером
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_HISTORY)
     public List<BoosterOrderHistoryRsDto> getBoosterOrdersHistory() {
         UserEntity user = authService.getAuthUser();
 
