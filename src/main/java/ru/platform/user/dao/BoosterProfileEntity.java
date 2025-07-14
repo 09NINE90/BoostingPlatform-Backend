@@ -31,7 +31,7 @@ public class BoosterProfileEntity {
 
     @Column(name = "level", nullable = false)
     @Enumerated(EnumType.STRING)
-    private BoosterLevelName level = BoosterLevelName.ROOKIE;
+    private BoosterLevelName level;
 
     @Column(name = "number_of_completed_orders", nullable = false)
     private Integer numberOfCompletedOrders;

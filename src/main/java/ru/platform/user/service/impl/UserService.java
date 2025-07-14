@@ -76,7 +76,7 @@ public class UserService implements IUserService {
      * Обработка запроса на регистрацию пользователя
      */
     @Override
-    @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
+    @PlatformMonitoring(name = MonitoringMethodType.REGISTRATION_USER)
     public ConfirmationRsDto registrationUser(SignupUserRqDto user) {
         validationUserService.validateSignUpUser(user);
         isUserExists(user);
@@ -138,6 +138,7 @@ public class UserService implements IUserService {
      * Проверка подтверждения регистрации
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.VERIFY_EMAIL)
     public Map<String, String> checkConfirmationSignUp(String confirmationToken, HttpServletResponse response) {
         String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
@@ -156,6 +157,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_RESET_REQUEST)
     public void forgotPassword(ConfirmationEmailRqDto confirmation) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
@@ -168,6 +170,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_RESET_VALIDATE)
     public void confirmPasswordRecovery(ConfirmPasswordRecoveryRqDto request) {
         UserEntity user = userRepository.findByUsername(request.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
@@ -179,6 +182,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_CHANGE)
     public Map<String, String> changeUserPassword(ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
@@ -215,6 +219,7 @@ public class UserService implements IUserService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.USER_CHANGE_NICKNAME)
     public void changeNickname(String nickname) {
         log.debug("Начало изменения никнейма на: {}", nickname);
 
@@ -239,6 +244,7 @@ public class UserService implements IUserService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.USER_CHANGE_DESCRIPTION)
     public void changeDescription(String description) {
         log.debug("Начало изменения описания профиля");
 

@@ -27,20 +27,20 @@ public class CustomerProfileEntity {
     private UUID id;
 
     @Column(name = "cashback_balance", precision = 19, scale = 4)
-    private BigDecimal cashbackBalance = BigDecimal.ZERO;
+    private BigDecimal cashbackBalance;
 
     @Column(name = "discount_percentage", precision = 5, scale = 2)
-    private BigDecimal discountPercentage = BigDecimal.valueOf(0.01);
+    private BigDecimal discountPercentage;
 
     @Column(name = "total_orders")
-    private Integer totalOrders = 0;
+    private Integer totalOrders;
 
     @Column(name = "total_amount_of_orders")
     private BigDecimal totalAmountOfOrders;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private CustomerStatus status = CustomerStatus.EXPLORER;
+    private CustomerStatus status;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

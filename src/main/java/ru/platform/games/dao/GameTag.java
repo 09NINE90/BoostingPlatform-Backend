@@ -39,7 +39,7 @@ public class GameTag {
     private boolean isVerified;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean isActive;
 
     @Column(name = "verified_at")
     private OffsetDateTime verifiedAt;

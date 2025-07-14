@@ -13,6 +13,8 @@ import ru.platform.finance.dto.response.BalanceHistoryRsDto;
 import ru.platform.finance.dto.response.OrderTipHistoryRsDto;
 import ru.platform.finance.mapper.BalanceMapper;
 import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.service.IOrderForWorkWithFinanceService;
 import ru.platform.user.dao.UserEntity;
@@ -69,6 +71,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_WITHDRAWAL)
     public void handleWithdrawal(HandleWithdrawalRqDto request) {
         log.debug(LOG_PREFIX, "Начало обработки запроса на вывод средств");
         UserEntity booster = authService.getAuthUser();
@@ -91,6 +94,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      * Получение данных об истории баланса бустера
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_BALANCE_HISTORY)
     public List<BalanceHistoryRsDto> getBalanceHistoryByBooster() {
         log.debug(LOG_PREFIX, "Начало обработки запроса на получение истории баланса бустера");
         UserEntity booster = authService.getAuthUser();
@@ -108,6 +112,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_SEND_TIP)
     public void postHandleSendTip(HandleSendTipRqDto request) {
         OrderEntity order = orderForWorkWithFinanceService.getOrderById(request.getOrderId());
         BoosterFinancialRecordEntity newRecord = BoosterFinancialRecordEntity.builder()
@@ -126,6 +131,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      * Получение истории чаевых к заказу по ID заказа
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_ORDER_TIPS)
     public List<OrderTipHistoryRsDto> getOrderTipHistory(UUID orderId) {
         List<BoosterFinancialRecordEntity> balanceList = boosterFinancialRecordRepository.findAllTipByOrderId(orderId);
 

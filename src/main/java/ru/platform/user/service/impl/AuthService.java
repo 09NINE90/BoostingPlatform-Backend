@@ -125,7 +125,7 @@ public class AuthService implements IAuthService {
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setPath("/api/auth/refresh");
+        cookie.setPath("/api/auth/refresh-token");
         cookie.setMaxAge(TEN_HOURS);
         response.addCookie(cookie);
     }
@@ -149,6 +149,7 @@ public class AuthService implements IAuthService {
      * Обработка запроса на обновление access токена
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.REFRESH_TOKEN)
     public Map<String, String> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         log.debug(LOG_PREFIX, "Начало обработки запроса на обновление токена");
         String refreshToken = extractRefreshTokenFromCookie(request);

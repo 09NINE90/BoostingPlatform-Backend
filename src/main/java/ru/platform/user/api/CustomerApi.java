@@ -27,5 +27,4 @@ public class CustomerApi {
         CustomerProfileRsDto result = customerService.getCustomerProfileData();
         return ResponseEntity.ok(result);
     }
-
 }
