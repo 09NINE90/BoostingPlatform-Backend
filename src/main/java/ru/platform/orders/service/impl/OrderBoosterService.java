@@ -151,6 +151,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_DASHBOARD_DATA)
     public List<OrderByBoosterRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
         request.setBooster(user);

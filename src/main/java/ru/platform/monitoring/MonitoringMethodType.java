@@ -86,6 +86,10 @@ public enum MonitoringMethodType {
             "get user orders by status",
             "Получение заказов пользователя с фильтром по статусу"
     ),
+    GET_ORDERS_BY_BOOSTER_DATA(
+            "get booster orders data",
+            "Получение данных о заказах бустера. Страница \"Мои заказы\""
+    ),
     BOOSTER_ORDER_ACCEPT(
             "booster order accept",
             "Принятие заказа бустером в работу: /api/order/booster/accept/{orderId}"
