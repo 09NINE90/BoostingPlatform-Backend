@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/actuator/**",
                                 "/api/auth/**",
                                 "/api/games/**",
+                                "/api/boosters/become/request",
                                 "/api/public/offers/**",
                                 "/api/carousel")
                         .permitAll()

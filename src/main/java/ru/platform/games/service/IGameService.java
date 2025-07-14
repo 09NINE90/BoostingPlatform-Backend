@@ -1,6 +1,7 @@
 package ru.platform.games.service;
 
 import ru.platform.games.dto.response.GameBySecondIdRsDto;
+import ru.platform.games.dto.response.GameItemRsDto;
 import ru.platform.games.dto.response.GameMainPageRsDto;
 
 import java.util.List;
@@ -19,5 +20,10 @@ public interface IGameService {
      * Возвращает информацию об игре и её категориях по вторичному идентификатору.
      */
     GameBySecondIdRsDto getGameWithCategories(String secondId);
+
+    /**
+     * Возвращает названия всех игр, доступных на платформе
+     */
+    List<GameItemRsDto> getGamesNames();
 }
 
