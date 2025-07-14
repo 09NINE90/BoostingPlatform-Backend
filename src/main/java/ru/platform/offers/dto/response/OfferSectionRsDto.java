@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 @Builder
+@Schema(description = "Секция предложения")
 public class OfferSectionRsDto {
 
     @Schema(description = "Название секции", example = "What you will get")
@@ -21,6 +22,9 @@ public class OfferSectionRsDto {
     @Schema(description = "Описание секции", example = "Very long description")
     private String description;
 
-    @ArraySchema(schema = @Schema(description = "Объекты, связанные с секцией"))
+    @ArraySchema(
+            arraySchema = @Schema(description = "Элементы секции"),
+            schema = @Schema(implementation = OfferSectionItemRsDto.class)
+    )
     private List<OfferSectionItemRsDto> items;
 }

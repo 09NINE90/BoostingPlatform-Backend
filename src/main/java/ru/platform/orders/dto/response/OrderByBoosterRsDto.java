@@ -44,21 +44,33 @@ public class OrderByBoosterRsDto {
     @Schema(description = "ЗП бустера за заказ", example = "150.0")
     private double boosterSalary;
 
-    @Schema(description = "Дата и время (по UTC) взятия заказа в работу", example = "2025-07-07 11:56:09.176 +0500")
+    @Schema(description = "Дата и время взятия заказа в работу", example = "2025-07-07 11:56:09.176 +0500")
     private OffsetDateTime startTimeExecution;
 
-    @Schema(description = "Дата и время (по UTC) завершения выполнения заказа", example = "2025-07-07 11:56:09.176 +0500")
+    @Schema(description = "Дата и время завершения выполнения заказа", example = "2025-07-07 11:56:09.176 +0500")
     private OffsetDateTime endTimeExecution;
 
-    @Schema(description = "Дата и время (по UTC) перевода заказа в статус COMPLETED", example = "2025-07-07 11:56:09.176 +0500")
+    @Schema(description = "Дата и время перевода заказа в статус COMPLETED", example = "2025-07-07 11:56:09.176 +0500")
     private OffsetDateTime completedAt;
 
-    @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Выбранные дополнительные опции для заказа",
+                    example = """
+                [{
+                  "optionTitle": "Стрим-сопровождение",
+                  "value": "stream_support",
+                  "label": "С включением стрима"
+                }]"""
+            ),
+            schema = @Schema(implementation = CartSelectedOptionsDto.class)
+    )
     private List<CartSelectedOptionsDto> selectedOptions;
 
     @Data
     @Builder
     @Jacksonized
+    @Schema(description = "Выбранная опция для заказа")
     public static class CartSelectedOptionsDto {
 
         @Schema(description = "Название опции, выбранной пользователем", example = "Стрим-сопровождение")

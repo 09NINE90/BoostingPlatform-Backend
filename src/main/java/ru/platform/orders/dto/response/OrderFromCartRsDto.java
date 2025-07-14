@@ -23,7 +23,18 @@ public class OrderFromCartRsDto {
     @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
     private OrderStatus orderStatus;
 
-    @ArraySchema(schema = @Schema(description = "Список опций, выбранных для заказа"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Выбранные дополнительные опции для заказа",
+                    example = """
+                [{
+                  "optionTitle": "Стрим-сопровождение",
+                  "value": "stream_support",
+                  "label": "С включением стрима"
+                }]"""
+            ),
+            schema = @Schema(implementation = CartSelectedOptionsDto.class)
+    )
     private List<CartSelectedOptionsDto> selectedOptions;
 
     @Schema(description = "Общая стоимость заказа", example = "150.0")
@@ -35,6 +46,7 @@ public class OrderFromCartRsDto {
     @Data
     @Builder
     @Jacksonized
+    @Schema(description = "Выбранная опция для заказа")
     public static class CartSelectedOptionsDto {
 
         @Schema(description = "Название опции, выбранной пользователем", example = "Стрим-сопровождение")

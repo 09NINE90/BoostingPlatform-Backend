@@ -5,6 +5,7 @@ import ru.platform.games.dao.CategoryEntity;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.games.dto.response.CategoryRsDto;
 import ru.platform.games.dto.response.GameBySecondIdRsDto;
+import ru.platform.games.dto.response.GameItemRsDto;
 import ru.platform.games.dto.response.GameMainPageRsDto;
 import ru.platform.games.mapper.IGameMapper;
 
@@ -37,6 +38,14 @@ public class GameMapper implements IGameMapper {
                         .stream()
                         .map(this::toCategoryRsDto)
                         .toList())
+                .build();
+    }
+
+    @Override
+    public GameItemRsDto toGameItemRsDto(GameEntity entity) {
+        return GameItemRsDto.builder()
+                .id(entity.getId())
+                .name(entity.getTitle())
                 .build();
     }
 

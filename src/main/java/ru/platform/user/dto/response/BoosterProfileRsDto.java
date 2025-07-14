@@ -60,11 +60,21 @@ public class BoosterProfileRsDto {
     @Schema(description = "Сумма чаевых бустера", example = "666.66")
     private BigDecimal totalTips;
 
-    @ArraySchema(schema = @Schema(description = "Список игровых тегов бустера"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Список игровых тегов бустера",
+                    example = "[\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"name\": \"Legend of Eldoria\"\n  }\n]"
+            ),
+            schema = @Schema(
+                    description = "Тег игры",
+                    implementation = GameTag.class
+            )
+    )
     private List<GameTag> gameTags;
 
     @Data
     @Builder
+    @Schema(description = "Игровой тег бустера")
     public static class GameTag {
 
         @Schema(description = "Идентификатор тега", example = DEFAULT_UUID)

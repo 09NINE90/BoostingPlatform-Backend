@@ -7,12 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.enumz.RecordType;
 import ru.platform.games.dao.GameTag;
+import ru.platform.user.dao.BecomeBoosterRequestEntity;
 import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
+import ru.platform.user.dto.request.BecomeBoosterRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
+import ru.platform.user.enumz.ApplicationStatus;
 import ru.platform.user.enumz.BoosterLevelName;
+import ru.platform.user.repository.BecomeBoosterRequestRepository;
 import ru.platform.user.repository.BoosterProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -20,6 +24,7 @@ import ru.platform.user.service.IBoosterService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +41,7 @@ public class BoosterService implements IBoosterService {
     private final IAuthService authService;
     private final UserRepository userRepository;
     private final BoosterProfileRepository boosterProfileRepository;
+    private final BecomeBoosterRequestRepository becomeBoosterRequestRepository;
 
     @Override
     @Transactional
@@ -203,6 +209,37 @@ public class BoosterService implements IBoosterService {
                 .avatarUrl(booster.getProfile().getImageUrl())
                 .boosterLevel(booster.getBoosterProfile().getLevel())
                 .numberOfCompletedOrders(booster.getBoosterProfile().getNumberOfCompletedOrders())
+                .build();
+    }
+
+    /**
+     * Оформление заявки на становление бустером
+     */
+    @Override
+    public void becomeBoosterRequest(BecomeBoosterRqDto becomeBoosterRqDto) {
+        becomeBoosterRequestRepository.save(toEntity(becomeBoosterRqDto));
+    }
+
+    private BecomeBoosterRequestEntity toEntity(BecomeBoosterRqDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        return BecomeBoosterRequestEntity.builder()
+                .nickname(dto.getNickname())
+                .email(dto.getEmail())
+                .discordTag(dto.getDiscordTag())
+                .selectedGames(dto.getSelectedGames() != null && !dto.getSelectedGames().isEmpty()
+                        ? dto.getSelectedGames()
+                        : null)
+                .customGames(dto.getCustomGames())
+                .gamingExperience(dto.getGamingExperience())
+                .boostingExperience(dto.getBoostingExperience())
+                .trackerLinks(dto.getTrackerLinks())
+                .progressImages(dto.getProgressImages())
+                .additionalInfo(dto.getAdditionalInfo())
+                .createdAt(OffsetDateTime.now())
+                .status(ApplicationStatus.ON_PENDING)
                 .build();
     }
 }

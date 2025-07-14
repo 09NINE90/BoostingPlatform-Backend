@@ -10,12 +10,35 @@ import java.util.Set;
 
 @Data
 @Builder
+@Schema(description = "Фильтры для дашборда заказов")
 public class DashboardFiltersRsDto {
 
-    @ArraySchema(schema =  @Schema(description = "Названия игр для фильтров", example = "Game name"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Доступные для фильтрации названия игр",
+                    example = "[\"Destiny 2\", \"World of Warcraft\"]"
+            ),
+            schema = @Schema(
+                    description = "Название игры",
+                    example = "Destiny 2",
+                    minLength = 1,
+                    maxLength = 100
+            )
+    )
     private Set<String> gameNames;
 
-    @ArraySchema(schema =  @Schema(description = "Названия игровых платформ для фильтров", example = "PS"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Доступные игровые платформы для фильтрации",
+                    example = "[\"PC\", \"PS\", \"XBOX\"]"
+            ),
+            schema = @Schema(
+                    description = "Код платформы",
+                    example = "PS5",
+                    minLength = 1,
+                    maxLength = 10
+            )
+    )
     private List<String> gamePlatforms;
 
     @Schema(description = "Цена min/max для фильтров")
@@ -24,6 +47,7 @@ public class DashboardFiltersRsDto {
 
     @Data
     @Builder
+    @Schema(description = "Диапазон цен")
     public static class PriceFilterDto {
 
         @Schema(description = "Минимальная стоимость заказа для фильтра", example = "100")

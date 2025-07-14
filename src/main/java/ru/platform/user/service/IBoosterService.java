@@ -2,6 +2,7 @@ package ru.platform.user.service;
 
 import ru.platform.finance.enumz.RecordType;
 import ru.platform.user.dao.UserEntity;
+import ru.platform.user.dto.request.BecomeBoosterRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
 import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
 
@@ -28,4 +29,9 @@ public interface IBoosterService {
      * Получение краткой информации о бустере
      */
     MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId);
+
+    /**
+     * Оформление заявки на становление бустером
+     */
+    void becomeBoosterRequest(BecomeBoosterRqDto becomeBoosterRqDto);
 }

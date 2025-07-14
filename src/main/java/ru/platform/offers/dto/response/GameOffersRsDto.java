@@ -16,6 +16,7 @@ import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация о предложении")
 public class GameOffersRsDto {
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
