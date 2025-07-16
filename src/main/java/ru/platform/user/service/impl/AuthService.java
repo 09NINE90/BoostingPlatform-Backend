@@ -216,7 +216,7 @@ public class AuthService implements IAuthService {
         log.debug(LOG_PREFIX, "Удаление refresh token из cookie");
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setHttpOnly(true);
-        cookie.setPath("/api/auth/refresh");
+        cookie.setPath("/api/auth/refresh-token");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
