@@ -1,4 +1,4 @@
-image: maven:3.9.6-eclipse-temurin-21-alpine
+image: gradle:8.7-jdk21-alpine
 
 stages:
   - build
@@ -8,28 +8,28 @@ stages:
 
 variables:
   DOCKER_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.caching=true"
   DOCKER_TLS_CERTDIR: "/certs"
 
 cache:
   key: ${CI_JOB_NAME}
   paths:
-    - .m2/repository
-    - target/
+    - .gradle
+    - build/libs
 
 build-app:
   stage: build
   script:
-    - mvn clean package -DskipTests
+    - gradle clean assemble -x test
   artifacts:
     paths:
-      - target/*.jar
+      - build/libs/*.jar
     expire_in: 1 week
 
 run-tests:
   stage: test
   script:
-    - mvn test
+    - gradle test
   needs: ["build-app"]
 
 docker-build:
@@ -67,7 +67,7 @@ deploy-develop:
       -e USERNAME_DB='$DEV_DB_USER' \
       -e PASSWORD_DB='$DEV_DB_PASSWORD' \
       -e JWT_SECRET_KEY='$JWT_SECRET' \
-      -e URL_DB='jdbc:postgresql://prod-db:5432/booster_platform' \
+      -e URL_DB='jdbc:postgresql://$DEV_DB_HOST:5432/booster_platform' \
       -e JAVA_OPTS='-Xmx512m -Dspring.profiles.active=dev' \
       $DOCKER_IMAGE"
   rules:
@@ -90,7 +90,7 @@ deploy-prod:
       -e USERNAME_DB='$PROD_DB_USER' \
       -e PASSWORD_DB='$PROD_DB_PASSWORD' \
       -e JWT_SECRET_KEY='$PROD_JWT_SECRET' \
-      -e URL_DB='jdbc:postgresql://prod-db:5432/prod_db' \
+      -e URL_DB='jdbc:postgresql://$PROD_DB_HOST:5432/prod_db' \
       -e JAVA_OPTS='-Xmx1024m -Dspring.profiles.active=prod' \
       $DOCKER_IMAGE"
   rules:
