@@ -1,15 +1,17 @@
 package ru.platform.utils;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.AeadAlgorithm;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.platform.exception.PlatformException;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 
 import static ru.platform.LocalConstants.DateTimeConstants.*;
@@ -22,47 +24,52 @@ public class JwtUtil {
     @Value("${spring.jwt.secret-key}")
     private String secret;
 
-    private Key key;
+    private SecretKey key;
 
     private static final long EXPIRATION_TIME_ACCESS = TEN_MINUTES;
     private static final long EXPIRATION_TIME_REFRESH = TWENTY_FOUR_HOURS;
     private static final long EXPIRATION_TIME_CONFIRMATION_LINK = TEN_HOURS;
+    private static final AeadAlgorithm ENCRYPTION_ALGORITHM = Jwts.ENC.A256GCM;
 
     @PostConstruct
     public void init() {
-        key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = Arrays.copyOf(
+                secret.getBytes(StandardCharsets.UTF_8),
+                32
+        );
+        key = new SecretKeySpec(keyBytes, "AES");
     }
 
     public String generateAccessToken(String id, String username, String role) {
         return Jwts.builder()
-                .setSubject(username)
+                .subject(username)
                 .claim("userId", id)
                 .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_ACCESS))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_ACCESS))
+                .encryptWith(key, ENCRYPTION_ALGORITHM)
                 .compact();
     }
 
     public String generateRefreshToken(String id, String username, String role) {
         return Jwts.builder()
-                .setSubject(username)
+                .subject(username)
                 .claim("userId", id)
                 .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH))
+                .encryptWith(key, ENCRYPTION_ALGORITHM)
                 .compact();
     }
 
     public String extractUsername(String token) {
         try {
             if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
+            return Jwts.parser()
+                    .decryptWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody()
+                    .parseEncryptedClaims(token)
+                    .getPayload()
                     .getSubject();
         } catch (ExpiredJwtException e) {
             throw new PlatformException(TOKEN_EXPIRED_ERROR);
@@ -74,11 +81,11 @@ public class JwtUtil {
     public String extractRoles(String token) {
         try {
             if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                    .decryptWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseEncryptedClaims(token)
+                    .getPayload();
 
             String role = claims.get("role", String.class);
             return role != null ? role : "";
@@ -93,11 +100,11 @@ public class JwtUtil {
     public String extractUserid(String token) {
         try {
             if (token == null) throw new PlatformException(AUTHORIZATION_ERROR);
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                    .decryptWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseEncryptedClaims(token)
+                    .getPayload();
 
             String userId = claims.get("userId", String.class);
             return userId != null ? userId : "";
@@ -110,11 +117,11 @@ public class JwtUtil {
 
     public String extractUserPassword(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                    .decryptWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseEncryptedClaims(token)
+                    .getPayload();
 
             return claims.get("password", String.class);
         } catch (ExpiredJwtException e) {
@@ -122,27 +129,26 @@ public class JwtUtil {
         } catch (JwtException e) {
             throw new PlatformException(AUTHORIZATION_ERROR);
         }
-
     }
 
     public String generateConfirmationToken(String username, String password) {
         return Jwts.builder()
-                .setSubject(username)
+                .subject(username)
                 .claim("password", password)
                 .claim("dateStart", DateTimeUtils.getStringFromDateTime(LocalDateTime.now()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_CONFIRMATION_LINK))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_CONFIRMATION_LINK))
+                .encryptWith(key, ENCRYPTION_ALGORITHM)
                 .compact();
     }
 
     public boolean isTokenExpired(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                    .decryptWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseEncryptedClaims(token)
+                    .getPayload();
             return claims.getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             return true;
@@ -153,7 +159,10 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser()
+                    .decryptWith(key)
+                    .build()
+                    .parseEncryptedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
