@@ -1,10 +1,21 @@
-FROM openjdk:21
+ARG JAVA_VERSION=21
+FROM openjdk:${JAVA_VERSION}-slim as builder
+
 WORKDIR /app
-COPY build/libs/BoosterPlatform-1.0-SNAPSHOT.jar app.jar
-COPY . .
-EXPOSE 6969
-ENV PASSWORD_DB password
-ENV USERNAME_DB username
-ENV JWT_SECRET_KEY secret_key
-ENV URL_DB jdbc:postgresql://db:5432/db_name
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY build/libs/*.jar application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+FROM openjdk:${JAVA_VERSION}-slim
+WORKDIR /app
+
+COPY --from=builder /app/dependencies/ ./
+COPY --from=builder /app/spring-boot-loader/ ./
+COPY --from=builder /app/snapshot-dependencies/ ./
+COPY --from=builder /app/application/ ./
+
+ENV SERVER_PORT=6969 \
+    JAVA_OPTS=""
+
+EXPOSE ${SERVER_PORT}
+
+ENTRYPOINT exec java ${JAVA_OPTS} org.springframework.boot.loader.JarLauncher
