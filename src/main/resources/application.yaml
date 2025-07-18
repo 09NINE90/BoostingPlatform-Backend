@@ -5,7 +5,7 @@ server:
     max-http-form-post-size: 2000000B
 spring:
   application:
-    name: boosting_platform_java
+    name: V-boost
   servlet:
     multipart:
       max-file-size: 1GB
@@ -28,7 +28,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
   mail:
     host: smtp.gmail.com
     port: 587
