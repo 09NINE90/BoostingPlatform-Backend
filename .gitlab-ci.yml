@@ -42,14 +42,18 @@ docker-build:
   before_script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  needs:
+    - job: build-app
+      artifacts: true
   script:
+    - mkdir -p build/libs
+    - cp build/libs/*.jar build/libs/application.jar || cp target/*.jar build/libs/application.jar
     - docker build --pull
       --build-arg JAVA_VERSION=21
       -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
   rules:
     - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"
-  needs: ["run-tests"]
 
 deploy-develop:
   stage: deploy
