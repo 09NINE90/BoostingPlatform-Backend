@@ -7,7 +7,7 @@ stages:
   - deploy
 
 variables:
-  DOCKER_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  DOCKER_IMAGE: $CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.caching=true"
   DOCKER_TLS_CERTDIR: "/certs"
 
@@ -67,6 +67,9 @@ deploy-develop:
       -e USERNAME_DB='$DEV_DB_USER' \
       -e PASSWORD_DB='$DEV_DB_PASSWORD' \
       -e JWT_SECRET_KEY='$JWT_SECRET' \
+      -e FRONTEND_HOST='$FRONT_HOST' \
+      -e PASSWORD_MAIL='$PASSWORD_MAIL' \
+      -e USERNAME_MAIL='$USERNAME_MAIL' \
       -e URL_DB='jdbc:postgresql://$DEV_DB_HOST:5432/booster_platform' \
       -e JAVA_OPTS='-Xmx512m -Dspring.profiles.active=dev' \
       $DOCKER_IMAGE"
@@ -90,6 +93,9 @@ deploy-prod:
       -e USERNAME_DB='$PROD_DB_USER' \
       -e PASSWORD_DB='$PROD_DB_PASSWORD' \
       -e JWT_SECRET_KEY='$PROD_JWT_SECRET' \
+      -e FRONTEND_HOST='$FRONT_HOST' \
+      -e PASSWORD_MAIL='$PASSWORD_MAIL' \
+      -e USERNAME_MAIL='$USERNAME_MAIL' \
       -e URL_DB='jdbc:postgresql://$PROD_DB_HOST:5432/prod_db' \
       -e JAVA_OPTS='-Xmx1024m -Dspring.profiles.active=prod' \
       $DOCKER_IMAGE"
