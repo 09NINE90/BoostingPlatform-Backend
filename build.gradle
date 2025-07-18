@@ -13,6 +13,14 @@ java {
     }
 }
 
+jar {
+    enabled = false
+}
+
+bootJar {
+    archiveFileName = "application.jar"
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
