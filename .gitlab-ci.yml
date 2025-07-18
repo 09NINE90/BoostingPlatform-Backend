@@ -46,8 +46,8 @@ docker-build:
     - job: build-app
       artifacts: true
   script:
-    - mkdir -p build/libs
-    - cp build/libs/*.jar build/libs/application.jar || cp target/*.jar build/libs/application.jar
+    - MAIN_JAR=$(ls build/libs/*.jar | grep -v plain | head -1)
+    - cp "$MAIN_JAR" application.jar
     - docker build --pull
       --build-arg JAVA_VERSION=21
       -t $DOCKER_IMAGE .
