@@ -48,7 +48,7 @@ docker-build:
       -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"
   needs: ["run-tests"]
 
 deploy-develop:
@@ -94,6 +94,6 @@ deploy-prod:
       -e JAVA_OPTS='-Xmx1024m -Dspring.profiles.active=prod' \
       $DOCKER_IMAGE"
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
       when: manual
   needs: ["docker-build"]
