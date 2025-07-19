@@ -61,34 +61,20 @@ deploy-develop:
   before_script:
     - apk add --no-cache openssh-client sshpass docker-cli
   script:
-    - DEPLOY_CONTAINER_CMD=$(printf 'docker run -d --name vboost-back
-      -p 6969:6969
-      -e USERNAME_DB=%q
-      -e PASSWORD_DB=%q
-      -e JWT_SECRET_KEY=%q
-      -e FRONTEND_HOST=%q
-      -e PASSWORD_MAIL=%q
-      -e USERNAME_MAIL=%q
-      -e URL_DB=%q
-      -e JAVA_OPTS=%q
-      %q'
-      "$DEV_DB_USER"
-      "$DEV_DB_PASSWORD"
-      "$JWT_SECRET"
-      "$FRONTEND_HOST"
-      "$PASSWORD_MAIL"
-      "$USERNAME_MAIL"
-      "jdbc:postgresql://$DEV_DB_HOST:$DEV_DB_PORT/$DEV_DB_NAME"
-      "-Xmx512m -Dspring.profiles.active=dev"
-      "$DOCKER_IMAGE"
-      )
-    - echo $DEPLOY_CONTAINER_CMD
     - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
       docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
       docker pull $DOCKER_IMAGE &&
-      docker stop vboost-back || true;
-      docker rm vboost-back || true;
-      $DEPLOY_CONTAINER_CMD
+      docker stop vboost-back-dev || true;
+      docker rm vboost-back-dev || true;
+      echo \"USERNAME_DB=$DEV_DB_USER\" > .env &&
+      echo \"PASSWORD_DB=$DEV_DB_PASSWORD\" >> .env &&
+      echo \"JWT_SECRET_KEY=$DEV_JWT_SECRET\" >> .env &&
+      echo \"FRONTEND_HOST=$DEV_FRONTEND_HOST\" >> .env &&
+      echo \"PASSWORD_MAIL=$DEV_PASSWORD_MAIL\" >> .env &&
+      echo \"USERNAME_MAIL=$DEV_USERNAME_MAIL\" >> .env &&
+      echo \"URL_DB=jdbc:postgresql://$DEV_DB_HOST:$DEV_DB_PORT/$DEV_DB_NAME\" >> .env &&
+      echo \"JAVA_OPTS=-Xmx512m -Dspring.profiles.active=dev\" >> .env &&
+      docker run -d --name vboost-back-dev -p 6969:6969 --env-file .env $DOCKER_IMAGE
       "
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -100,34 +86,21 @@ deploy-prod:
   before_script:
     - apk add --no-cache openssh-client sshpass docker-cli
   script:
-    - DEPLOY_CONTAINER_CMD=$(printf 'docker run -d --name vboost-back
-      -p 6969:6969
-      -e USERNAME_DB=%q
-      -e PASSWORD_DB=%q
-      -e JWT_SECRET_KEY=%q
-      -e FRONTEND_HOST=%q
-      -e PASSWORD_MAIL=%q
-      -e USERNAME_MAIL=%q
-      -e URL_DB=%q
-      -e JAVA_OPTS=%q
-      %q'
-      "$PROD_DB_USER"
-      "$PROD_DB_PASSWORD"
-      "$PROD_JWT_SECRET"
-      "$PROD_FRONTEND_HOST"
-      "$PROD_PASSWORD_MAIL"
-      "$PROD_USERNAME_MAIL"
-      "jdbc:postgresql://$DEV_DB_HOST:$DEV_DB_PORT/$DEV_DB_NAME"
-      "-Xmx512m -Dspring.profiles.active=dev"
-      "$DOCKER_IMAGE"
-      )
-    - echo $DEPLOY_CONTAINER_CMD
     - sshpass -p "$PROD_SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $PROD_SSH_USER@$PROD_SSH_HOST "
       docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
       docker pull $DOCKER_IMAGE &&
       docker stop vboosting-backend-prod || true;
       docker rm vboosting-backend-prod || true;
-      $DEPLOY_CONTAINER_CMD
+      echo \"USERNAME_DB=$PROD_DB_USER\" > .env &&
+      echo \"PASSWORD_DB=$PROD_DB_PASSWORD\" >> .env &&
+      echo \"JWT_SECRET_KEY=$PROD_JWT_SECRET\" >> .env &&
+      echo \"FRONTEND_HOST=$PROD_FRONTEND_HOST\" >> .env &&
+      echo \"PASSWORD_MAIL=$PROD_PASSWORD_MAIL\" >> .env &&
+      echo \"USERNAME_MAIL=$PROD_USERNAME_MAIL\" >> .env &&
+      echo \"URL_DB=jdbc:postgresql://$PROD_DB_HOST:$PROD_DB_PORT/$PROD_DB_NAME\" >> .env &&
+      echo \"JAVA_OPTS=-Xmx512m -Dspring.profiles.active=prod\" >> .env &&
+      docker run -d --name vboost-back-prod -p 6969:6969 --env-file .env $DOCKER_IMAGE
+      && rm .env
       "
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
