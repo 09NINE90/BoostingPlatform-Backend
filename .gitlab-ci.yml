@@ -61,33 +61,21 @@ deploy-develop:
   before_script:
     - apk add --no-cache openssh-client sshpass docker-cli
   script:
-    - DEPLOY_CMD="docker run -d --name vboost-back \
-      -p 6969:6969 \
-      -e USERNAME_DB='$DEV_DB_USER' \
-      -e PASSWORD_DB='$DEV_DB_PASSWORD' \
-      -e JWT_SECRET_KEY='$JWT_SECRET' \
-      -e FRONTEND_HOST='$FRONT_HOST' \
-      -e PASSWORD_MAIL='$PASSWORD_MAIL' \
-      -e USERNAME_MAIL='$USERNAME_MAIL' \
-      -e URL_DB='jdbc:postgresql://$DEV_DB_HOST:5432/booster_platform' \
-      -e JAVA_OPTS='-Xmx512m -Dspring.profiles.active=dev' \
-      $DOCKER_IMAGE"
-    - echo "$DEPLOY_CMD"
     - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
       docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
       docker pull $DOCKER_IMAGE &&
       docker stop vboost-back || true;
       docker rm vboost-back || true;
-      docker run -d --name vboost-back \
-      -p 6969:6969 \
-      -e USERNAME_DB='$DEV_DB_USER' \
-      -e PASSWORD_DB='$DEV_DB_PASSWORD' \
-      -e JWT_SECRET_KEY='$JWT_SECRET' \
-      -e FRONTEND_HOST='$FRONT_HOST' \
-      -e PASSWORD_MAIL='$PASSWORD_MAIL' \
-      -e USERNAME_MAIL='$USERNAME_MAIL' \
-      -e URL_DB='jdbc:postgresql://$DEV_DB_HOST:5432/booster_platform' \
-      -e JAVA_OPTS='-Xmx512m -Dspring.profiles.active=dev' \
+      docker run -d --name vboost-back 
+      -p 6969:6969 
+      -e USERNAME_DB='$DEV_DB_USER' 
+      -e PASSWORD_DB='$DEV_DB_PASSWORD' 
+      -e JWT_SECRET_KEY='$JWT_SECRET' 
+      -e FRONTEND_HOST='$FRONTEND_HOST' 
+      -e PASSWORD_MAIL='$PASSWORD_MAIL' 
+      -e USERNAME_MAIL='$USERNAME_MAIL' 
+      -e URL_DB='jdbc:postgresql://$DEV_DB_HOST:$DEV_DB_PORT/$DEV_DB_NAME' 
+      -e JAVA_OPTS='-Xmx512m -Dspring.profiles.active=dev' 
       $DOCKER_IMAGE"
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -102,18 +90,18 @@ deploy-prod:
     - sshpass -p "$PROD_SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $PROD_SSH_USER@$PROD_SSH_HOST "
       docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
       docker pull $DOCKER_IMAGE &&
-      docker stop spring-prod || true;
-      docker rm spring-prod || true;
-      docker run -d --name spring-prod \
-      -p 6969:6969 \
-      -e USERNAME_DB='$PROD_DB_USER' \
-      -e PASSWORD_DB='$PROD_DB_PASSWORD' \
-      -e JWT_SECRET_KEY='$PROD_JWT_SECRET' \
-      -e FRONTEND_HOST='$FRONT_HOST' \
-      -e PASSWORD_MAIL='$PASSWORD_MAIL' \
-      -e USERNAME_MAIL='$USERNAME_MAIL' \
-      -e URL_DB='jdbc:postgresql://$PROD_DB_HOST:5432/prod_db' \
-      -e JAVA_OPTS='-Xmx1024m -Dspring.profiles.active=prod' \
+      docker stop vboosting-backend-prod || true;
+      docker rm vboosting-backend-prod || true;
+      docker run -d --name vboosting-backend-prod
+      -p 6969:6969 
+      -e USERNAME_DB='$PROD_DB_USER' 
+      -e PASSWORD_DB='$PROD_DB_PASSWORD' 
+      -e JWT_SECRET_KEY='$PROD_JWT_SECRET' 
+      -e FRONTEND_HOST='FRONTEND_HOST' 
+      -e PASSWORD_MAIL='$PASSWORD_MAIL' 
+      -e USERNAME_MAIL='$USERNAME_MAIL' 
+      -e URL_DB='jdbc:postgresql://$PROD_DB_HOST:$PROD_DB_PORT/$PROD_DB_NAME' 
+      -e JAVA_OPTS='-Xmx1024m -Dspring.profiles.active=prod' 
       $DOCKER_IMAGE"
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
