@@ -69,7 +69,7 @@ deploy-develop:
       echo \"USERNAME_DB=$DEV_DB_USER\" > .env &&
       echo \"PASSWORD_DB=$DEV_DB_PASSWORD\" >> .env &&
       echo \"JWT_SECRET_KEY=$DEV_JWT_SECRET\" >> .env &&
-      echo \"FRONTEND_HOST=$DEV_FRONTEND_HOST\" >> .env &&
+      echo \"FRONTEND_ORIGIN=$DEV_FRONTEND_HOST\" >> .env &&
       echo \"PASSWORD_MAIL=$DEV_PASSWORD_MAIL\" >> .env &&
       echo \"USERNAME_MAIL=$DEV_USERNAME_MAIL\" >> .env &&
       echo \"URL_DB=jdbc:postgresql://$DEV_DB_HOST:$DEV_DB_PORT/$DEV_DB_NAME\" >> .env &&
@@ -94,7 +94,7 @@ deploy-prod:
       echo \"USERNAME_DB=$PROD_DB_USER\" > .env &&
       echo \"PASSWORD_DB=$PROD_DB_PASSWORD\" >> .env &&
       echo \"JWT_SECRET_KEY=$PROD_JWT_SECRET\" >> .env &&
-      echo \"FRONTEND_HOST=$PROD_FRONTEND_HOST\" >> .env &&
+      echo \"FRONTEND_ORIGIN=$PROD_FRONTEND_HOST\" >> .env &&
       echo \"PASSWORD_MAIL=$PROD_PASSWORD_MAIL\" >> .env &&
       echo \"USERNAME_MAIL=$PROD_USERNAME_MAIL\" >> .env &&
       echo \"URL_DB=jdbc:postgresql://$PROD_DB_HOST:$PROD_DB_PORT/$PROD_DB_NAME\" >> .env &&
