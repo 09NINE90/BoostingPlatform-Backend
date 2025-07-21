@@ -30,6 +30,9 @@ public class MailService implements IMailService {
     @Value("${spring.mail.username}")
     private String MAIL_FROM;
 
+    @Value("${FRONTEND_ORIGIN:http://localhost:5173}")
+    private String frontendOrigins;
+
     @Override
     public void sendMail(UserEntity user, MailType type, Properties properties) {
         switch (type) {
@@ -66,6 +69,7 @@ public class MailService implements IMailService {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
         model.put("confirmationToken", user.getConfirmationToken());
+        model.put("frontendOrigins", frontendOrigins);
         configuration.getTemplate("registration.html")
                 .process(model,stringWriter);
         return stringWriter.getBuffer().toString();

@@ -12,8 +12,9 @@ import org.springframework.context.annotation.Configuration;
 public class CorsConfig {
 
 
-    @Value("${FRONTEND_ORIGIN:http://localhost:3000}")
+    @Value("${FRONTEND_ORIGIN:http://localhost:5173}")
     private String frontendOrigins;
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
