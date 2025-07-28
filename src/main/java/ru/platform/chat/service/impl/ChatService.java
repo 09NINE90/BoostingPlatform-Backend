@@ -38,6 +38,7 @@ public class ChatService implements IChatService {
                 .build());
 
         return ChatMessageDto.builder()
+                .id(saved.getId())
                 .chatId(roomId.toString())
                 .text(saved.getText())
                 .sender(sender.getProfile().getNickname())
