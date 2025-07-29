@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.orders.enumz.OrderStatus;
 
 import java.time.OffsetDateTime;
@@ -32,8 +33,8 @@ public class OrderByBoosterRsDto {
     @Schema(description = "Название игры", example = "Legend of Eldoria")
     private String gameName;
 
-    @Schema(description = "Название платформы", example = "XBOX")
-    private String gamePlatform;
+    @Schema(description = "Название платформы")
+    private PlatformDto gamePlatform;
 
     @Schema(description = "Текущий статус заказа", example = "NEW", enumAsRef = true)
     private OrderStatus orderStatus;
