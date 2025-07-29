@@ -1,6 +1,7 @@
 package ru.platform.offers.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.offers.dao.*;
 import ru.platform.offers.dto.response.CartItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionItemRsDto;
@@ -73,7 +74,12 @@ public class OfferMapper implements IOfferMapper {
                 .id(offerCartEntity.getId())
                 .offerId(offerCartEntity.getOffer().getId())
                 .gameName(offerCartEntity.getGame().getTitle())
-                .gamePlatform(offerCartEntity.getGamePlatform())
+                .gamePlatform(PlatformDto.builder()
+                        .id(offerCartEntity.getGamePlatform().getId())
+                        .title(offerCartEntity.getGamePlatform().getTitle())
+                        .name(offerCartEntity.getGamePlatform().getName())
+                        .build()
+                )
                 .offerName(offerCartEntity.getOffer().getTitle())
                 .basePrice(offerCartEntity.getBasePrice())
                 .totalPrice(offerCartEntity.getTotalPrice())

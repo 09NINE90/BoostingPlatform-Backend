@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.games.dao.GameEntity;
+import ru.platform.games.dao.PlatformEntity;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.games.repository.GameRepository;
+import ru.platform.games.repository.PlatformRepository;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.offers.PaginationOffersUtil;
@@ -38,6 +41,7 @@ import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static ru.platform.exception.ErrorType.NOT_FOUND_ERROR;
+import static ru.platform.exception.ErrorType.NOT_VALID_REQUEST;
 
 @Slf4j
 @Service
@@ -47,6 +51,7 @@ public class OfferService implements IOfferService {
     private final OfferRepository offerRepository;
     private final OfferSpecification specification;
     private final OfferCartRepository offerCartRepository;
+    private final PlatformRepository platformRepository;
     private final GameRepository gameRepository;
     private final PaginationOffersUtil paginationOffersUtil;
     private final IAuthService authService;
@@ -111,13 +116,24 @@ public class OfferService implements IOfferService {
                 .secondGameId(offerEntity.getGame().getSecondId())
                 .secondId(offerEntity.getSecondId())
                 .gameName(offerEntity.getGame().getTitle())
-                .gamePlatforms(Arrays.stream(offerEntity.getGame().getPlatforms().split(",")).map(String::trim).toList())
+                .gamePlatforms(offerEntity.getGame().getPlatforms().stream()
+                        .map(this::toPlatformDto)
+                        .toList()
+                )
                 .title(offerEntity.getTitle())
                 .description(offerEntity.getDescription())
                 .imageUrl(offerEntity.getImageUrl())
                 .categories(offerEntity.getCategories())
                 .price(offerEntity.getPrice().doubleValue())
                 .sections(offerEntity.getSections().stream().map(offerMapper::toOfferSectionRsDto).toList())
+                .build();
+    }
+
+    private PlatformDto toPlatformDto(PlatformEntity entity) {
+        return PlatformDto.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .name(entity.getName())
                 .build();
     }
 
@@ -129,11 +145,18 @@ public class OfferService implements IOfferService {
         GameEntity game = gameRepository.findById(UUID.fromString(offer.getGameId()))
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
+        PlatformEntity platform = platformRepository.findByTitle(offer.getGamePlatform())
+                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+        if (!game.getPlatforms().contains(platform)) {
+            throw new PlatformException(NOT_VALID_REQUEST);
+        }
+
         OfferCartEntity offerCartEntity = OfferCartEntity.builder()
                 .offer(offerEntityOptional.orElse(null))
                 .creator(authService.getAuthUser())
                 .game(game)
-                .gamePlatform(offer.getGamePlatform())
+                .gamePlatform(platform)
                 .basePrice(offer.getBasePrice())
                 .totalPrice(offer.getTotalPrice())
                 .totalTime(offer.getTotalTime())
