@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.games.dao.GameEntity;
+import ru.platform.games.dao.PlatformEntity;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
@@ -52,8 +53,9 @@ public class OrderEntity {
     @JoinColumn(name = "game_id")
     private GameEntity game;
 
-    @Column(name = "game_platform")
-    private String gamePlatform;
+    @ManyToOne
+    @JoinColumn(name = "platform_id")
+    private PlatformEntity gamePlatform;
 
     @Column(name = "base_price", precision = 19, scale = 4)
     private BigDecimal basePrice;
