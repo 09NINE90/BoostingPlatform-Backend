@@ -5,7 +5,23 @@
   "description": "Фэнтезийная ролевая игра в открытом мире с захватывающим сюжетом.",
   "imageUrl": "https://i.ibb.co/xq87ZbJz/cfc10b491c50a272b45d7455b85aef047742ac6b.png",
   "rating": 10,
-  "platforms": "PS, PC, XBOX",
+  "platforms": [
+    {
+      "id": 1,
+      "title": "PS",
+      "name": "Play Station"
+    },
+    {
+      "id": 2,
+      "title": "PC",
+      "name": "PC"
+    },
+    {
+      "id": 3,
+      "title": "XBOX",
+      "name": "Xbox"
+    }
+  ],
   "miniImageUrl": "https://example.com/images/eldoria.jpg",
   "creator": {
     "id": "79c1d1cd-0be9-4f98-a6be-8974edad3cde",
