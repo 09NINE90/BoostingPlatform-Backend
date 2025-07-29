@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.enumz.GamePlatform;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,8 +22,8 @@ public class AddToCartRequestDto {
     @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
     private String gameId;
 
-    @Schema(description = "Название платформы", example = "XBOX")
-    private String gamePlatform;
+    @Schema(description = "Название платформы", example = "XBOX", enumAsRef = true)
+    private GamePlatform gamePlatform;
 
     @Schema(description = "Базовая стоимость предложения без опций", example = "120.0")
     private BigDecimal basePrice;

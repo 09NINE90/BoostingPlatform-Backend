@@ -33,9 +33,14 @@ public class GameEntity {
     @Schema(description = "Название игры")
     private String title;
 
-    @Column(name = "platforms")
+    @ManyToMany
+    @JoinTable(
+            name = "game_platforms",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "platform_id")
+    )
     @Schema(description = "Платформы для прохождения (PS, PC, Xbox)")
-    private String platforms;
+    private List<PlatformEntity> platforms;
 
     @Column(name = "image_url", columnDefinition="TEXT")
     @Schema(description = "Ссылка на изображение для игры")

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.dto.response.PlatformDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class OfferDetailsRsDto {
                     maxLength = 10
             )
     )
-    private List<String> gamePlatforms;
+    private List<PlatformDto> gamePlatforms;
 
     @Schema(description = "Название предложения", example = "Rank boosting")
     private String title;

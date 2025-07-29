@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.platform.chat.dao.ChatRoomEntity;
+import ru.platform.games.dao.PlatformEntity;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.offers.dao.OfferCartEntity;
 import ru.platform.offers.dao.OfferOptionCartEntity;
 import ru.platform.orders.dao.OrderEntity;
@@ -105,7 +107,7 @@ public class OrderMapper {
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGame().getTitle())
-                .gamePlatform(orderEntity.getGamePlatform())
+                .gamePlatform(toPlatformDto(orderEntity.getGamePlatform()))
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
@@ -134,7 +136,7 @@ public class OrderMapper {
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGame().getTitle())
-                .gamePlatform(orderEntity.getGamePlatform())
+                .gamePlatform(toPlatformDto(orderEntity.getGamePlatform()))
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .boosterSalary(orderEntity.getBoosterSalary().doubleValue())
@@ -167,6 +169,14 @@ public class OrderMapper {
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(orderEntity.getStatus())
                 .gameName(orderEntity.getGame().getTitle())
+                .build();
+    }
+
+    private PlatformDto toPlatformDto(PlatformEntity entity) {
+        return PlatformDto.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .name(entity.getName())
                 .build();
     }
 }
