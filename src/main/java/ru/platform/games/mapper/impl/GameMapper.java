@@ -5,6 +5,7 @@ import ru.platform.games.dao.CategoryEntity;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.games.dto.response.CategoryRsDto;
 import ru.platform.games.dto.response.GameBySecondIdRsDto;
+import ru.platform.games.dto.response.GameItemRsDto;
 import ru.platform.games.dto.response.GameMainPageRsDto;
 import ru.platform.games.mapper.IGameMapper;
 
@@ -19,7 +20,7 @@ public class GameMapper implements IGameMapper {
         List<GameMainPageRsDto> games = new ArrayList<>();
         allGames.forEach(e ->
             games.add(new GameMainPageRsDto(
-                    e.getId().toString(),
+                    e.getId(),
                     e.getSecondId(),
                     e.getTitle(),
                     e.getMiniImageUrl()))
@@ -30,7 +31,7 @@ public class GameMapper implements IGameMapper {
     @Override
     public GameBySecondIdRsDto toGameBySecondId(GameEntity gameEntity) {
         return GameBySecondIdRsDto.builder()
-                .id(gameEntity.getId().toString())
+                .id(gameEntity.getId())
                 .secondId(gameEntity.getSecondId())
                 .name(gameEntity.getTitle())
                 .categories(gameEntity.getCategories()
@@ -40,9 +41,17 @@ public class GameMapper implements IGameMapper {
                 .build();
     }
 
+    @Override
+    public GameItemRsDto toGameItemRsDto(GameEntity entity) {
+        return GameItemRsDto.builder()
+                .id(entity.getId())
+                .name(entity.getTitle())
+                .build();
+    }
+
     private CategoryRsDto toCategoryRsDto(CategoryEntity categoryEntity) {
         return CategoryRsDto.builder()
-                .id(categoryEntity.getId().toString())
+                .id(categoryEntity.getId())
                 .name(categoryEntity.getName())
                 .build();
     }

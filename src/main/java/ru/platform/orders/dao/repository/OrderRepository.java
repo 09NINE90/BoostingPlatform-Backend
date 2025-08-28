@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import ru.platform.games.enumz.GamePlatform;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.user.dao.UserEntity;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -23,14 +25,14 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     List<OrderEntity> findAllByStatusAndByCreator(@Param("status") OrderStatus status,
                                                   @Param("creator") UserEntity creator);
 
-    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.game.title IN :gameNames")
-    List<String> findAllDistinctGamePlatforms(@Param("gameNames") Set<String> gameNames);
+    @Query("SELECT DISTINCT o.gamePlatform.title FROM OrderEntity o WHERE o.game.title IN :gameNames")
+    List<GamePlatform> findAllDistinctGamePlatforms(@Param("gameNames") Set<String> gameNames);
 
     @Query("SELECT MIN(o.totalPrice) FROM OrderEntity o WHERE o.game.title IN :gameNames")
-    Double findMinPrice(@Param("gameNames") Set<String> gameNames);
+    BigDecimal findMinPrice(@Param("gameNames") Set<String> gameNames);
 
     @Query("SELECT MAX(o.totalPrice) FROM OrderEntity o WHERE o.game.title IN :gameNames")
-    Double findMaxPrice(@Param("gameNames") Set<String> gameNames);
+    BigDecimal findMaxPrice(@Param("gameNames") Set<String> gameNames);
 
     @Query("select COUNT(*) from OrderEntity o WHERE o.creator = :creator")
     long findCountOrdersByCreator(@Param("creator") UserEntity creator);
@@ -39,19 +41,19 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
      * Запросы для бустера
      */
     @Query("SELECT DISTINCT o.status FROM OrderEntity o WHERE o.booster = :booster")
-    List<String> findAllDistinctStatusesByBooster(@Param("booster") UserEntity booster);
+    List<OrderStatus> findAllDistinctStatusesByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT DISTINCT o.gamePlatform FROM OrderEntity o WHERE o.booster = :booster")
-    List<String> findAllDistinctGamePlatformsByBooster(@Param("booster") UserEntity booster);
+    @Query("SELECT DISTINCT o.gamePlatform.title FROM OrderEntity o WHERE o.booster = :booster")
+    List<GamePlatform> findAllDistinctGamePlatformsByBooster(@Param("booster") UserEntity booster);
 
     @Query("SELECT DISTINCT o.game.title FROM OrderEntity o WHERE o.booster = :booster")
     List<String> findAllDistinctGameNamesByBooster(@Param("booster") UserEntity booster);
 
     @Query("SELECT MIN(o.boosterSalary) FROM OrderEntity o WHERE o.booster = :booster")
-    Double findMinPriceByBooster(@Param("booster") UserEntity booster);
+    BigDecimal findMinPriceByBooster(@Param("booster") UserEntity booster);
 
     @Query("SELECT MAX(o.boosterSalary) FROM OrderEntity o WHERE o.booster = :booster")
-    Double findMaxPriceByBooster(@Param("booster") UserEntity booster);
+    BigDecimal findMaxPriceByBooster(@Param("booster") UserEntity booster);
 
     @Query("select COUNT(*) from OrderEntity o WHERE o.booster = :booster AND o.status = 'IN_PROGRESS'")
     long findCountOrdersInWorkByBooster(@Param("booster") UserEntity booster);

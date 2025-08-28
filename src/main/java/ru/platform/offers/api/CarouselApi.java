@@ -23,7 +23,7 @@ public class CarouselApi {
 
     private final ICarouselService carouselService;
 
-    @GetMapping("/getItems")
+    @GetMapping
     @Operation(summary = "Получение объектов карусели")
     public ResponseEntity<List<CarouselRsDto>> getItems() {
         List<CarouselRsDto> result = carouselService.getItems();

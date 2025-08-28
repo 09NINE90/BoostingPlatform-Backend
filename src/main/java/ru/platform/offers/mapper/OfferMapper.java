@@ -1,11 +1,12 @@
 package ru.platform.offers.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.offers.dao.*;
-import ru.platform.offers.dto.response.OfferCartRsDto;
+import ru.platform.offers.dto.response.CartItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionItemRsDto;
 import ru.platform.offers.dto.response.OfferSectionRsDto;
-import ru.platform.offers.dto.response.OffersByGameIdRsDto;
+import ru.platform.offers.dto.response.GameOffersRsDto;
 import ru.platform.utils.DtoUtil;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.List;
 public class OfferMapper implements IOfferMapper {
 
     @Override
-    public OffersByGameIdRsDto toOfferByGameIdRsDto(OfferEntity offer) {
-        return OffersByGameIdRsDto.builder()
-                .id(offer.getId().toString())
+    public GameOffersRsDto toOfferByGameIdRsDto(OfferEntity offer) {
+        return GameOffersRsDto.builder()
+                .id(offer.getId())
                 .title(offer.getTitle())
                 .description(offer.getDescription())
                 .imageUrl(offer.getImageUrl())
@@ -68,12 +69,17 @@ public class OfferMapper implements IOfferMapper {
     }
 
     @Override
-    public OfferCartRsDto toOfferCartRsDto(OfferCartEntity offerCartEntity) {
-        return OfferCartRsDto.builder()
+    public CartItemRsDto toOfferCartRsDto(OfferCartEntity offerCartEntity) {
+        return CartItemRsDto.builder()
                 .id(offerCartEntity.getId())
                 .offerId(offerCartEntity.getOffer().getId())
                 .gameName(offerCartEntity.getGame().getTitle())
-                .gamePlatform(offerCartEntity.getGamePlatform())
+                .gamePlatform(PlatformDto.builder()
+                        .id(offerCartEntity.getGamePlatform().getId())
+                        .title(offerCartEntity.getGamePlatform().getTitle())
+                        .name(offerCartEntity.getGamePlatform().getName())
+                        .build()
+                )
                 .offerName(offerCartEntity.getOffer().getTitle())
                 .basePrice(offerCartEntity.getBasePrice())
                 .totalPrice(offerCartEntity.getTotalPrice())
@@ -82,13 +88,13 @@ public class OfferMapper implements IOfferMapper {
                 .build();
     }
 
-    private List<OfferCartRsDto.SelectedOptionToCartDto> toSelectionOptionsCartList(List<OfferOptionCartEntity> optionCarts) {
+    private List<CartItemRsDto.SelectedOptionToCartDto> toSelectionOptionsCartList(List<OfferOptionCartEntity> optionCarts) {
         if (optionCarts == null || optionCarts.isEmpty()) return null;
         return optionCarts.stream().map(this::toSelectionOptionsCart).toList();
     }
 
-    private OfferCartRsDto.SelectedOptionToCartDto toSelectionOptionsCart(OfferOptionCartEntity offerOptionCartEntity) {
-        return OfferCartRsDto.SelectedOptionToCartDto.builder()
+    private CartItemRsDto.SelectedOptionToCartDto toSelectionOptionsCart(OfferOptionCartEntity offerOptionCartEntity) {
+        return CartItemRsDto.SelectedOptionToCartDto.builder()
                 .label(offerOptionCartEntity.getLabel())
                 .value(offerOptionCartEntity.getValue())
                 .optionTitle(offerOptionCartEntity.getOptionTitle())

@@ -5,20 +5,32 @@ import java.math.BigDecimal;
 public class LocalConstants {
 
     public static class Api {
-        public static final String OFFER_TAG_NAME = "Предложения";
-        public static final String OFFER_TAG_DESCRIPTION = "Получение предложений для клиентов";
-        public static final String ORDER_TAG_NAME = "Заказы";
-        public static final String ORDER_TAG_DESCRIPTION = "Работа с заказами";
-        public static final String AUTH_TAG_NAME = "Пользователь";
-        public static final String AUTH_TAG_DESCRIPTION = "Аутентификация, авторизация, подтверждение регистрации и восстеновление пароля";
-        public static final String USER_TAG_NAME = "Пользователь";
-        public static final String USER_TAG_DESCRIPTION = "Получение и обновление данных пароля";
-        public static final String GAME_TAG_NAME = "Игры";
-        public static final String GAME_TAG_DESCRIPTION = "Получение игр для клментов";
+        public static final String OFFER_TAG_NAME = "Публичные предложения";
+        public static final String OFFER_TAG_DESCRIPTION = "Просмотр и фильтрация публичных предложений";
+        public static final String OFFER_CART_TAG_NAME = "Корзина предложений";
+        public static final String OFFER_CART_TAG_DESCRIPTION = "Управление корзиной: добавление, просмотр и удаление предложений";
+        public static final String CUSTOMER_ORDER_TAG_NAME = "Заказы. Сторона заказчика";
+        public static final String CUSTOMER_ORDER_TAG_DESCRIPTION = "API для управления заказами (создание, просмотр, выполнение)";
+        public static final String BOOSTER_ORDER_TAG_NAME = "Заказы. Сторона бустера";
+        public static final String BOOSTER_ORDER_TAG_DESCRIPTION = "API для управления заказами (создание, просмотр, выполнение)";
+        public static final String AUTH_TAG_NAME = "Аутентификация и авторизация";
+        public static final String AUTH_TAG_DESCRIPTION = "Управление входом, регистрацией, восстановлением пароля и токенами доступа";
+        public static final String USER_TAG_NAME = "Профили пользователей";
+        public static final String USER_TAG_DESCRIPTION = "Управление данными профилей (заказчиков и бустеров)";
+        public static final String BOOSTER_TAG_NAME = "Профили бустера";
+        public static final String BOOSTER_TAG_DESCRIPTION = "Управление данными профилей бустеров)";
+        public static final String CUSTOMER_TAG_NAME = "Профиль заказчика";
+        public static final String CUSTOMER_TAG_DESCRIPTION = "Управление данными профилей заказчиков";
+        public static final String GAME_TAG_NAME = "Каталог игр";
+        public static final String GAME_TAG_DESCRIPTION = "Получение информации об играх и их категориях";
         public static final String CATEGORY_TAG_NAME = "Категории игр";
         public static final String CATEGORY_TAG_DESCRIPTION = "Получение категорий игр";
         public static final String CAROUSEL_TAG_NAME = "Карусель на главной странице";
         public static final String CAROUSEL_TAG_DESCRIPTION = "Получение объектов карусели";
+        public static final String FINANCE_TAG_NAME = "Финансы бустеров";
+        public static final String FINANCE_TAG_DESCRIPTION = "Управление выплатами, чаевыми и историей баланса бустеров";
+        public static final String CHAT_TAG_NAME = "Чаты";
+        public static final String CHAT_TAG_DESCRIPTION = "Операции по работе с чатами";
     }
 
     public static class DateTimeConstants {

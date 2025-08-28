@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.games.enumz.GamePlatform;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
@@ -17,6 +18,7 @@ import ru.platform.orders.dao.specification.OrdersByBoosterSpecification;
 import ru.platform.orders.dto.request.DashboardRqDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.orders.dto.response.*;
+import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.mapper.OrderMapper;
 import ru.platform.orders.service.IOrderBoosterService;
 import ru.platform.orders.utils.PaginationOrdersUtil;
@@ -57,19 +59,20 @@ public class OrderBoosterService implements IOrderBoosterService {
     public DashboardFiltersRsDto getFiltersDashboard() {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
+        double ratio = boosterProfile.getPercentageOfOrder();
 
         Set<String> gameNames = getGameTagsByBooster(boosterProfile);
 
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms(gameNames);
-        Double minPrice = orderRepository.findMinPrice(gameNames);
-        Double maxPrice = orderRepository.findMaxPrice(gameNames);
+        List<GamePlatform> gamePlatforms = orderRepository.findAllDistinctGamePlatforms(gameNames);
+        BigDecimal minPrice = orderRepository.findMinPrice(gameNames);
+        BigDecimal maxPrice = orderRepository.findMaxPrice(gameNames);
 
         return DashboardFiltersRsDto.builder()
                 .gameNames(gameNames)
                 .gamePlatforms(gamePlatforms)
                 .price(DashboardFiltersRsDto.PriceFilterDto.builder()
-                        .priceMin(minPrice)
-                        .priceMax(maxPrice)
+                        .priceMin(minPrice.multiply(BigDecimal.valueOf(ratio)))
+                        .priceMax(maxPrice.multiply(BigDecimal.valueOf(ratio)))
                         .build())
                 .build();
     }
@@ -78,11 +81,12 @@ public class OrderBoosterService implements IOrderBoosterService {
     @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_FILTERS_BY_BOOSTER)
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
-        List<String> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
+
+        List<OrderStatus> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
+        List<GamePlatform> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
         List<String> gameNames = orderRepository.findAllDistinctGameNamesByBooster(user);
-        Double minPrice = orderRepository.findMinPriceByBooster(user);
-        Double maxPrice = orderRepository.findMaxPriceByBooster(user);
+        BigDecimal minPrice = orderRepository.findMinPriceByBooster(user);
+        BigDecimal maxPrice = orderRepository.findMaxPriceByBooster(user);
 
         return OrderFiltersRsDto.builder()
                 .gameNames(gameNames)
@@ -150,6 +154,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_BY_BOOSTER_DATA)
     public List<OrderByBoosterRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
         request.setBooster(user);
@@ -159,6 +164,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_ACCEPT)
     public void acceptOrder(UUID orderId) {
         UserEntity user = authService.getAuthUser();
         double ratio = user.getBoosterProfile().getPercentageOfOrder();
@@ -233,7 +239,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     private Function<OrdersByBoosterRqDto, List<OrderEntity>> getServicePageFuncWithSort() {
         try {
             return request -> orderRepository
-                    .findAll(ordersByBoosterSpecification.getFilter(request), SortOrderUtils.getSortBy(request.getSort()));
+                    .findAll(ordersByBoosterSpecification.getFilter(request), SortOrderUtils.getSortByWithDefaultStartTimeExecution(request.getSort()));
         } catch (Exception e) {
             log.error(LOG_PREFIX, NOT_FOUND_ERROR.getMessage());
             throw new PlatformException(NOT_FOUND_ERROR);
@@ -245,6 +251,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_COMPLETE)
     public void completeExecutionOrder(UUID orderId) {
         log.debug(LOG_PREFIX, "Поиск заказа для завершения");
         OrderEntity order = orderRepository.findById(orderId)
@@ -270,6 +277,7 @@ public class OrderBoosterService implements IOrderBoosterService {
      * Получение истории выполненных заказов бустером
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_ORDER_HISTORY)
     public List<BoosterOrderHistoryRsDto> getBoosterOrdersHistory() {
         UserEntity user = authService.getAuthUser();
 

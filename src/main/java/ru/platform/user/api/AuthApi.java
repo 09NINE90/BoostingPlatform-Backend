@@ -1,17 +1,13 @@
 package ru.platform.user.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.platform.user.dto.request.ConfirmationEmailRqDto;
-import ru.platform.user.dto.request.EmailConfirmationRequest;
-import ru.platform.user.dto.request.SignupUserRqDto;
-import ru.platform.user.dto.request.LoginUserRqDto;
+import ru.platform.user.dto.request.*;
 import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
@@ -27,63 +23,62 @@ public class AuthApi {
     private final IUserService userService;
     private final IAuthService authService;
 
-    @PostMapping("/signUp")
-    @Operation(summary = "Запрос на регистрацию пользователя")
+    @PostMapping("/register")
+    @Operation(summary = "Регистрация нового пользователя")
     public ResponseEntity<ConfirmationRsDto> signUp(@RequestBody SignupUserRqDto user) {
         ConfirmationRsDto result = userService.registrationUser(user);
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/confirmSignUp")
-    @Operation(summary = "Подтверждение регистрации пользователя")
+    @PostMapping("/verify-email")
+    @Operation(summary = "Подтверждение email при регистрации")
     public ResponseEntity<?> confirmSignUp(@RequestBody EmailConfirmationRequest confirmationToken, HttpServletResponse response) {
         return ResponseEntity.ok(userService.checkConfirmationSignUp(confirmationToken.getToken(), response));
     }
 
-    @PostMapping("/resendConfirmationEmail")
-    @Operation(summary = "Повторная отправка токена пользователя для подтверждения регистрации")
+    @PostMapping("/resend-verification")
+    @Operation(summary = "Повторная отправка письма подтверждения")
     public ResponseEntity<ConfirmationRsDto> resendConfirmationEmail(@RequestBody ConfirmationEmailRqDto confirmation) {
         ConfirmationRsDto result = userService.resendConfirmationEmail(confirmation);
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/signIn")
-    @Operation(summary = "Авторизация пользователя")
+    @PostMapping("/login")
+    @Operation(summary = "Вход в систему")
     public ResponseEntity<?> signIn(@RequestBody LoginUserRqDto user, HttpServletResponse response) {
         return ResponseEntity.ok(authService.trySignIn(user, response));
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "Запрос на выход пользователя из системы")
+    @Operation(summary = "Выход из системы")
     public ResponseEntity<Void> logout( HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/refresh")
-    @Operation(summary = "Обновление access токена по refresh токену из куки")
+    @PostMapping("/refresh-token")
+    @Operation(summary = "Обновление токена доступа")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(authService.refreshAccessToken(request, response));
     }
 
-    @PostMapping("/forgotPassword")
-    @Operation(summary = "Запрос на восстановления пароля пользователя")
-    public ResponseEntity<ConfirmationRsDto> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
-        ConfirmationRsDto result = userService.forgotPassword(confirmation);
-        return ResponseEntity.ok(result);
+    @PostMapping("/password-reset/request")
+    @Operation(summary = "Запрос восстановления пароля")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ConfirmationEmailRqDto confirmation) {
+        userService.forgotPassword(confirmation);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/confirmPasswordRecovery/{confirmationToken}")
-    @Schema(description = "Подтверждение смены пароля")
-    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@PathVariable String confirmationToken) {
-        ConfirmationRsDto result = userService.confirmPasswordRecovery(confirmationToken);
-        return ResponseEntity.ok(result);
+    @PostMapping("/password-reset/validate")
+    @Operation(summary = "Подтверждение восстановления пароля")
+    public ResponseEntity<ConfirmationRsDto> confirmPasswordRecovery(@RequestBody ConfirmPasswordRecoveryRqDto request) {
+        userService.confirmPasswordRecovery(request);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/changeUserPassword")
-    @Operation(summary = "Запрос на смену пароля")
+    @PostMapping("/password-change")
+    @Operation(summary = "Смена пароля")
     public ResponseEntity<?> changeUserPassword(@RequestBody ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         return ResponseEntity.ok(userService.changeUserPassword(confirmation, response));
     }
-
 }

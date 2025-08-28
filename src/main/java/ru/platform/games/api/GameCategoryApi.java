@@ -23,7 +23,7 @@ public class GameCategoryApi {
 
     private final ICategoryService service;
 
-    @GetMapping("/getCategoriesByGameId/{gameId}")
+    @GetMapping("/{gameId}/categories")
     @Operation(summary = "Получение категорий игры по идентификатору игры")
     public ResponseEntity<List<CategoryRsDto>> getCategoriesByGameId(@PathVariable String gameId) {
         return ResponseEntity.ok(service.getCategoriesByGameId(gameId));

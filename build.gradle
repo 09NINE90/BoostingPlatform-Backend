@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.1'
+    id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -25,7 +25,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    // Исключаем встроенный Tomcat для WebSocket
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
@@ -57,9 +56,9 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     // JWT
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     // Другие утилиты
     implementation 'org.modelmapper:modelmapper:3.2.0'
@@ -83,7 +82,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation 'org.slf4j:slf4j-simple:1.6.1'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

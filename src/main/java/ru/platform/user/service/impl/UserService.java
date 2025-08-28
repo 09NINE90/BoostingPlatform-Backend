@@ -13,6 +13,7 @@ import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.IMailService;
 import ru.platform.user.dao.BoosterProfileEntity;
 import ru.platform.user.dao.CustomerProfileEntity;
+import ru.platform.user.dto.request.ConfirmPasswordRecoveryRqDto;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
 import ru.platform.user.dto.response.BoosterProfileRsDto;
@@ -29,11 +30,13 @@ import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IUserService;
 import ru.platform.user.service.IValidationUserService;
+import ru.platform.utils.ConfirmationCodeUtil;
 import ru.platform.utils.GenerateSecondIdUtil;
 import ru.platform.utils.JwtUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -73,7 +76,7 @@ public class UserService implements IUserService {
      * Обработка запроса на регистрацию пользователя
      */
     @Override
-    @PlatformMonitoring(name = MonitoringMethodType.CREATION_USER)
+    @PlatformMonitoring(name = MonitoringMethodType.REGISTRATION_USER)
     public ConfirmationRsDto registrationUser(SignupUserRqDto user) {
         validationUserService.validateSignUpUser(user);
         isUserExists(user);
@@ -135,6 +138,7 @@ public class UserService implements IUserService {
      * Проверка подтверждения регистрации
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.VERIFY_EMAIL)
     public Map<String, String> checkConfirmationSignUp(String confirmationToken, HttpServletResponse response) {
         String username = jwtUtil.extractUsername(confirmationToken);
         UserEntity user = userRepository.findByUsername(username)
@@ -153,34 +157,32 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ConfirmationRsDto forgotPassword(ConfirmationEmailRqDto confirmation) {
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_RESET_REQUEST)
+    public void forgotPassword(ConfirmationEmailRqDto confirmation) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
-        String confirmationToken = jwtUtil.generateConfirmationToken(user.getUsername(), EMPTY_STRING);
+        String confirmationCode = ConfirmationCodeUtil.generateConfirmationCode(6);
 
-        user.setConfirmationToken(confirmationToken);
+        user.setConfirmationCode(confirmationCode);
         userRepository.save(user);
         mailService.sendMail(user, PASSWORD_RECOVERY);
-
-        return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE);
     }
 
     @Override
-    public ConfirmationRsDto confirmPasswordRecovery(String confirmationToken) {
-        String username = jwtUtil.extractUsername(confirmationToken);
-        UserEntity user = userRepository.findByUsername(username)
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_RESET_VALIDATE)
+    public void confirmPasswordRecovery(ConfirmPasswordRecoveryRqDto request) {
+        UserEntity user = userRepository.findByUsername(request.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
-        if (user.getConfirmationToken().equals(confirmationToken)) {
-            return new ConfirmationRsDto(SUCCESS_PASSWORD_RECOVERY, username);
-        } else {
+        if (!user.getConfirmationCode().equals(request.getCode())) {
             log.error(LOG_PREFIX, EMAIL_VERIFIED_ERROR.getMessage());
             throw new PlatformException(EMAIL_VERIFIED_ERROR);
         }
     }
 
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.PASSWORD_CHANGE)
     public Map<String, String> changeUserPassword(ConfirmationEmailRqDto confirmation, HttpServletResponse response) {
         UserEntity user = userRepository.findByUsername(confirmation.getEmail())
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
@@ -213,102 +215,11 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Получение информации о заказчике
-     */
-    @Override
-    public CustomerProfileRsDto getCustomerProfileData() {
-        UserEntity userEntity = authService.getAuthUser();
-        UserProfileEntity profileEntity = userEntity.getProfile();
-        CustomerProfileEntity customerProfile = userEntity.getCustomerProfile();
-
-        return CustomerProfileRsDto.builder()
-                .email(userEntity.getUsername())
-                .nickname(profileEntity.getNickname())
-                .imageUrl(profileEntity.getImageUrl())
-                .secondId(profileEntity.getSecondId())
-                .description(profileEntity.getDescription())
-                .discountPercentage(customerProfile.getDiscountPercentage().multiply(BigDecimal.valueOf(100)))
-                .cashbackBalance(customerProfile.getCashbackBalance())
-                .status(customerProfile.getStatus())
-                .nextStatus(getNextStatus(customerProfile.getStatus()))
-                .totalOrders(customerProfile.getTotalOrders())
-                .progressAccountStatus(BigDecimal.valueOf(customerProfile.getTotalOrders())
-                        .multiply(BigDecimal.valueOf(100))
-                        .divide(BigDecimal.valueOf(COUNT_ORDERS_FOR_IMMORTAL_STATUS), 2, RoundingMode.HALF_UP))
-                .build();
-    }
-
-    /**
-     * Получение следующего статуса заказчика
-     */
-    private CustomerStatus getNextStatus(CustomerStatus status) {
-        return switch (status) {
-            case EXPLORER -> VANGUARD;
-            case VANGUARD -> IMMORTAL;
-            case IMMORTAL -> null;
-        };
-    }
-
-    /**
-     * Получение информации о бустере
-     */
-    @Override
-    public BoosterProfileRsDto getBoosterProfileData() {
-        UserEntity userEntity = authService.getAuthUser();
-        UserProfileEntity profileEntity = userEntity.getProfile();
-        BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
-
-        return BoosterProfileRsDto.builder()
-                .email(userEntity.getUsername())
-                .nickname(profileEntity.getNickname())
-                .imageUrl(profileEntity.getImageUrl())
-                .secondId(profileEntity.getSecondId())
-                .description(profileEntity.getDescription())
-                .level(boosterProfile.getLevel())
-                .nextLevel(getNextLevel(boosterProfile.getLevel()))
-                .percentageOfOrder((double) Math.round(boosterProfile.getPercentageOfOrder() * 100))
-                .balance(boosterProfile.getBalance())
-                .totalIncome(boosterProfile.getTotalIncome())
-                .numberOfCompletedOrders(boosterProfile.getNumberOfCompletedOrders())
-                .progressAccountStatus(boosterProfile.getTotalIncome().multiply(BigDecimal.valueOf(100))
-                        .divide(BOOSTER_LEGEND_TOTAL_INCOME, 2, RoundingMode.HALF_UP))
-                .totalTips(boosterProfile.getTotalTips())
-                .gameTags(getGameTags(boosterProfile.getGameTags()))
-                .build();
-    }
-
-    /**
-     * Получение следующего уровня бустера
-     */
-    private BoosterLevelName getNextLevel(BoosterLevelName level) {
-        return switch (level) {
-            case ROOKIE -> VETERAN;
-            case VETERAN -> ELITE;
-            case ELITE -> LEGEND;
-            case LEGEND -> null;
-        };
-    }
-
-    /**
-     * Получение игровых тегов для фронта
-     */
-    private List<BoosterProfileRsDto.GameTag> getGameTags(List<GameTag> gameTags) {
-        if (gameTags == null || gameTags.isEmpty()) return null;
-        return gameTags.stream()
-                .map(gameTag ->
-                        BoosterProfileRsDto.GameTag.builder()
-                                .id(gameTag.getId().toString())
-                                .name(gameTag.getGame().getTitle())
-                                .build()
-                )
-                .toList();
-    }
-
-    /**
      * Запрос на изменение никнейма
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.USER_CHANGE_NICKNAME)
     public void changeNickname(String nickname) {
         log.debug("Начало изменения никнейма на: {}", nickname);
 
@@ -333,6 +244,7 @@ public class UserService implements IUserService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.USER_CHANGE_DESCRIPTION)
     public void changeDescription(String description) {
         log.debug("Начало изменения описания профиля");
 
@@ -351,20 +263,4 @@ public class UserService implements IUserService {
         log.debug("Описание профиля успешно обновлено");
     }
 
-    /**
-     * Получение краткой информации о бустере
-     */
-    @Override
-    public MiniBoosterProfileRsDto getBoosterMiniProfile(UUID boosterId) {
-        UserEntity booster = userRepository.findById(boosterId)
-                .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
-
-        return MiniBoosterProfileRsDto.builder()
-                .boosterName(booster.getProfile().getNickname())
-                .boosterDescription(booster.getProfile().getDescription())
-                .avatarUrl(booster.getProfile().getImageUrl())
-                .boosterLevel(booster.getBoosterProfile().getLevel())
-                .numberOfCompletedOrders(booster.getBoosterProfile().getNumberOfCompletedOrders())
-                .build();
-    }
 }

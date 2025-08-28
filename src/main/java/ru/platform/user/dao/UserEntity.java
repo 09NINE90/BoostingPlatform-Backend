@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Data
 @Entity
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
@@ -36,6 +36,10 @@ public class UserEntity {
     @Column(name = "confirmation_token")
     @Schema(description = "Токен подтверждения регистрации")
     private String confirmationToken;
+
+    @Column(name = "confirmation_code")
+    @Schema(description = "Код подтверждения восстановления пароля")
+    private String confirmationCode;
 
     @Column(name = "enabled")
     @Schema(description = "Флаг подтверждения регистрации")

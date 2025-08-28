@@ -18,6 +18,7 @@ public class AuthRsDto {
 
     @Schema(description = "Токен пользователя", example = DEFAULT_USER_TOKEN)
     private String token;
+
     @Schema(description = "Роль пользователя", example = DEFAULT_USER_ROLE)
     private String role;
 

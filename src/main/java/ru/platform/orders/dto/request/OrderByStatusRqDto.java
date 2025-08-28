@@ -9,6 +9,6 @@ import ru.platform.orders.enumz.OrderStatus;
 @Builder
 public class OrderByStatusRqDto {
 
-    @Schema(description = "Статус заказа", enumAsRef = true)
+    @Schema(description = "Статус заказа", example = "CREATED", enumAsRef = true)
     private OrderStatus status;
 }

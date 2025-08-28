@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.platform.chat.dao.ChatRoomEntity;
+import ru.platform.games.dao.PlatformEntity;
+import ru.platform.games.dto.response.PlatformDto;
 import ru.platform.offers.dao.OfferCartEntity;
 import ru.platform.offers.dao.OfferOptionCartEntity;
 import ru.platform.orders.dao.OrderEntity;
@@ -105,12 +107,12 @@ public class OrderMapper {
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGame().getTitle())
-                .gamePlatform(orderEntity.getGamePlatform())
+                .gamePlatform(toPlatformDto(orderEntity.getGamePlatform()))
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice())
                 .selectedOptions(toOrderListOptionDtoList(orderEntity.getOptionList()))
-                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
-                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getEndTimeExecution()))
                 .build();
     }
 
@@ -134,14 +136,14 @@ public class OrderMapper {
                 .secondId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
                 .offerName(orderEntity.getOfferName())
                 .gameName(orderEntity.getGame().getTitle())
-                .gamePlatform(orderEntity.getGamePlatform())
+                .gamePlatform(toPlatformDto(orderEntity.getGamePlatform()))
                 .orderStatus(orderEntity.getStatus())
                 .totalPrice(orderEntity.getTotalPrice().doubleValue())
                 .boosterSalary(orderEntity.getBoosterSalary().doubleValue())
                 .selectedOptions(toOrderByBoosterListOptionDtoList(orderEntity.getOptionList()))
-                .startTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getStartTimeExecution()))
-                .endTimeExecution(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getEndTimeExecution()))
-                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
+                .startTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getStartTimeExecution()))
+                .endTimeExecution(DateTimeUtils.offsetDateTimeUTC(orderEntity.getEndTimeExecution()))
+                .completedAt(DateTimeUtils.offsetDateTimeUTC(orderEntity.getCompletedAt()))
                 .build();
     }
 
@@ -160,13 +162,21 @@ public class OrderMapper {
 
     public BoosterOrderHistoryRsDto toBoosterOrderHistoryRsDto(OrderEntity orderEntity) {
         return BoosterOrderHistoryRsDto.builder()
-                .id(orderEntity.getId().toString())
+                .id(orderEntity.getId())
                 .orderId(GenerateSecondIdUtil.toRandomLookingId(orderEntity.getSecondId()))
-                .completedAt(DateTimeUtils.offsetDateTimeToStringUTC(orderEntity.getCompletedAt()))
+                .completedAt(DateTimeUtils.offsetDateTimeUTC(orderEntity.getCompletedAt()))
                 .salary(orderEntity.getBoosterSalary())
                 .orderName(orderEntity.getOfferName())
                 .orderStatus(orderEntity.getStatus())
                 .gameName(orderEntity.getGame().getTitle())
+                .build();
+    }
+
+    private PlatformDto toPlatformDto(PlatformEntity entity) {
+        return PlatformDto.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .name(entity.getName())
                 .build();
     }
 }

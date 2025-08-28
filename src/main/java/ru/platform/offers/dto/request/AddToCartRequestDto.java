@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.enumz.GamePlatform;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.UUID;
 import static ru.platform.LocalConstants.Variables.DEFAULT_UUID;
 
 @Data
-public class OfferToCartRqDto {
+@Schema(description = "Добавление заказа в корзину")
+public class AddToCartRequestDto {
 
     @Schema(description = "Идентификатор предложения, которое добавляется в корзину", example = DEFAULT_UUID)
     private UUID offerId;
@@ -20,13 +22,24 @@ public class OfferToCartRqDto {
     @Schema(description = "Идентификатор игры", example = DEFAULT_UUID)
     private String gameId;
 
-    @Schema(description = "Название платформы", example = "XBOX")
-    private String gamePlatform;
+    @Schema(description = "Название платформы", example = "XBOX", enumAsRef = true)
+    private GamePlatform gamePlatform;
 
     @Schema(description = "Базовая стоимость предложения без опций", example = "120.0")
     private BigDecimal basePrice;
 
-    @ArraySchema(schema = @Schema(description = "Список выбранных опций для добавления в корзину"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Выбранные дополнительные опции",
+                    example = """
+                [{
+                  "optionTitle": "Коллекция достижений",
+                  "value": "achievement_pack_01",
+                  "label": "Пак достижений #1"
+                }]"""
+            ),
+            schema = @Schema(implementation = SelectedOptionToCartDto.class)
+    )
     private List<SelectedOptionToCartDto> selectedOptions;
 
     @Schema(description = "Общая стоимость с учётом выбранных опций", example = "150.0")
@@ -37,6 +50,7 @@ public class OfferToCartRqDto {
 
     @Data
     @Builder
+    @Schema(description = "Выбранная опция для корзины")
     public static class SelectedOptionToCartDto {
 
         @Schema(description = "Название выбранной опции", example = "Коллекция достижений")

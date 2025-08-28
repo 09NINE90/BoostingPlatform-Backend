@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.platform.exception.PlatformException;
 import ru.platform.games.dto.response.GameBySecondIdRsDto;
+import ru.platform.games.dto.response.GameItemRsDto;
 import ru.platform.games.dto.response.GameMainPageRsDto;
 import ru.platform.games.mapper.IGameMapper;
 import ru.platform.games.dao.GameEntity;
@@ -31,10 +32,18 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameBySecondIdRsDto getGameBySecondId(String secondId) {
+    public GameBySecondIdRsDto getGameWithCategories(String secondId) {
         Optional<GameEntity> game = repository.findBySecondId(secondId);
         if (game.isEmpty()) throw new PlatformException(NOT_FOUND_ERROR);
         return gameMapper.toGameBySecondId(game.get());
+    }
+
+    @Override
+    public List<GameItemRsDto> getGamesNames() {
+        List<GameEntity> allGames = repository.findAll();
+        return allGames.stream()
+                .map(gameMapper::toGameItemRsDto)
+                .toList();
     }
 
 }

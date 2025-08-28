@@ -4,20 +4,23 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.dto.response.PlatformDto;
 
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Variables.*;
 
 @Data
 @Builder
-public class OfferByIdRsDto {
+@Schema(description = "Детальная информация по предложению")
+public class OfferDetailsRsDto {
 
     @Schema(description = "Идентификатор предложения", example = DEFAULT_UUID)
-    private String offerId;
+    private UUID offerId;
 
     @Schema(description = "Идентификатор игры, привязанной к предложению", example = DEFAULT_UUID)
-    private String gameId;
+    private UUID gameId;
 
     @Schema(description = "Идентификатор игры, привязанной к предложению", example = "LoE")
     private String secondGameId;
@@ -28,8 +31,19 @@ public class OfferByIdRsDto {
     @Schema(description = "Название игры", example = "Destiny 2")
     private String gameName;
 
-    @ArraySchema(schema = @Schema(description = "Платформы для игр", example = "PC"))
-    private List<String> gamePlatforms;
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Доступные игровые платформы",
+                    example = "[\"PC\", \"PS\"]"
+            ),
+            schema = @Schema(
+                    description = "Платформа",
+                    example = "PC",
+                    minLength = 1,
+                    maxLength = 10
+            )
+    )
+    private List<PlatformDto> gamePlatforms;
 
     @Schema(description = "Название предложения", example = "Rank boosting")
     private String title;
@@ -46,6 +60,18 @@ public class OfferByIdRsDto {
     @Schema(description = "Категории предложения", example = "PVP, PVE")
     private String categories;
 
-    @ArraySchema(schema = @Schema(description = "Список секций для предложения"))
+    @ArraySchema(
+            arraySchema = @Schema(
+                    description = "Секции с дополнительной информацией о предложении",
+                    example = """
+                [{
+                  "title": "Что вы получите",
+                  "type": "ACCORDION",
+                  "description": "Описание преимуществ",
+                  "items": []
+                }]"""
+            ),
+            schema = @Schema(implementation = OfferSectionRsDto.class)
+    )
     private List<OfferSectionRsDto> sections;
 }

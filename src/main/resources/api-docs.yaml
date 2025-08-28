@@ -8,29 +8,39 @@ servers:
 security:
   - BearerAuth: []
 tags:
+  - name: Корзина предложений
+    description: "Управление корзиной: добавление, просмотр и удаление предложений"
+  - name: Заказы. Сторона заказчика
+    description: "API для управления заказами (создание, просмотр, выполнение)"
+  - name: Каталог игр
+    description: Получение информации об играх и их категориях
+  - name: Финансы бустеров
+    description: "Управление выплатами, чаевыми и историей баланса бустеров"
   - name: Категории игр
     description: Получение категорий игр
-  - name: Пользователь
-    description: Получение и обновление данных пароля
-  - name: Игры
-    description: Получение игр для клментов
-  - name: Опции предложения
-    description: Получение опций предложений для клиентов
-  - name: Пользователь
-    description: "Аутентификация, авторизация, подтверждение регистрации и восстенов\
-    ление пароля"
+  - name: Профиль заказчика
+    description: Управление данными профилей заказчиков
+  - name: Публичные предложения
+    description: Просмотр и фильтрация публичных предложений
+  - name: Заказы. Сторона бустера
+    description: "API для управления заказами (создание, просмотр, выполнение)"
+  - name: Профили пользователей
+    description: Управление данными профилей (заказчиков и бустеров)
+  - name: Аутентификация и авторизация
+    description: "Управление входом, регистрацией, восстановлением пароля и токенами\
+    \ доступа"
+  - name: Профили бустера
+    description: Управление данными профилей бустеров)
   - name: Карусель на главной странице
     description: Получение объектов карусели
-  - name: Предложения
-    description: Получение предложений для клиентов
-  - name: Заказы
-    description: Работа с заказами
+  - name: Чаты
+    description: Операции по работе с чатами
 paths:
-  /api/user/changeNickname:
+  /api/users/me/nickname:
     post:
       tags:
-        - Пользователь
-      summary: Запрос на смену никнейма пользователя
+        - Профили пользователей
+      summary: Изменить никнейм
       operationId: changeNickname
       parameters:
         - name: nickname
@@ -41,16 +51,46 @@ paths:
       responses:
         "200":
           description: OK
+  /api/users/me/description:
+    post:
+      tags:
+        - Профили пользователей
+      summary: Изменить описание профиля
+      operationId: changeDescriptionProfile
+      parameters:
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/public/offers:
+    post:
+      tags:
+        - Публичные предложения
+      summary: Найти предложения с фильтрами
+      operationId: getOffersByRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferFilterRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
-                type: object
-  /api/order/getByCreator:
+                $ref: "#/components/schemas/FilteredOffersRsDto"
+  /api/order/customer/my-orders:
     post:
       tags:
-        - Заказы
-      summary: Получение списка заказов для пользователя
-      operationId: getByCreator
+        - Заказы. Сторона заказчика
+      summary: Получить заказы текущего пользователя
+      operationId: getOrdersByCreator
       requestBody:
         content:
           application/json:
@@ -66,51 +106,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OrderRsDto"
-  /api/order/getAll:
+  /api/order/customer/create:
     post:
       tags:
-        - Заказы
-      summary: "Получение списка заказов, которые бустер может взять"
-      operationId: getAllOrders
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OrdersByFiltersRqDto"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/OrderListRsDto"
-  /api/order/create:
-    post:
-      tags:
-        - Заказы
-      summary: Создание заказа
+        - Заказы. Сторона заказчика
+      summary: Создать новый заказ
       operationId: createOrder
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateOrderRqDto"
+              type: array
+              items:
+                type: string
+                format: uuid
         required: true
       responses:
         "200":
           description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/OrderFromCartRsDto"
-  /api/order/byBooster:
+  /api/order/booster/my-orders:
     post:
       tags:
-        - Заказы
-      summary: "Получение списка заказов, закрепленных за бустером"
+        - Заказы. Сторона бустера
+      summary: Получить заказы текущего бустера
       operationId: getOrdersByBooster
       requestBody:
         content:
@@ -126,12 +144,47 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OrderRsDto"
-  /api/order/accept/{orderId}:
+                  $ref: "#/components/schemas/OrderByBoosterRsDto"
+  /api/order/booster/dashboard:
     post:
       tags:
-        - Заказы
-      summary: Взятие заказа в работу бустером
+        - Заказы. Сторона бустера
+      summary: Получить доступные заказы для бустера (дашборд)
+      operationId: getDashboard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DashboardRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OrderListRsDto"
+  /api/order/booster/complete/{orderId}:
+    post:
+      tags:
+        - Заказы. Сторона бустера
+      summary: Завершить выполнение заказа
+      operationId: completeExecutionOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+  /api/order/booster/accept/{orderId}:
+    post:
+      tags:
+        - Заказы. Сторона бустера
+      summary: Принять заказ в работу
       operationId: acceptOrder
       parameters:
         - name: orderId
@@ -143,36 +196,31 @@ paths:
       responses:
         "200":
           description: OK
-  /api/offer/getOffersByRequest:
-    post:
+  /api/cart/items:
+    get:
       tags:
-        - Предложения
-      summary: "Получение предложений с сортировкой, фильтрами и пагинацией"
-      operationId: getOffersByRequest
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OfferRqDto"
-        required: true
+        - Корзина предложений
+      summary: Получить содержимое корзины
+      operationId: getCartItems
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/OffersListRsDto"
-  /api/offer/addToCart:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CartItemRsDto"
     post:
       tags:
-        - Предложения
-      summary: Добавление предложенияв корзину
+        - Корзина предложений
+      summary: Добавить предложение в корзину
       operationId: addOfferToCart
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OfferToCartRqDto"
+              $ref: "#/components/schemas/AddToCartRequestDto"
         required: true
       responses:
         "200":
@@ -182,18 +230,64 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OfferCartRsDto"
-  /api/auth/signUp:
+                  $ref: "#/components/schemas/CartItemRsDto"
+  /api/cart/items/{itemId}:
     post:
       tags:
-        - Пользователь
-      summary: Запрос на регистрацию пользователя
-      operationId: signUp
+        - Корзина предложений
+      summary: Удалить предложение из корзины
+      operationId: removeFromCart
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+  /api/boosters/finance/withdrawals:
+    post:
+      tags:
+        - Финансы бустеров
+      summary: Запросить вывод средств
+      operationId: handleWithdrawal
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SignupUserRqDto"
+              $ref: "#/components/schemas/HandleWithdrawalRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/boosters/finance/tips:
+    post:
+      tags:
+        - Финансы бустеров
+      summary: Отправить чаевые
+      operationId: sendTip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HandleSendTipRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/auth/verify-email:
+    post:
+      tags:
+        - Аутентификация и авторизация
+      summary: Подтверждение email при регистрации
+      operationId: confirmSignUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailConfirmationRequest"
         required: true
       responses:
         "200":
@@ -201,31 +295,12 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ConfirmationRsDto"
-  /api/auth/signIn:
+                type: object
+  /api/auth/resend-verification:
     post:
       tags:
-        - Пользователь
-      summary: Авторизация пользователя
-      operationId: signIn
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginUserRqDto"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AuthRsDto"
-  /api/auth/resendConfirmationEmail:
-    post:
-      tags:
-        - Пользователь
-      summary: Повторная отправка токена пользователя для подтверждения регистрации
+        - Аутентификация и авторизация
+      summary: Повторная отправка письма подтверждения
       operationId: resendConfirmationEmail
       requestBody:
         content:
@@ -240,11 +315,43 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/ConfirmationRsDto"
-  /api/auth/forgotPassword:
+  /api/auth/register:
     post:
       tags:
-        - Пользователь
-      summary: Запрос на восстановления пароля пользователя
+        - Аутентификация и авторизация
+      summary: Регистрация нового пользователя
+      operationId: signUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupUserRqDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConfirmationRsDto"
+  /api/auth/refresh-token:
+    post:
+      tags:
+        - Аутентификация и авторизация
+      summary: Обновление токена доступа
+      operationId: refreshToken
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/password-reset/request:
+    post:
+      tags:
+        - Аутентификация и авторизация
+      summary: Запрос восстановления пароля
       operationId: forgotPassword
       requestBody:
         content:
@@ -259,30 +366,11 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/ConfirmationRsDto"
-  /api/auth/confirmSignUp:
+  /api/auth/password-change:
     post:
       tags:
-        - Пользователь
-      summary: Подтверждение регистрации пользователя
-      operationId: confirmSignUp
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/EmailConfirmationRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AuthRsDto"
-  /api/auth/changeUserPassword:
-    post:
-      tags:
-        - Пользователь
-      summary: Запрос на смену пароля
+        - Аутентификация и авторизация
+      summary: Смена пароля (для аутентифицированных пользователей)
       operationId: changeUserPassword
       requestBody:
         content:
@@ -296,51 +384,40 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/AuthRsDto"
-  /api/user/getUserProfileData:
-    get:
+                type: object
+  /api/auth/logout:
+    post:
       tags:
-        - Пользователь
-      summary: Запрос на получение данных профиля пользователя
-      operationId: getUserProfileData
+        - Аутентификация и авторизация
+      summary: Выход из системы
+      operationId: logout
+      responses:
+        "200":
+          description: OK
+  /api/auth/login:
+    post:
+      tags:
+        - Аутентификация и авторизация
+      summary: Вход в систему
+      operationId: signIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRqDto"
+        required: true
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/UserProfileRsDto"
-  /api/order/getFiltersForOrdersByBooster:
+                type: object
+  /api/public/offers/{offerId}:
     get:
       tags:
-        - Заказы
-      summary: "Получение значений фильтров для заказов, закрепленных за бустером"
-      operationId: getFiltersForOrdersByBooster
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/OrderFiltersRsDto"
-  /api/order/getFiltersForCreatedOrders:
-    get:
-      tags:
-        - Заказы
-      summary: Получение значений фильтров для заказов
-      operationId: getFiltersForCreatedOrders
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/OrderFiltersRsDto"
-  /api/offer/{offerId}:
-    get:
-      tags:
-        - Предложения
-      summary: Получение предложения по ID
+        - Публичные предложения
+      summary: Получить предложение по ID
       operationId: findOfferById
       parameters:
         - name: offerId
@@ -355,12 +432,12 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/OfferByIdRsDto"
-  /api/offer/option/byOfferId/{offerId}:
+                $ref: "#/components/schemas/OfferDetailsRsDto"
+  /api/public/offers/{offerId}/options:
     get:
       tags:
-        - Опции предложения
-      summary: Получение опций по предложению
+        - Публичные предложения
+      summary: Получить доступные опции предложения
       operationId: getOptionsByOfferId
       parameters:
         - name: offerId
@@ -377,11 +454,11 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OfferOptionRsDto"
-  /api/offer/getOffersByGameId/{gameId}:
+  /api/public/offers/games/{gameId}:
     get:
       tags:
-        - Предложения
-      summary: Получение предложений по идентификатору игры
+        - Публичные предложения
+      summary: Получить предложения по ID игры
       operationId: getOffersByGameId
       parameters:
         - name: gameId
@@ -398,27 +475,66 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OffersByGameIdRsDto"
-  /api/offer/getCountCartItems:
+                  $ref: "#/components/schemas/GameOffersRsDto"
+  /api/order/customer/{orderId}:
     get:
       tags:
-        - Предложения
-      summary: Получение содержания корзины пользователя
-      operationId: getCountCartItems
+        - Заказы. Сторона заказчика
+      summary: Получить заказ (для клиента)
+      operationId: getCustomerOrderById
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                type: integer
-                format: int32
-  /api/offer/getCartItems:
+                $ref: "#/components/schemas/OrderRsDto"
+  /api/order/booster/{orderId}:
     get:
       tags:
-        - Предложения
-      summary: Получение содержания корзины пользователя
-      operationId: getCartItems
+        - Заказы. Сторона бустера
+      summary: Получить заказ (для бустера)
+      operationId: getBoosterOrderById
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OrderByBoosterRsDto"
+  /api/order/booster/my-orders/filters:
+    get:
+      tags:
+        - Заказы. Сторона бустера
+      summary: Получить фильтры для заказов бустера
+      operationId: getFiltersForOrdersByBooster
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OrderFiltersRsDto"
+  /api/order/booster/history:
+    get:
+      tags:
+        - Заказы. Сторона бустера
+      summary: Получить историю заказов бустера
+      operationId: getBoosterOrdersHistory
       responses:
         "200":
           description: OK
@@ -427,8 +543,55 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OfferCartRsDto"
-  /api/games/getCategoriesByGameId/{gameId}:
+                  $ref: "#/components/schemas/BoosterOrderHistoryRsDto"
+  /api/order/booster/dashboard/filters:
+    get:
+      tags:
+        - Заказы. Сторона бустера
+      summary: Получить фильтры для дашборда бустера
+      operationId: getFiltersDashboard
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DashboardFiltersRsDto"
+  /api/games:
+    get:
+      tags:
+        - Каталог игр
+      summary: Получить все игры (сортировка по рейтингу)
+      operationId: getAllGames
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameMainPageRsDto"
+  /api/games/{secondId}:
+    get:
+      tags:
+        - Каталог игр
+      summary: Получить игру с категориями по ID
+      operationId: getGameWithCategories
+      parameters:
+        - name: secondId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GameBySecondIdRsDto"
+  /api/games/{gameId}/categories:
     get:
       tags:
         - Категории игр
@@ -449,41 +612,54 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CategoryRsDto"
-  /api/games/getBySecondId/{secondId}:
+  /api/customers/me/profile:
     get:
       tags:
-        - Игры
-      summary: Получить объект игры с категориями
-      operationId: getGameBySecondId
+        - Профиль заказчика
+      summary: Получить профиль заказчика
+      operationId: getUserProfileData
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CustomerProfileRsDto"
+  /api/chat/room/{roomId}:
+    get:
+      tags:
+        - Чаты
+      summary: Получение чата по идентификатору
+      operationId: getChatRoom
       parameters:
-        - name: secondId
+        - name: roomId
           in: path
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GameBySecondIdRsDto"
-  /api/games/getAllGames:
+                $ref: "#/components/schemas/ChatRoomDto"
+  /api/cart/items/count:
     get:
       tags:
-        - Игры
-      summary: "Получить список всех игр, отсортированных по рейтингу"
-      operationId: getAllGames
+        - Корзина предложений
+      summary: Получить количество элементов в корзине
+      operationId: getCountCartItems
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/GameMainPageRsDto"
-  /api/carousel/getItems:
+                type: integer
+                format: int32
+  /api/carousel:
     get:
       tags:
         - Карусель на главной странице
@@ -498,13 +674,84 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CarouselRsDto"
-  /api/auth/confirmPasswordRecovery/{confirmationToken}:
+  /api/boosters/{boosterId}/mini-profile:
     get:
       tags:
-        - Пользователь
+        - Профили бустера
+      summary: Получить краткий профиль бустера
+      operationId: getBoosterMiniProfile
+      parameters:
+        - name: boosterId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MiniBoosterProfileRsDto"
+  /api/boosters/me/profile:
+    get:
+      tags:
+        - Профили бустера
+      summary: Получить профиль бустера
+      operationId: getBoosterProfileData
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BoosterProfileRsDto"
+  /api/boosters/finance/orders/{orderId}/tips:
+    get:
+      tags:
+        - Финансы бустеров
+      summary: Получить историю чаевых по заказу
+      operationId: getOrderTipHistory
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderTipHistoryRsDto"
+  /api/boosters/finance/balance/history:
+    get:
+      tags:
+        - Финансы бустеров
+      summary: Получить историю баланса
+      operationId: getBalanceHistory
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BalanceHistoryRsDto"
+  /api/auth/password-reset/validate/{token}:
+    get:
+      tags:
+        - Аутентификация и авторизация
+      summary: Подтверждение восстановления пароля
       operationId: confirmPasswordRecovery
       parameters:
-        - name: confirmationToken
+        - name: token
           in: path
           required: true
           schema:
@@ -518,211 +765,7 @@ paths:
                 $ref: "#/components/schemas/ConfirmationRsDto"
 components:
   schemas:
-    OrderByStatusRqDto:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Статус заказа
-          enum:
-            - CREATED
-            - IN_PROGRESS
-            - COMPLETED
-    OrderRsDto:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: Идентификатор заказа
-          example: Legend of Eldoria
-        secondId:
-          type: string
-          description: Идентификатор заказа
-          example: Legend of Eldoria
-        offerName:
-          type: string
-          description: Название заказа
-          example: Legend of Eldoria
-        gameName:
-          type: string
-          description: Название игры
-          example: Legend of Eldoria
-        gamePlatform:
-          type: string
-          description: Название платформы
-          example: XBOX
-        orderStatus:
-          type: string
-          description: Текущий статус заказа
-          example: NEW
-        totalPrice:
-          type: number
-          format: double
-          description: Общая стоимость заказа
-          example: 150.0
-        selectedOptions:
-          type: array
-          items:
-            description: "Список опций, выбранных для заказа"
-    OrderSortFilter:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Ключ сортировки
-          enum:
-            - OFFER_NAME
-            - PRICE
-            - GAME_NAME
-            - GAME_PLATFORM
-            - CREATION_AT
-          example: PRICE
-        asc:
-          type: boolean
-          description: Направлние сортировки
-          example: true
-    OrdersByFiltersRqDto:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Статус заказа
-          enum:
-            - CREATED
-            - IN_PROGRESS
-            - COMPLETED
-        gameName:
-          type: string
-          description: Название игры
-          example: Game name
-        gamePlatform:
-          type: string
-          description: Название платформы для игр
-          example: PS
-        price:
-          $ref: "#/components/schemas/PriceDto"
-          description: Цена от/до
-        sort:
-          $ref: "#/components/schemas/OrderSortFilter"
-          description: Сортировка
-          example: PRICE
-        pageNumber:
-          type: integer
-          format: int32
-          description: Номер страницы для получения данных
-          example: 1
-        pageSize:
-          type: integer
-          format: int32
-          description: Количество объектов на одной странице
-          example: 20
-    PriceDto:
-      type: object
-      properties:
-        priceFrom:
-          type: number
-          format: double
-          description: Начальная стоимость заказа для фильтра
-          example: 100
-        priceTo:
-          type: number
-          format: double
-          description: Конечная стоимость заказа для фильтра
-          example: 200
-    OrderListRsDto:
-      type: object
-      properties:
-        orders:
-          type: array
-          items:
-            description: Список заказов для дашборда бустера
-        pageTotal:
-          type: integer
-          format: int32
-          description: Всего страниц
-          example: 5
-        pageNumber:
-          type: integer
-          format: int32
-          description: Номер страницы
-          example: 1
-        pageSize:
-          type: integer
-          format: int32
-          description: Количество объектов на одной странице
-          example: 20
-        recordTotal:
-          type: integer
-          format: int64
-          description: Всего объектов найдено
-          example: 100
-    CreateOrderRqDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            description: "Список элементов корзины, из которых будет сформирован з\
-              аказ"
-    OrderFromCartRsDto:
-      type: object
-      properties:
-        orderName:
-          type: string
-          description: Название заказа
-          example: Legend of Eldoria
-        gameName:
-          type: string
-          description: Название игры
-          example: Legend of Eldoria
-        orderStatus:
-          type: string
-          description: Текущий статус заказа
-          enum:
-            - CREATED
-            - IN_PROGRESS
-            - COMPLETED
-          example: NEW
-        selectedOptions:
-          type: array
-          items:
-            description: "Список опций, выбранных для заказа"
-        totalPrice:
-          type: number
-          format: double
-          description: Общая стоимость заказа
-          example: 150.0
-        totalTime:
-          type: integer
-          format: int32
-          description: Общее время выполнения заказа (в часах)
-          example: 90
-    OrdersByBoosterRqDto:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Статус заказа
-          enum:
-            - CREATED
-            - IN_PROGRESS
-            - COMPLETED
-        gameName:
-          type: string
-          description: Название игры
-          example: Game name
-        gamePlatform:
-          type: string
-          description: Название платформы для игр
-          example: PS
-        price:
-          $ref: "#/components/schemas/PriceDto"
-          description: Цена от/до
-        sort:
-          $ref: "#/components/schemas/OrderSortFilter"
-          description: Сортировка
-          example: PRICE
-    OfferRqDto:
+    OfferFilterRqDto:
       type: object
       properties:
         gameId:
@@ -761,30 +804,7 @@ components:
           type: boolean
           description: Направлние сортировки
           example: true
-    OffersByGameIdRsDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Идентификатор предложения
-          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
-        title:
-          type: string
-          description: Название предложения
-          example: Rank boosting
-        description:
-          type: string
-          description: Описание предложения
-          example: Very long description
-        imageUrl:
-          type: string
-          description: Ссылка на картинку предложения
-          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
-        price:
-          type: number
-          description: Стоимость предложения
-          example: 100
-    OffersListRsDto:
+    FilteredOffersRsDto:
       type: object
       properties:
         offers:
@@ -811,7 +831,286 @@ components:
           format: int64
           description: Всего объектов найдено
           example: 100
-    OfferToCartRqDto:
+    GameOffersRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор предложения
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        title:
+          type: string
+          description: Название предложения
+          example: Rank boosting
+        description:
+          type: string
+          description: Описание предложения
+          example: Very long description
+        imageUrl:
+          type: string
+          description: Ссылка на картинку предложения
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        price:
+          type: number
+          description: Стоимость предложения
+          example: 100
+    OrderByStatusRqDto:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Статус заказа
+          enum:
+            - CREATED
+            - IN_PROGRESS
+            - ON_PENDING
+            - COMPLETED
+          example: CREATED
+    OrderRsDto:
+      type: object
+      properties:
+        chatId:
+          type: string
+          description: Идентификатор чата
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        boosterId:
+          type: string
+          description: "Идентификатор бустера, прикрепленного к заказу"
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        orderId:
+          type: string
+          description: Идентификатор заказа
+          example: Legend of Eldoria
+        secondId:
+          type: string
+          description: Идентификатор заказа для UI
+          example: Legend of Eldoria
+        offerName:
+          type: string
+          description: Название заказа
+          example: Legend of Eldoria
+        gameName:
+          type: string
+          description: Название игры
+          example: Legend of Eldoria
+        gamePlatform:
+          type: string
+          description: Название платформы
+          example: XBOX
+        orderStatus:
+          type: string
+          description: Текущий статус заказа
+          enum:
+            - CREATED
+            - IN_PROGRESS
+            - ON_PENDING
+            - COMPLETED
+          example: NEW
+        totalPrice:
+          type: number
+          description: Общая стоимость заказа
+          example: 150.0
+        startTimeExecution:
+          type: string
+          format: date-time
+          description: Дата и время (по UTC) взятия заказа в работу
+          example: 2025-07-07 11:49:57.595 +0500
+        endTimeExecution:
+          type: string
+          format: date-time
+          description: Дата и время (по UTC) завершения выполнения заказа
+          example: 2025-07-07 11:49:57.595 +0500
+        selectedOptions:
+          type: array
+          items:
+            description: "Список опций, выбранных для заказа"
+    OrderSortFilter:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Ключ сортировки
+          enum:
+            - OFFER_NAME
+            - TOTAL_PRICE
+            - BOOSTER_PRICE
+            - GAME_NAME
+            - GAME_PLATFORM
+            - CREATION_AT
+            - START_TIME_EXECUTION
+          example: PRICE
+        asc:
+          type: boolean
+          description: Направлние сортировки
+          example: true
+    OrdersByBoosterRqDto:
+      type: object
+      properties:
+        statuses:
+          type: array
+          items:
+            description: Статус заказа
+          uniqueItems: true
+        gameNames:
+          type: array
+          items:
+            description: Название игры
+            example: Game name
+          uniqueItems: true
+        gamePlatforms:
+          type: array
+          items:
+            description: Название платформы для игр
+            example: PS
+          uniqueItems: true
+        price:
+          $ref: "#/components/schemas/PriceDto"
+          description: Цена от/до
+        sort:
+          $ref: "#/components/schemas/OrderSortFilter"
+          description: Сортировка
+          example: PRICE
+    PriceDto:
+      type: object
+      properties:
+        priceFrom:
+          type: number
+          format: double
+          description: Начальная стоимость заказа для фильтра
+          example: 100
+        priceTo:
+          type: number
+          format: double
+          description: Конечная стоимость заказа для фильтра
+          example: 200
+    OrderByBoosterRsDto:
+      type: object
+      properties:
+        chatId:
+          type: string
+          description: Идентификатор чата
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        orderId:
+          type: string
+          description: Идентификатор заказа
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondId:
+          type: string
+          description: Идентификатор заказа для UI
+          example: Legend of Eldoria
+        offerName:
+          type: string
+          description: Название заказа
+          example: Legend of Eldoria
+        gameName:
+          type: string
+          description: Название игры
+          example: Legend of Eldoria
+        gamePlatform:
+          type: string
+          description: Название платформы
+          example: XBOX
+        orderStatus:
+          type: string
+          description: Текущий статус заказа
+          enum:
+            - CREATED
+            - IN_PROGRESS
+            - ON_PENDING
+            - COMPLETED
+          example: NEW
+        totalPrice:
+          type: number
+          format: double
+          description: Общая стоимость заказа
+          example: 150.0
+        boosterSalary:
+          type: number
+          format: double
+          description: ЗП бустера за заказ
+          example: 150.0
+        startTimeExecution:
+          type: string
+          format: date-time
+          description: Дата и время (по UTC) взятия заказа в работу
+          example: 2025-07-07 11:56:09.176 +0500
+        endTimeExecution:
+          type: string
+          format: date-time
+          description: Дата и время (по UTC) завершения выполнения заказа
+          example: 2025-07-07 11:56:09.176 +0500
+        completedAt:
+          type: string
+          format: date-time
+          description: Дата и время (по UTC) перевода заказа в статус COMPLETED
+          example: 2025-07-07 11:56:09.176 +0500
+        selectedOptions:
+          type: array
+          items:
+            description: "Список опций, выбранных для заказа"
+    DashboardRqDto:
+      type: object
+      properties:
+        gameNames:
+          type: array
+          description: Название игры
+          example: Game name
+          items:
+            type: string
+          uniqueItems: true
+        gamePlatforms:
+          type: array
+          description: Название платформы для игр
+          example: PS
+          items:
+            type: string
+          uniqueItems: true
+        totalPrice:
+          $ref: "#/components/schemas/PriceDto"
+          description: Цена от/до
+        sort:
+          $ref: "#/components/schemas/OrderSortFilter"
+          description: Сортировка
+          example: PRICE
+        pageNumber:
+          type: integer
+          format: int32
+          description: Номер страницы для получения данных
+          example: 1
+        pageSize:
+          type: integer
+          format: int32
+          description: Количество объектов на одной странице
+          example: 20
+    OrderListRsDto:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            description: Список заказов для дашборда бустера
+        pageTotal:
+          type: integer
+          format: int32
+          description: Всего страниц
+          example: 5
+        pageNumber:
+          type: integer
+          format: int32
+          description: Номер страницы
+          example: 1
+        pageSize:
+          type: integer
+          format: int32
+          description: Количество объектов на одной странице
+          example: 20
+        recordTotal:
+          type: integer
+          format: int64
+          description: Всего объектов найдено
+          example: 100
+    AddToCartRequestDto:
       type: object
       properties:
         offerId:
@@ -819,10 +1118,10 @@ components:
           format: uuid
           description: "Идентификатор предложения, которое добавляется в корзину"
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
-        gameName:
+        gameId:
           type: string
-          description: Название игры
-          example: Legend of Eldoria
+          description: Идентификатор игры
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
         gamePlatform:
           type: string
           description: Название платформы
@@ -844,9 +1143,14 @@ components:
           format: int32
           description: Общее время выполнения услуги (в часах)
           example: 120
-    OfferCartRsDto:
+    CartItemRsDto:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор объекта корзины
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
         offerId:
           type: string
           format: uuid
@@ -870,9 +1174,12 @@ components:
             description: Список выбранных опций для предложения
           maxItems: 100
           minItems: 1
+        basePrice:
+          type: number
+          description: Стоимость без учёта выбранных опций
+          example: 100.0
         totalPrice:
           type: number
-          format: double
           description: Общая стоимость с учётом выбранных опций
           example: 150.0
         totalTime:
@@ -880,17 +1187,41 @@ components:
           format: int32
           description: Общее время выполнения услуги (в часах)
           example: 120
-    SignupUserRqDto:
+    HandleWithdrawalRqDto:
       type: object
-      description: Объект для регистрации пользователя
       properties:
-        nickname:
+        withdrawalAmount:
+          type: number
+          description: Сумма для запроса на вывод средств бустера
+          example: 99.99
+    HandleSendTipRqDto:
+      type: object
+      properties:
+        orderId:
           type: string
-          description: Никнейм пользователя
-          example: userNickname
+          format: uuid
+          description: Идентификатор заказа
+          example: 123e4567-e89b-12d3-a456-426614174000
+        tipAmount:
+          type: number
+          description: Сумма чаевых бустеру за заказ
+          example: 9.99
+      required:
+        - orderId
+        - tipAmount
+    EmailConfirmationRequest:
+      type: object
+      description: Запрос для отправки кода подтверждения на проверку
+      properties:
+        token:
+          type: string
+    ConfirmationEmailRqDto:
+      type: object
+      description: Запрос для отправки кода подтверждения на проверку
+      properties:
         email:
           type: string
-          description: Почта-логин пользователя
+          description: Почта пользователя для подтверждения
           example: user@mail.com
         password:
           type: string
@@ -908,6 +1239,22 @@ components:
           type: string
           description: Почта пользователя
           example: user@mail.com
+    SignupUserRqDto:
+      type: object
+      description: Объект для регистрации пользователя
+      properties:
+        nickname:
+          type: string
+          description: Никнейм пользователя
+          example: userNickname
+        email:
+          type: string
+          description: Почта-логин пользователя
+          example: user@mail.com
+        password:
+          type: string
+          description: Пароль пользователя
+          example: userPASSWORD123
     LoginUserRqDto:
       type: object
       description: Объект для авторизации пользователя
@@ -920,96 +1267,23 @@ components:
           type: string
           description: Пароль пользователя
           example: userPASSWORD123
-    AuthRsDto:
-      type: object
-      description: Объект для передачи фронту токена и роли пользователя
-      properties:
-        token:
-          type: string
-          description: Токен пользователя
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFt
-        role:
-          type: string
-          description: Роль пользователя
-          example: ROLE_CUSTOMER
-    ConfirmationEmailRqDto:
-      type: object
-      description: Запрос для отправки кода подтверждения на проверку
-      properties:
-        email:
-          type: string
-          description: Почта пользователя для подтверждения
-          example: user@mail.com
-        password:
-          type: string
-          description: Пароль пользователя
-          example: userPASSWORD123
-    EmailConfirmationRequest:
-      type: object
-      description: Запрос для отправки кода подтверждения на проверку
-      properties:
-        token:
-          type: string
-    UserProfileRsDto:
-      type: object
-      description: Объект для передачи фронту данные профиля пользователя
-      properties:
-        secondId:
-          type: string
-          description: ID пользователя для отображения на странице
-          example: ABCD-123
-        nickname:
-          type: string
-          description: Имя пользователя
-          example: userNickname
-        imageUrl:
-          type: string
-          description: Ссылка на аватарку пользователя
-          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
-    OrderFiltersRsDto:
-      type: object
-      properties:
-        statuses:
-          type: array
-          items:
-            description: Статусы заказов для фильтров
-        gameNames:
-          type: array
-          items:
-            description: Названия игр для фильтров
-            example: Game name
-        gamePlatforms:
-          type: array
-          items:
-            description: Названия игровых платформ для фильтров
-            example: PS
-        price:
-          $ref: "#/components/schemas/PriceFilterDto"
-          description: Цена min/max для фильтров
-    PriceFilterDto:
-      type: object
-      properties:
-        priceMin:
-          type: number
-          format: double
-          description: Минимальная стоимость заказа для фильтра
-          example: 100
-        priceMax:
-          type: number
-          format: double
-          description: Максимальная стоимость заказа для фильтра
-          example: 200
-    OfferByIdRsDto:
+    OfferDetailsRsDto:
       type: object
       properties:
         offerId:
           type: string
+          format: uuid
           description: Идентификатор предложения
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
         gameId:
           type: string
+          format: uuid
           description: "Идентификатор игры, привязанной к предложению"
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondGameId:
+          type: string
+          description: "Идентификатор игры, привязанной к предложению"
+          example: LoE
         secondId:
           type: string
           description: Второй идентификатор предложения
@@ -1100,13 +1374,121 @@ components:
           type: array
           items:
             description: Список элементов опции
-    CategoryRsDto:
+    OrderFiltersRsDto:
+      type: object
+      properties:
+        statuses:
+          type: array
+          items:
+            description: Статусы заказов для фильтров
+        gameNames:
+          type: array
+          items:
+            description: Названия игр для фильтров
+            example: Game name
+        gamePlatforms:
+          type: array
+          items:
+            description: Названия игровых платформ для фильтров
+            example: PS
+        price:
+          $ref: "#/components/schemas/PriceFilterDto"
+          description: Цена min/max для фильтров
+    PriceFilterDto:
+      type: object
+      properties:
+        priceMin:
+          type: number
+          format: double
+          description: Минимальная стоимость заказа для фильтра
+          example: 100
+        priceMax:
+          type: number
+          format: double
+          description: Максимальная стоимость заказа для фильтра
+          example: 200
+    BoosterOrderHistoryRsDto:
       type: object
       properties:
         id:
           type: string
-          description: Идентификатор категории
+          format: uuid
+          description: Идентификатор заказа
+          example: 123e4567-e89b-12d3-a456-426614174000
+        orderId:
+          type: string
+          description: Идентификатор заказа для отображения
+          example: AAAA-1234
+        gameName:
+          type: string
+          description: Игра по которой заказ
+          example: League of Legends
+        orderName:
+          type: string
+          description: Описание заказа
+          example: Прокачка аккаунта до уровня 30
+        completedAt:
+          type: string
+          format: date-time
+          description: "Дата и время, когда заказ стал выполненным"
+          example: 2025-07-09T15:30:00Z
+        salary:
+          type: number
+          description: Зарплата бустера за заказ
+          example: 1500.0
+        orderStatus:
+          type: string
+          description: Статус заказа
+          enum:
+            - CREATED
+            - IN_PROGRESS
+            - ON_PENDING
+            - COMPLETED
+          example: CREATED
+    DashboardFiltersRsDto:
+      type: object
+      properties:
+        gameNames:
+          type: array
+          items:
+            description: Названия игр для фильтров
+            example: Game name
+          uniqueItems: true
+        gamePlatforms:
+          type: array
+          items:
+            description: Названия игровых платформ для фильтров
+            example: PS
+        price:
+          $ref: "#/components/schemas/PriceFilterDto"
+          description: Цена min/max для фильтров
+    GameMainPageRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор игры
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        secondId:
+          type: string
+          description: Второй id для фрона состояший из названия игры
+        name:
+          type: string
+          description: Название игры
+          example: The best game
+        imageUrl:
+          type: string
+          description: Ссылка на изображение игры для side bar
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+    CategoryRsDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Идентификатор категории
+          example: 3
         name:
           type: string
           description: Название категории
@@ -1116,6 +1498,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           description: Идентификатор игры
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
         secondId:
@@ -1130,27 +1513,85 @@ components:
           type: array
           items:
             description: "Список категорий, к которым относится игра"
-    GameMainPageRsDto:
+    CustomerProfileRsDto:
+      type: object
+      description: Объект для передачи фронту данные профиля заказчика
+      properties:
+        secondId:
+          type: string
+          description: ID пользователя для отображения на странице
+          example: ABCD-123
+        email:
+          type: string
+          description: Email пользователя
+          example: user@mail.com
+        description:
+          type: string
+          description: Статус пользователя (описание профиля)
+        totalOrders:
+          type: integer
+          format: int64
+          description: "Общее количество заказов, созданных пользователем"
+        nickname:
+          type: string
+          description: Имя пользователя
+          example: userNickname
+        imageUrl:
+          type: string
+          description: Ссылка на аватарку пользователя
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        discountPercentage:
+          type: number
+          description: Процент скидки пользователя
+          example: 1
+        status:
+          type: string
+          description: Статус пользователя
+          enum:
+            - EXPLORER
+            - VANGUARD
+            - IMMORTAL
+          example: EXPLORER
+        nextStatus:
+          type: string
+          description: Следующий статус пользователя
+          enum:
+            - EXPLORER
+            - VANGUARD
+            - IMMORTAL
+          example: VANGUARD
+        cashbackBalance:
+          type: number
+          description: Бонусный баланс пользователя
+          example: 100.0
+        progressAccountStatus:
+          type: number
+          description: Процент прогресса аккаунта заказчика
+          example: 50
+    ChatRoomDto:
       type: object
       properties:
         id:
           type: string
-          description: Идентификатор игры
+          format: uuid
+          description: Идентификатор чата
           example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
-        secondId:
+        title:
           type: string
-          description: Второй id для фрона состояший из названия игры
-        name:
-          type: string
-          description: Название игры
-          example: The best game
-        imageUrl:
-          type: string
-          description: Ссылка на изображение игры для side bar
-          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+          description: Название чата
+          example: Order AAAA-0000
+        messages:
+          type: array
+          items:
+            description: Список сообщений
     CarouselRsDto:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Идентификатор объекта карусели
+          example: 1
         title:
           type: string
           description: Заголовок карусели
@@ -1163,6 +1604,171 @@ components:
           type: string
           description: Ссылка на картинку карусели
           example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+    MiniBoosterProfileRsDto:
+      type: object
+      properties:
+        avatarUrl:
+          type: string
+          description: Ссылка на аватарку бустера
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        boosterName:
+          type: string
+          description: Никнейм бустера
+          example: userNickname
+        boosterDescription:
+          type: string
+          description: Описание профиля бустера
+          example: Very long description
+        numberOfCompletedOrders:
+          type: integer
+          format: int32
+          description: Количество выполненных заказов бустера
+          example: 10
+        boosterLevel:
+          type: string
+          description: Уровень бустера
+          enum:
+            - ROOKIE
+            - VETERAN
+            - ELITE
+            - LEGEND
+          example: ROOKIE
+    BoosterProfileRsDto:
+      type: object
+      description: Объект для передачи фронту данные профиля бустера
+      properties:
+        secondId:
+          type: string
+          description: ID пользователя для отображения на странице
+          example: ABCD-123
+        email:
+          type: string
+          description: Email пользователя
+          example: user@mail.com
+        nickname:
+          type: string
+          description: Имя пользователя
+          example: userNickname
+        imageUrl:
+          type: string
+          description: Ссылка на аватарку пользователя
+          example: https://bb82cdcce70076216efdbdfb864e275d.jpg
+        description:
+          type: string
+          description: Статус пользователя (описание профиля)
+        level:
+          type: string
+          description: Уровень бустера
+          enum:
+            - ROOKIE
+            - VETERAN
+            - ELITE
+            - LEGEND
+          example: ROOKIE
+        nextLevel:
+          type: string
+          description: Следующий уровень бустера
+          enum:
+            - ROOKIE
+            - VETERAN
+            - ELITE
+            - LEGEND
+          example: VETERAN
+        numberOfCompletedOrders:
+          type: integer
+          format: int64
+          description: Количество выполненных бустером заказов
+          example: 10
+        percentageOfOrder:
+          type: number
+          format: double
+          description: Процент с заказа бустера
+          example: 50
+        progressAccountStatus:
+          type: number
+          description: Процент прогресса аккаунта бустера
+          example: 50
+        balance:
+          type: number
+          description: "Баланс денег бустера, доступных для вывода"
+          example: 100.0
+        totalIncome:
+          type: number
+          description: Суммарный заработок бустера
+          example: 999.99
+        totalTips:
+          type: number
+          description: Сумма чаевых бустера
+          example: 666.66
+        gameTags:
+          type: array
+          items:
+            description: Список игровых тегов бустера
+    OrderTipHistoryRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор записи
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        status:
+          type: string
+          description: Статус чаевых
+          enum:
+            - ON_PENDING
+            - COMPLETED
+          example: ON_PENDING
+        amount:
+          type: number
+          description: Сумма чаевых
+          example: 5.55
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата и время (UTC) создания операции
+          example: 2025-06-26 12:00
+    BalanceHistoryRsDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор записи
+          example: 70b82203-0f41-47e1-b11c-0fb96f8f9204
+        orderId:
+          type: string
+          description: Идентификатор заказа
+          example: AAAA-0000
+        recordType:
+          type: string
+          description: Тип операции
+          enum:
+            - SALARY
+            - WITHDRAWAL
+            - TIP
+          example: TIP
+        paymentStatus:
+          type: string
+          description: Статус операции
+          enum:
+            - ON_PENDING
+            - COMPLETED
+          example: COMPLETED
+        amount:
+          type: number
+          description: Сумма операции
+          example: 99.99
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата и время (UTC) создания операции
+          example: 2025-07-07 11:56:09.176 +0500
+        completedAt:
+          type: string
+          format: date-time
+          description: Дата и время (UTC) завершения операции
+          example: 2025-07-07 11:56:09.176 +0500
   securitySchemes:
     BearerAuth:
       type: http

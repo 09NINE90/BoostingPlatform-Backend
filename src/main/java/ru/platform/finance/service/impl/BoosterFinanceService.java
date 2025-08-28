@@ -7,23 +7,29 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.dao.BoosterFinancialRecordEntity;
 import ru.platform.finance.dao.repository.BoosterFinancialRecordRepository;
+import ru.platform.finance.dto.request.HandleSendTipRqDto;
 import ru.platform.finance.dto.request.HandleWithdrawalRqDto;
 import ru.platform.finance.dto.response.BalanceHistoryRsDto;
+import ru.platform.finance.dto.response.OrderTipHistoryRsDto;
 import ru.platform.finance.mapper.BalanceMapper;
 import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.monitoring.MonitoringMethodType;
+import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
+import ru.platform.orders.service.IOrderForWorkWithFinanceService;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IBoosterService;
+import ru.platform.utils.DateTimeUtils;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static ru.platform.exception.ErrorType.*;
 import static ru.platform.finance.enumz.PaymentStatus.ON_PENDING;
-import static ru.platform.finance.enumz.RecordType.SALARY;
-import static ru.platform.finance.enumz.RecordType.WITHDRAWAL;
+import static ru.platform.finance.enumz.RecordType.*;
 
 @Slf4j
 @Service
@@ -33,6 +39,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
     private final IAuthService authService;
     private final BalanceMapper balanceMapper;
     private final IBoosterService boosterService;
+    private final IOrderForWorkWithFinanceService orderForWorkWithFinanceService;
     private final BoosterFinancialRecordRepository boosterFinancialRecordRepository;
 
     private final String LOG_PREFIX = "Сервис обработки балансов бустера: {}";
@@ -64,6 +71,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      */
     @Override
     @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_WITHDRAWAL)
     public void handleWithdrawal(HandleWithdrawalRqDto request) {
         log.debug(LOG_PREFIX, "Начало обработки запроса на вывод средств");
         UserEntity booster = authService.getAuthUser();
@@ -86,6 +94,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
      * Получение данных об истории баланса бустера
      */
     @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_BALANCE_HISTORY)
     public List<BalanceHistoryRsDto> getBalanceHistoryByBooster() {
         log.debug(LOG_PREFIX, "Начало обработки запроса на получение истории баланса бустера");
         UserEntity booster = authService.getAuthUser();
@@ -96,6 +105,50 @@ public class BoosterFinanceService implements IBoosterFinanceService {
         return balanceList.stream()
                 .map(balanceMapper::toBalanceHistoryRsDto)
                 .toList();
+    }
+
+    /**
+     * Оставление чаевых за заказ
+     */
+    @Override
+    @Transactional
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_SEND_TIP)
+    public void postHandleSendTip(HandleSendTipRqDto request) {
+        OrderEntity order = orderForWorkWithFinanceService.getOrderById(request.getOrderId());
+        BoosterFinancialRecordEntity newRecord = BoosterFinancialRecordEntity.builder()
+                .createdAt(OffsetDateTime.now())
+                .amount(request.getTipAmount())
+                .booster(order.getBooster())
+                .status(ON_PENDING)
+                .recordType(TIP)
+                .order(order)
+                .build();
+
+        boosterFinancialRecordRepository.save(newRecord);
+    }
+
+    /**
+     * Получение истории чаевых к заказу по ID заказа
+     */
+    @Override
+    @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_FINANCE_ORDER_TIPS)
+    public List<OrderTipHistoryRsDto> getOrderTipHistory(UUID orderId) {
+        List<BoosterFinancialRecordEntity> balanceList = boosterFinancialRecordRepository.findAllTipByOrderId(orderId);
+
+        if (balanceList.isEmpty()) return null;
+
+        return balanceList.stream()
+                .map(this::mapToTipHistory)
+                .toList();
+    }
+
+    private OrderTipHistoryRsDto mapToTipHistory(BoosterFinancialRecordEntity entity) {
+        return OrderTipHistoryRsDto.builder()
+                .id(entity.getId())
+                .amount(entity.getAmount())
+                .status(entity.getStatus())
+                .createdAt(DateTimeUtils.offsetDateTimeUTC(entity.getCreatedAt()))
+                .build();
     }
 
 }

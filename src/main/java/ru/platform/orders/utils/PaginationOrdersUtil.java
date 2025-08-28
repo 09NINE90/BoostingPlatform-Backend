@@ -9,7 +9,7 @@ import ru.platform.orders.dto.request.DashboardRqDto;
 public class PaginationOrdersUtil {
     
     public static PageRequest getPageRequest(DashboardRqDto request) {
-        return PageRequest.of(getPageBy(request), getSizeBy(request), SortOrderUtils.getSortBy(request.getSort()));
+        return PageRequest.of(getPageBy(request), getSizeBy(request), SortOrderUtils.getSortByWithDefaultCreationAt(request.getSort()));
     }
 
     private int getPageBy(DashboardRqDto request) {
