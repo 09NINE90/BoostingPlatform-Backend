@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.enumz.GamePlatform;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.sorting.OrderSortFilter;
 import ru.platform.user.dao.UserEntity;
@@ -53,7 +54,7 @@ public class OrdersByBoosterRqDto {
                     maxLength = 10
             )
     )
-    private Set<String> gamePlatforms;
+    private Set<GamePlatform> gamePlatforms;
 
     @Schema(description = "Цена от/до")
     private PriceDto price;

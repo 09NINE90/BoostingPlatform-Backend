@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.enumz.GamePlatform;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +41,7 @@ public class DashboardFiltersRsDto {
                     maxLength = 10
             )
     )
-    private List<String> gamePlatforms;
+    private List<GamePlatform> gamePlatforms;
 
     @Schema(description = "Цена min/max для фильтров")
     private PriceFilterDto price;
@@ -51,9 +53,9 @@ public class DashboardFiltersRsDto {
     public static class PriceFilterDto {
 
         @Schema(description = "Минимальная стоимость заказа для фильтра", example = "100")
-        private Double priceMin;
+        private BigDecimal priceMin;
 
         @Schema(description = "Максимальная стоимость заказа для фильтра", example = "200")
-        private Double priceMax;
+        private BigDecimal priceMax;
     }
 }

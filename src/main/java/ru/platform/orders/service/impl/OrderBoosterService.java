@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.platform.chat.dao.ChatRoomEntity;
 import ru.platform.exception.PlatformException;
 import ru.platform.finance.service.IBoosterFinanceService;
+import ru.platform.games.enumz.GamePlatform;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
@@ -58,19 +59,20 @@ public class OrderBoosterService implements IOrderBoosterService {
     public DashboardFiltersRsDto getFiltersDashboard() {
         UserEntity user = authService.getAuthUser();
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
+        double ratio = boosterProfile.getPercentageOfOrder();
 
         Set<String> gameNames = getGameTagsByBooster(boosterProfile);
 
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatforms(gameNames);
-        Double minPrice = orderRepository.findMinPrice(gameNames);
-        Double maxPrice = orderRepository.findMaxPrice(gameNames);
+        List<GamePlatform> gamePlatforms = orderRepository.findAllDistinctGamePlatforms(gameNames);
+        BigDecimal minPrice = orderRepository.findMinPrice(gameNames);
+        BigDecimal maxPrice = orderRepository.findMaxPrice(gameNames);
 
         return DashboardFiltersRsDto.builder()
                 .gameNames(gameNames)
                 .gamePlatforms(gamePlatforms)
                 .price(DashboardFiltersRsDto.PriceFilterDto.builder()
-                        .priceMin(minPrice)
-                        .priceMax(maxPrice)
+                        .priceMin(minPrice.multiply(BigDecimal.valueOf(ratio)))
+                        .priceMax(maxPrice.multiply(BigDecimal.valueOf(ratio)))
                         .build())
                 .build();
     }
@@ -79,11 +81,12 @@ public class OrderBoosterService implements IOrderBoosterService {
     @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_FILTERS_BY_BOOSTER)
     public OrderFiltersRsDto getFiltersForOrdersByBooster() {
         UserEntity user = authService.getAuthUser();
+
         List<OrderStatus> statuses = orderRepository.findAllDistinctStatusesByBooster(user);
-        List<String> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
+        List<GamePlatform> gamePlatforms = orderRepository.findAllDistinctGamePlatformsByBooster(user);
         List<String> gameNames = orderRepository.findAllDistinctGameNamesByBooster(user);
-        Double minPrice = orderRepository.findMinPriceByBooster(user);
-        Double maxPrice = orderRepository.findMaxPriceByBooster(user);
+        BigDecimal minPrice = orderRepository.findMinPriceByBooster(user);
+        BigDecimal maxPrice = orderRepository.findMaxPriceByBooster(user);
 
         return OrderFiltersRsDto.builder()
                 .gameNames(gameNames)

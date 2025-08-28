@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import ru.platform.games.dto.response.PlatformDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +27,7 @@ public class CartItemRsDto {
     private String gameName;
 
     @Schema(description = "Название платформы", example = "XBOX")
-    private String gamePlatform;
+    private PlatformDto gamePlatform;
 
     @Schema(description = "Название предложения", example = "Legend of Eldoria")
     private String offerName;

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.platform.games.dao.GameEntity;
 import ru.platform.games.dao.GameEntity_;
+import ru.platform.games.dao.PlatformEntity;
+import ru.platform.games.dao.PlatformEntity_;
+import ru.platform.games.enumz.GamePlatform;
 import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderEntity_;
 import ru.platform.orders.dto.request.DashboardRqDto;
@@ -55,9 +58,12 @@ public class OrderDashboardSpecification implements IBaseSpecificationUtil<Order
     }
 
     private void preparePlatforms(Set<Specification<OrderEntity>> set, DashboardRqDto request) {
-        Set<String> gamePlatforms = request.getGamePlatforms();
+        Set<GamePlatform> gamePlatforms = request.getGamePlatforms();
         if (Objects.nonNull(gamePlatforms) && !gamePlatforms.isEmpty()) {
-            set.add(fieldAreIn(gamePlatforms, OrderEntity_.GAME_PLATFORM));
+            set.add((root, query, criteriaBuilder) -> {
+                Join<OrderEntity, PlatformEntity> gameJoin = root.join(OrderEntity_.GAME_PLATFORM, JoinType.LEFT);
+                return gameJoin.get(PlatformEntity_.TITLE).in(gamePlatforms);
+            });
         }
     }
 
