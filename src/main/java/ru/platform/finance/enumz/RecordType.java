@@ -5,12 +5,12 @@ import lombok.Getter;
 /**
  * Типы операций в таблице записей балансов бустера
  * SALARY - зарплата бустера за заказ
- * TIP - чаевые
+ * TIPS - чаевые
  * WITHDRAWAL - вывод средств на счет
  */
 @Getter
 public enum RecordType {
     SALARY,
     WITHDRAWAL,
-    TIP
+    TIPS
 }
