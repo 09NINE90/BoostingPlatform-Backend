@@ -58,7 +58,7 @@ public class BoosterService implements IBoosterService {
                 .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
 
         switch (recordType) {
-            case TIP -> updateTips(amount, profile);
+            case TIPS -> updateTips(amount, profile);
             case SALARY -> updateIncome(amount, profile);
         }
 

@@ -120,7 +120,7 @@ public class BoosterFinanceService implements IBoosterFinanceService {
                 .amount(request.getTipAmount())
                 .booster(order.getBooster())
                 .status(ON_PENDING)
-                .recordType(TIP)
+                .recordType(TIPS)
                 .order(order)
                 .build();
 
