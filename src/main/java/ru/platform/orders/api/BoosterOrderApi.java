@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.platform.orders.dto.request.DashboardRqDto;
+import ru.platform.orders.dto.request.FinishOrderSessionRqDto;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
+import ru.platform.orders.dto.request.StartOrderSessionRqDto;
 import ru.platform.orders.dto.response.*;
 import ru.platform.orders.service.IOrderBoosterService;
+import ru.platform.orders.service.IOrderSessionService;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +26,7 @@ import static ru.platform.LocalConstants.Api.BOOSTER_ORDER_TAG_NAME;
 public class BoosterOrderApi {
 
     private final IOrderBoosterService orderBoosterService;
+    private final IOrderSessionService orderSessionService;
 
     @PostMapping("/dashboard")
     @Operation(summary = "Получить доступные заказы для бустера (дашборд)")
@@ -54,6 +58,21 @@ public class BoosterOrderApi {
     @Operation(summary = "Получить заказ (для бустера)")
     public ResponseEntity<OrderByBoosterRsDto> getBoosterOrderById(@PathVariable("orderId") UUID orderId) {
         return ResponseEntity.ok(orderBoosterService.getOrderById(orderId));
+    }
+
+    @PostMapping("/{orderId}/session/start")
+    @Operation(summary = "Создание сессии по заказу")
+    public ResponseEntity<Void> createSession(@PathVariable("orderId") UUID orderId,
+                                              @RequestBody StartOrderSessionRqDto request) {
+        orderSessionService.startSession(orderId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{orderSessionId}/session/finish")
+    @Operation(summary = "Закрытие сессии по заказу")
+    public ResponseEntity<FinishOrderSessionRsDto> finishSession(@PathVariable("orderSessionId") Long orderSessionId,
+                                                                 @RequestBody FinishOrderSessionRqDto request) {
+        return ResponseEntity.ok(orderSessionService.completeSession(orderSessionId, request));
     }
 
     @PostMapping("/my-orders")

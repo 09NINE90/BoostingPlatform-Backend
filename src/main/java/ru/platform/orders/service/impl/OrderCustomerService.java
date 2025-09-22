@@ -42,9 +42,6 @@ public class OrderCustomerService implements IOrderCustomerService {
 
     private final String LOG_PREFIX = "OrderCustomerService: {}";
 
-    // TODO сделать обновление полей total_orders, total_amount_of_orders
-    //  и добавить пересчет кэшбека и уровня заказчика
-    //  в профиле заказчика при успешном создании заказа
     @Override
     @Transactional
     @PlatformMonitoring(name = MonitoringMethodType.CREATE_ORDER)

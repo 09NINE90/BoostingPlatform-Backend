@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Session Completed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0e0220;
+            -webkit-text-size-adjust: 100%;
+            font-family: "Kanit", Arial, sans-serif;
+        }
+
+        .container {
+            width: 600px;
+            max-width: 600px;
+            background: #110134;
+            color: #E0E0E0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+        }
+
+        .logo {
+            padding: 24px 24px 8px;
+            text-align: center;
+        }
+
+        .logo img {
+            display: block;
+            width: 120px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 300;
+            color: #E0E0E0;
+            margin: 10px 0 0;
+        }
+
+        .session-block {
+            background: #1d0b40;
+            border-radius: 8px;
+            padding: 16px 18px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .link {
+            font-size: 15px;
+            color: #6a9eff;
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 0 4px;
+        }
+
+        .btn-primary {
+            background: #6a00f4;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #3c3c3c;
+            color: #ffffff;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #a9a9a9;
+            padding: 16px 24px 24px;
+            text-align: center;
+        }
+
+        .unsubscribe {
+            margin-top: 6px;
+        }
+
+        .unsubscribe a {
+            color: #888888;
+            text-decoration: underline;
+            font-size: 12px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #2a1a52;
+            margin: 0;
+        }
+
+        .fallback {
+            max-width: 600px;
+            color: #9a9a9a;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                padding: 20px !important;
+            }
+
+            .btn {
+                display: block !important;
+                width: 100% !important;
+                margin: 10px 0 !important;
+            }
+
+            .logo img {
+                max-width: 140px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Preheader -->
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
+    Your session for order has been completed.
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0e0220;">
+    <tr>
+        <td align="center" style="padding:24px 12px;">
+            <table role="presentation" class="container" cellpadding="0" cellspacing="0">
+
+                <tr>
+                    <td class="logo">
+                        <img src="https://s.iimg.su/s/22/gdBU7i0xYALu8gTUy5k7sN2HRr9dAQWfJlpCaSeR.png"
+                             alt="VBoost Gaming Services" width="120" style="display:block; margin:0 auto;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:8px 24px 0;">
+                        <h1>Hello, ${username}!</h1>
+                        <p>The work session for your order has been completed.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:18px 24px 8px;">
+                        <div class="session-block">
+                            <p><strong>Game:</strong> ${gameName}</p>
+                            <p><strong>Service:</strong> ${serviceName}</p>
+                            <p><strong>Session notes:</strong> ${sessionNotes}</p>
+                            <p><strong>Planned duration:</strong> ${plannedDuration} hours</p>
+                            <p><strong>Actual duration:</strong> ${actualDuration}</p>
+                            <p><strong>Completed at (UTC):</strong> ${endTime}</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:8px 24px;">
+                        <a href="${reportLink}" class="link">Report</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:16px 24px 8px;">
+                        <a href="${orderLink}" class="btn btn-primary">View Order</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="footer">
+                        <div>VBoost Gaming Services – FZCO</div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="fallback">
+                If buttons do not work, copy this link to your browser: <a href="${orderLink}" style="color: #6a9eff; text-decoration: underline">Order link</a>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
