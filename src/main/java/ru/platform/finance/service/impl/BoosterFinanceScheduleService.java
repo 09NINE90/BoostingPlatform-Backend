@@ -18,8 +18,7 @@ import ru.platform.utils.DateTimeUtils;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static ru.platform.LocalConstants.DateTimeConstants.ONE_MINUTE;
-import static ru.platform.LocalConstants.DateTimeConstants.TEN_MINUTES;
+import static ru.platform.LocalConstants.DateTimeConstants.*;
 
 @Slf4j
 @Service
@@ -31,7 +30,7 @@ public class BoosterFinanceScheduleService {
     private final BoosterFinancialRecordRepository boosterFinancialRecordRepository;
 
     // Настройки schedule
-    private final int FIXED_RATE_SCHEDULING = TEN_MINUTES;
+    private final int FIXED_RATE_SCHEDULING = ONE_HOUR;
     private final int INITIAL_DELAY_SCHEDULING = ONE_MINUTE;
 
     @Transactional
