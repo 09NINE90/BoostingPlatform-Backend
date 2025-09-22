@@ -22,7 +22,7 @@ public interface BoosterFinancialRecordRepository extends JpaRepository<BoosterF
     @Modifying
     @Query("UPDATE BoosterFinancialRecordEntity r SET r.status = :newStatus, r.completedAt = :completedAt " +
             "WHERE r.status = 'ON_PENDING' AND r.createdAt <= :cutoffDate " +
-            "AND (r.recordType = 'SALARY' OR r.recordType = 'TIP')")
+            "AND (r.recordType = 'SALARY' OR r.recordType = 'TIPS')")
     int markPendingAsCompleted(
             @Param("cutoffDate") OffsetDateTime cutoffDate,
             @Param("newStatus") PaymentStatus newStatus,
@@ -31,7 +31,7 @@ public interface BoosterFinancialRecordRepository extends JpaRepository<BoosterF
 
     @Query("SELECT r FROM BoosterFinancialRecordEntity r " +
             "WHERE r.status = 'COMPLETED' AND r.calculated = false " +
-            "AND (r.recordType = 'SALARY' OR r.recordType = 'TIP') " +
+            "AND (r.recordType = 'SALARY' OR r.recordType = 'TIPS') " +
             "ORDER BY r.completedAt ASC")
     List<BoosterFinancialRecordEntity> findUncalculatedCompleted();
 
@@ -42,6 +42,6 @@ public interface BoosterFinancialRecordRepository extends JpaRepository<BoosterF
     @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.booster = :booster ORDER BY r.createdAt DESC")
     List<BoosterFinancialRecordEntity> findAllByBooster(@Param("booster") UserEntity booster);
 
-    @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.order.id = :orderId AND r.recordType = 'TIP' ORDER BY r.createdAt DESC")
+    @Query("SELECT r FROM BoosterFinancialRecordEntity r WHERE r.order.id = :orderId AND r.recordType = 'TIPS' ORDER BY r.createdAt DESC")
     List<BoosterFinancialRecordEntity> findAllTipByOrderId(@Param("orderId") UUID orderId);
 }
