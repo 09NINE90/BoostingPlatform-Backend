@@ -39,6 +39,7 @@ public class DateTimeUtils {
 
     /**
      * Возвращает строку дату и время с UTC time zone
+     * формат yyyy-MM-dd HH:mm
      */
     public static String offsetDateTimeToStringUTC(OffsetDateTime offsetDateTime) {
         if (offsetDateTime == null) return null;

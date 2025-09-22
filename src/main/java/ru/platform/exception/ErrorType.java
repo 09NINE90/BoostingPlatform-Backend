@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorType {
 
+    // Аутентификация и авторизация
     AUTHORIZATION_ERROR(
             401,
             "Authorization failed. Invalid credentials or token."
@@ -13,6 +14,8 @@ public enum ErrorType {
             403,
             "Access denied. You do not have permission to access this resource."
     ),
+
+    // Работа с email
     EMAIL_VERIFIED_ERROR(
             400,
             "Email address has not been verified."
@@ -22,36 +25,24 @@ public enum ErrorType {
             "Failed to send email. Please try again later."
     ),
     EMAIL_ALREADY_CONFIRMED_ERROR(
-            409 ,
+            409,
             "Email address is already confirmed."
-    ),
-    USER_EXISTS_ERROR(
-            409,
-            "User already exists."
-    ),
-    ORDER_ALREADY_IN_PROGRESS_ERROR(
-            409,
-            "The order is already in progress."
-    ),
-    DATE_CONVERSION_ERROR(
-            400,
-            "Invalid date format or failed date conversion."
-    ),
-    NOT_FOUND_ERROR(
-            404,
-            "Requested data not found."
-    ),
-    NO_GAME_TAGS_ERROR(
-            400,
-            "There are no game tags."
     ),
     TOKEN_EXPIRED_ERROR(
             410,
             "Confirmation token has expired. Please request a new one."
     ),
-    NOT_VALID_REQUEST(
-            400,
-            "Requested data is not valid."
+
+    // Работа с пользователями
+    USER_EXISTS_ERROR(
+            409,
+            "User already exists."
+    ),
+
+    // Работа с заказами (Orders)
+    ORDER_ALREADY_IN_PROGRESS_ERROR(
+            409,
+            "The order is already in progress."
     ),
     ORDER_LIMIT_EXCEEDED_ERROR(
             400,
@@ -61,10 +52,15 @@ public enum ErrorType {
             400,
             "Order cannot be completed because it's not in IN_PROGRESS status."
     ),
-    MISSING_REQUIRED_FIELDS_ERROR(
+    ORDER_SESSION_IS_ALREADY_ACTIVE(
             400,
-            "Required fields are missing."
+            "Order session is already active."
     ),
+    ORDER_SESSION_NOT_ACTIVE(
+            400,
+            "Session is not active."
+    ),
+    // Финансы / Транзакции
     ZERO_AMOUNT_ERROR(
             400,
             "Amount cannot be zero."
@@ -77,9 +73,31 @@ public enum ErrorType {
             400,
             "The amount entered is more than your balance."
     ),
+
+    // Общие ошибки запроса/данных
+    NOT_VALID_REQUEST(
+            400,
+            "Requested data is not valid."
+    ),
+    DATE_CONVERSION_ERROR(
+            400,
+            "Invalid date format or failed date conversion."
+    ),
+    MISSING_REQUIRED_FIELDS_ERROR(
+            400,
+            "Required fields are missing."
+    ),
     JSON_LOAD_ERROR(
             400,
             "Failed to load object from JSON."
+    ),
+    NOT_FOUND_ERROR(
+            404,
+            "Requested data not found."
+    ),
+    NO_GAME_TAGS_ERROR(
+            400,
+            "There are no game tags."
     );
 
     private final int httpStatus;

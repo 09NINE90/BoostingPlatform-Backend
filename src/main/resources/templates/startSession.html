@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Session Started</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <style>
+        /* Page */
+        body {
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            background: #0e0220;
+            font-family: 'Kanit', Arial, sans-serif;
+            color: #E0E0E0;
+        }
+
+        .page {
+            background: #0e0220;
+            width: 100%;
+        }
+
+        .wrap {
+            padding: 24px 12px;
+        }
+
+        .container {
+            width: 600px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #110134;
+            color: #E0E0E0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+        }
+
+        /* Header */
+        .logo {
+            padding: 24px 24px 8px;
+            text-align: center;
+        }
+
+        .logo img {
+            display: block;
+            width: 120px;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        /* Title */
+        .title {
+            padding: 8px 24px 0;
+            text-align: center;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        .title p {
+            margin: 10px 0 0;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        /* Session block */
+        .block {
+            padding: 18px 24px 8px;
+        }
+
+        .card {
+            width: 100%;
+            background: #1d0b40;
+            border-radius: 8px;
+        }
+
+        .card-inner {
+            padding: 16px 18px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .card-inner p {
+            margin: 0 0 6px;
+        }
+
+        .card-inner p:last-child {
+            margin: 0;
+        }
+
+        /* Stream link */
+        .stream {
+            padding: 8px 24px;
+            text-align: center;
+        }
+
+        .stream a {
+            color: #6a9eff;
+            text-decoration: underline;
+        }
+
+        /* CTAs */
+        .ctas {
+            padding: 16px 24px 8px;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #ffffff;
+            background: #6a00f4;
+            margin: 0 4px;
+        }
+
+        .btn.secondary {
+            background: #3c3c3c;
+        }
+
+        /* Note */
+        .note {
+            padding: 6px 24px 20px;
+            text-align: center;
+        }
+
+        .note p {
+            margin: 0;
+            font-size: 14px;
+            color: #cfcfcf;
+        }
+
+        /* Divider */
+        .divider {
+            padding: 0 24px;
+        }
+
+        .divider hr {
+            border: none;
+            border-top: 1px solid #2a1a52;
+            margin: 0;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 16px 24px 24px;
+            font-size: 12px;
+            color: #a9a9a9;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #888888;
+            text-decoration: underline;
+        }
+
+        /* Fallback link */
+        .fallback {
+            max-width: 600px;
+            margin: 0 auto;
+            color: #9a9a9a;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Mobile */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                padding: 20px !important;
+            }
+
+            .btn {
+                display: block !important;
+                width: 100% !important;
+                margin: 10px 0 !important;
+            }
+
+            .logo img {
+                max-width: 140px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Preheader (kept hidden) -->
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
+    A new work session on your order has started. Track it live in your dashboard.
+</div>
+
+<table role="presentation" class="page" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td class="wrap" align="center">
+            <table role="presentation" class="container" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="logo">
+                        <img src="https://s.iimg.su/s/22/gdBU7i0xYALu8gTUy5k7sN2HRr9dAQWfJlpCaSeR.png" alt="VBoost Gaming Services" width="120" style="display:block; margin:0 auto;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="title">
+                        <h1>Hello, ${username}!</h1>
+                        <p>A new <strong>work session</strong> on your order has started.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="block">
+                        <table role="presentation" class="card" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td class="card-inner">
+                                    <p><strong>Game:</strong> ${gameName}</p>
+                                    <p><strong>Service:</strong> ${serviceName}</p>
+                                    <p><strong>Session duration:</strong> ${sessionDuration} hours</p>
+                                    <p><strong>Started at (UTC):</strong> ${startTime}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="stream">
+                        ${streamContent}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="ctas">
+                        <a href="${orderLink}" class="btn">View Order</a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="note">
+                        <p>You can track this session live in your dashboard.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="divider">
+                        <hr>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="footer">
+                        <div>VBoost Gaming Services – FZCO</div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="fallback">
+                If buttons do not work, copy this link to your browser: <a href="${orderLink}" style="color: #6a9eff; text-decoration: underline">Order link</a>
+            </div>
+
+        </td>
+    </tr>
+</table>
+</body>
+</html>

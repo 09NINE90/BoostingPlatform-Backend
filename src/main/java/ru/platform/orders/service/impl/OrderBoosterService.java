@@ -12,7 +12,9 @@ import ru.platform.games.enumz.GamePlatform;
 import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.orders.dao.OrderEntity;
+import ru.platform.orders.dao.OrderSessionEntity;
 import ru.platform.orders.dao.repository.OrderRepository;
+import ru.platform.orders.dao.repository.OrderSessionRepository;
 import ru.platform.orders.dao.specification.OrderDashboardSpecification;
 import ru.platform.orders.dao.specification.OrdersByBoosterSpecification;
 import ru.platform.orders.dto.request.DashboardRqDto;
@@ -48,6 +50,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     private final OrderMapper mapper;
     private final IAuthService authService;
     private final OrderRepository orderRepository;
+    private final OrderSessionRepository orderSessionRepository;
     private final IBoosterFinanceService boosterFinanceService;
     private final OrdersByBoosterSpecification ordersByBoosterSpecification;
     private final OrderDashboardSpecification orderDashboardSpecification;
@@ -296,7 +299,13 @@ public class OrderBoosterService implements IOrderBoosterService {
                 () -> new PlatformException(NOT_FOUND_ERROR)
         );
 
-        return mapper.toOrderByBoosterRsDto(orderEntity);
+        OrderByBoosterRsDto response = mapper.toOrderByBoosterRsDto(orderEntity);
+
+        Optional<OrderSessionEntity> activeSession = orderSessionRepository.findActiveSessionByOrderId(orderId);
+        response.setHasActiveSession(activeSession.isPresent());
+        response.setActiveSessionId(activeSession.map(OrderSessionEntity::getId).orElse(null));
+
+        return response;
     }
 
 }

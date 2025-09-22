@@ -54,6 +54,12 @@ public class OrderByBoosterRsDto {
     @Schema(description = "Дата и время перевода заказа в статус COMPLETED", example = "2025-07-07 11:56:09.176 +0500")
     private OffsetDateTime completedAt;
 
+    @Schema(description = "Есть ли активная сессия", example = "true")
+    private boolean hasActiveSession;
+
+    @Schema(description = "ID активной сессии", example = "123")
+    private Long activeSessionId;
+
     @ArraySchema(
             arraySchema = @Schema(
                     description = "Выбранные дополнительные опции для заказа",
