@@ -30,10 +30,10 @@ public class AuthApi {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/verify-email")
+    @PostMapping("/verify-email/{token}")
     @Operation(summary = "Подтверждение email при регистрации")
-    public ResponseEntity<?> confirmSignUp(@RequestBody EmailConfirmationRequest confirmationToken, HttpServletResponse response) {
-        return ResponseEntity.ok(userService.checkConfirmationSignUp(confirmationToken.getToken(), response));
+    public ResponseEntity<?> confirmSignUp(@PathVariable("token") String confirmationToken, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.checkConfirmationSignUp(confirmationToken, response));
     }
 
     @PostMapping("/resend-verification")
@@ -51,7 +51,7 @@ public class AuthApi {
 
     @PostMapping("/logout")
     @Operation(summary = "Выход из системы")
-    public ResponseEntity<Void> logout( HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return ResponseEntity.ok().build();
     }
