@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -59,4 +60,19 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private CustomerProfileEntity customerProfile;
+
+    /**
+     * Список реферальных отношений, где пользователь является пригласителем
+     */
+    @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("user-referrals")
+    private List<ReferralRelationEntity> referredUsers;
+
+    /**
+     * Реферальное отношение, где пользователь является приглашенным
+     */
+    @OneToOne(mappedBy = "referred", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("user-referrer")
+    private ReferralRelationEntity referredBy;
+
 }

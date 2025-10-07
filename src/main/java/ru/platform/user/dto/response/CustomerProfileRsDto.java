@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import ru.platform.user.enumz.CustomerStatus;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.Variables.*;
 
@@ -17,6 +18,9 @@ import static ru.platform.LocalConstants.Variables.*;
 @NoArgsConstructor
 @Schema(description = "Объект для передачи фронту данные профиля заказчика")
 public class CustomerProfileRsDto {
+
+    @Schema(description = "UUID пользователя для отображения на странице", example = DEFAULT_UUID)
+    private UUID uuid;
 
     @Schema(description = "ID пользователя для отображения на странице", example = DEFAULT_SECOND_UUID)
     private String secondId;

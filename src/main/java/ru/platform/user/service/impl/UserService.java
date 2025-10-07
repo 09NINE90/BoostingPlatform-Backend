@@ -11,6 +11,7 @@ import ru.platform.monitoring.MonitoringMethodType;
 import ru.platform.monitoring.PlatformMonitoring;
 import ru.platform.notification.service.IMailService;
 import ru.platform.user.dao.CustomerProfileEntity;
+import ru.platform.user.dao.ReferralRelationEntity;
 import ru.platform.user.dto.request.ConfirmPasswordRecoveryRqDto;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.LoginUserRqDto;
@@ -18,7 +19,10 @@ import ru.platform.user.dto.response.ConfirmationRsDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
 import ru.platform.user.dao.UserEntity;
 import ru.platform.user.dao.UserProfileEntity;
+import ru.platform.user.dto.response.ReferralInfoRsDto;
 import ru.platform.user.enumz.CustomerStatus;
+import ru.platform.user.enumz.UserType;
+import ru.platform.user.repository.ReferralRelationRepository;
 import ru.platform.user.repository.UserProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
@@ -31,7 +35,9 @@ import ru.platform.utils.JwtUtil;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 import static ru.platform.LocalConstants.CustomerSettings.DISCOUNT_PERCENTAGE_FOR_EXPLORER_STATUS;
 import static ru.platform.LocalConstants.Message.*;
@@ -47,7 +53,9 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final ReferralRelationRepository referralRelationRepository;
     private final IValidationUserService validationUserService;
+    private final ReferralRelationService referralRelationService;
     private final PasswordEncoder encoder;
     private final GenerateSecondIdUtil randomId;
     private final IAuthService authService;
@@ -60,10 +68,15 @@ public class UserService implements IUserService {
      * Обработка запроса на регистрацию пользователя
      */
     @Override
+    @Transactional
     @PlatformMonitoring(name = MonitoringMethodType.REGISTRATION_USER)
     public ConfirmationRsDto registrationUser(SignupUserRqDto user) {
         validationUserService.validateSignUpUser(user);
         isUserExists(user);
+
+        if (user.getRefererId() != null) {
+            validateReferrer(user.getRefererId());
+        }
 
         UserEntity userEntity = createUser(user);
 
@@ -71,6 +84,10 @@ public class UserService implements IUserService {
 
         userRepository.save(userEntity);
         userProfileRepository.save(userEntity.getProfile());
+
+        if (user.getRefererId() != null) {
+            processReferralRelation(user.getRefererId(), userEntity);
+        }
 
         return new ConfirmationRsDto(CONFIRMATION_CODE_MASSAGE, userEntity.getUsername());
     }
@@ -81,6 +98,15 @@ public class UserService implements IUserService {
     private void isUserExists(SignupUserRqDto user) {
         boolean isExists = userRepository.existsByUsername(user.getEmail());
         if (isExists) throw new PlatformException(USER_EXISTS_ERROR);
+    }
+
+    /**
+     * Проверка валидности реферера
+     */
+    private void validateReferrer(UUID referrerId) {
+        if (!userRepository.existsById(referrerId)) {
+            throw new PlatformException(USER_REFERRER_NOT_EXISTS_ERROR);
+        }
     }
 
     /**
@@ -115,7 +141,50 @@ public class UserService implements IUserService {
 
         userEntity.setProfile(profileEntity);
         userEntity.setCustomerProfile(customerProfileEntity);
+
         return userEntity;
+    }
+
+    /**
+     * Обработка реферального отношения
+     */
+    private void processReferralRelation(UUID referrerId, UserEntity newUser) {
+        try {
+            UserEntity referrer = userRepository.findById(referrerId)
+                    .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+
+            if (referrer.getId().equals(newUser.getId())) {
+                throw new PlatformException(USER_REFERRED_YOURSELF_ERROR);
+            }
+
+            if (referralRelationRepository.existsByReferredId(newUser.getId())) {
+                throw new PlatformException(USER_REFERRED_ERROR);
+            }
+
+            ReferralRelationEntity referralRelation = ReferralRelationEntity.builder()
+                    .referrer(referrer)
+                    .referred(newUser)
+                    .referredType(UserType.CLIENT)
+                    .referralPercentage(new BigDecimal("0.02"))
+                    .referralBalance(BigDecimal.ZERO)
+                    .hasActivity(false)
+                    .totalEarned(BigDecimal.ZERO)
+                    .createdAt(OffsetDateTime.now())
+                    .build();
+
+            referralRelationRepository.save(referralRelation);
+
+            if (referrer.getReferredUsers() == null) {
+                referrer.setReferredUsers(new ArrayList<>());
+            }
+            referrer.getReferredUsers().add(referralRelation);
+            userRepository.save(referrer);
+
+
+        } catch (PlatformException e) {
+            log.warn("Failed to create referral relation: {}", e.getMessage());
+            // Не прерываем регистрацию при ошибке реферала
+        }
     }
 
     /**
@@ -247,4 +316,9 @@ public class UserService implements IUserService {
         log.debug("Описание профиля успешно обновлено");
     }
 
+    @Override
+    public ReferralInfoRsDto getUserReferralInfo() {
+        UserEntity userEntity = authService.getAuthUser();
+        return referralRelationService.getUserReferralInfo(userEntity);
+    }
 }

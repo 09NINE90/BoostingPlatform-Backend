@@ -13,4 +13,5 @@ public interface ICustomerService {
      * Получение профиля пользователя (заказчика)
      */
     CustomerProfileRsDto getCustomerProfileData();
+
 }

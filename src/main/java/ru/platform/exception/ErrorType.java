@@ -38,6 +38,18 @@ public enum ErrorType {
             409,
             "User already exists."
     ),
+    USER_REFERRER_NOT_EXISTS_ERROR(
+            409,
+            "Referrer not exists."
+    ),
+    USER_REFERRED_ERROR(
+            409,
+            "User already referred."
+    ),
+    USER_REFERRED_YOURSELF_ERROR(
+            409,
+            "Cannot refer yourself."
+    ),
 
     // Работа с заказами (Orders)
     ORDER_ALREADY_IN_PROGRESS_ERROR(

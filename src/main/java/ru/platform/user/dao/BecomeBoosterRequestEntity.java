@@ -63,4 +63,8 @@ public class BecomeBoosterRequestEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ApplicationStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "referrer_id")
+    private UserEntity referrer;
 }

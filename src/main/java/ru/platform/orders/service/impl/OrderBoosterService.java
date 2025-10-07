@@ -160,7 +160,7 @@ public class OrderBoosterService implements IOrderBoosterService {
     @PlatformMonitoring(name = MonitoringMethodType.GET_ORDERS_BY_BOOSTER_DATA)
     public List<OrderByBoosterRsDto> getOrdersByBooster(OrdersByBoosterRqDto request) {
         UserEntity user = authService.getAuthUser();
-        request.setBooster(user);
+        request.setBoosterId(user.getId());
 
         List<OrderEntity> orders = getServicePageFuncWithSort().apply(request);
         return orders.stream().map(mapper::toOrderByBoosterRsDto).toList();
