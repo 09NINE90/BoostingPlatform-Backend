@@ -209,8 +209,8 @@ public class OfferService implements IOfferService {
     private OfferOptionCartEntity toOfferOptionCartEntity(AddToCartRequestDto.SelectedOptionToCartDto selectedOptionToCartDto) {
         return OfferOptionCartEntity.builder()
                 .optionTitle(selectedOptionToCartDto.getOptionTitle())
-                .label(selectedOptionToCartDto.getValue().toString())
-                .value(selectedOptionToCartDto.getLabel().toString())
+                .label(selectedOptionToCartDto.getLabel().toString())
+                .value(selectedOptionToCartDto.getValue().toString())
                 .build();
     }
 
