@@ -1,9 +1,9 @@
 package ru.platform.orders.dao.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.platform.games.enumz.GamePlatform;
@@ -19,8 +19,23 @@ import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSpecificationExecutor<OrderEntity> {
+
+    @EntityGraph(attributePaths = {
+            "game",
+            "gamePlatform",
+            "booster",
+            "chatRoom",
+            "optionList"
+    })
     List<OrderEntity> findAllByCreator(UserEntity creator);
 
+    @EntityGraph(attributePaths = {
+            "game",
+            "gamePlatform",
+            "booster",
+            "chatRoom",
+            "optionList"
+    })
     @Query("SELECT o FROM OrderEntity o WHERE o.creator = :creator AND o.status = :status")
     List<OrderEntity> findAllByStatusAndByCreator(@Param("status") OrderStatus status,
                                                   @Param("creator") UserEntity creator);
@@ -73,4 +88,14 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
     @Query("SELECT o FROM OrderEntity o WHERE o.booster = :booster AND o.status = 'COMPLETED' " +
             "ORDER BY o.completedAt DESC")
     List<OrderEntity> findAllCompletedOrdersByBooster(@Param("booster") UserEntity booster);
+
+    @EntityGraph(attributePaths = {
+            "game",
+            "gamePlatform",
+            "booster",
+            "chatRoom",
+            "optionList"
+    })
+    Page<OrderEntity> findAll(Specification<OrderEntity> spec, Pageable pageable);
+
 }

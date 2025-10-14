@@ -116,16 +116,16 @@ public class OrderMapper {
                 .build();
     }
 
-    private List<OrderRsDto.CartSelectedOptionsDto> toOrderListOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
+    private List<OrderRsDto.SelectedOptionsDto> toOrderListOptionDtoList(List<OrderOptionEntity> orderOptionEntities) {
         if (orderOptionEntities == null || orderOptionEntities.isEmpty()) return emptyList();
         return orderOptionEntities.stream().map(this::toOrderListOptionDto).toList();
     }
 
-    private OrderRsDto.CartSelectedOptionsDto toOrderListOptionDto(OrderOptionEntity cartSelectedOptionsDto) {
-        return OrderRsDto.CartSelectedOptionsDto.builder()
-                .value(cartSelectedOptionsDto.getValue())
-                .label(cartSelectedOptionsDto.getLabel())
-                .optionTitle(cartSelectedOptionsDto.getOptionTitle())
+    private OrderRsDto.SelectedOptionsDto toOrderListOptionDto(OrderOptionEntity selectedOptionsDto) {
+        return OrderRsDto.SelectedOptionsDto.builder()
+                .value(selectedOptionsDto.getValue())
+                .label(selectedOptionsDto.getLabel())
+                .optionTitle(selectedOptionsDto.getOptionTitle())
                 .build();
     }
 

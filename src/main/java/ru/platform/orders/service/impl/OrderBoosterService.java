@@ -109,19 +109,21 @@ public class OrderBoosterService implements IOrderBoosterService {
         BoosterProfileEntity boosterProfile = user.getBoosterProfile();
 
         if (request.getGameNames().isEmpty()) {
-            if (getGameTagsByBooster(boosterProfile).isEmpty()) {
+            Set<String> gameTags = getGameTagsByBooster(boosterProfile);
+            if (gameTags.isEmpty()) {
                 throw new PlatformException(NO_GAME_TAGS_ERROR);
             }
-            request.setGameNames(getGameTagsByBooster(boosterProfile));
+            request.setGameNames(gameTags);
         }
 
         double ratio = boosterProfile.getPercentageOfOrder();
-
         request.setStatus(CREATED);
         preparationRequest(request, ratio);
+
         Page<OrderEntity> orders = getServicePageFuncWithSortAndPage().apply(request);
         OrderListRsDto response = mapper.toOrderListRsDto(orders);
         response.setOrders(recalculationPrice(response.getOrders(), ratio));
+
         return response;
     }
 
@@ -186,9 +188,9 @@ public class OrderBoosterService implements IOrderBoosterService {
             ChatRoomEntity chatRoom = new ChatRoomEntity();
             chatRoom.setTitle("Order " + order.getSecondId());
             chatRoom.setParticipants(List.of(order.getCreator(), user));
-            chatRoom.setOrder(order); // важная связь
+            chatRoom.setOrder(order);
 
-            order.setChatRoom(chatRoom); // чтобы двусторонняя связь сохранялась каскадно
+            order.setChatRoom(chatRoom);
         }
 
         orderRepository.save(order);

@@ -64,14 +64,14 @@ public class UserEntity {
     /**
      * Список реферальных отношений, где пользователь является пригласителем
      */
-    @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "referrer", cascade = CascadeType.ALL)
     @JsonManagedReference("user-referrals")
     private List<ReferralRelationEntity> referredUsers;
 
     /**
      * Реферальное отношение, где пользователь является приглашенным
      */
-    @OneToOne(mappedBy = "referred", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "referred", cascade = CascadeType.ALL)
     @JsonManagedReference("user-referrer")
     private ReferralRelationEntity referredBy;
 
