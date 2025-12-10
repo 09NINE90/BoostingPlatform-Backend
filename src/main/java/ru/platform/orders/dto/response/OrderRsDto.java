@@ -63,15 +63,15 @@ public class OrderRsDto {
                   "label": "С включением стрима"
                 }]"""
             ),
-            schema = @Schema(implementation = CartSelectedOptionsDto.class)
+            schema = @Schema(implementation = SelectedOptionsDto.class)
     )
-    private List<CartSelectedOptionsDto> selectedOptions;
+    private List<SelectedOptionsDto> selectedOptions;
 
     @Data
     @Builder
     @Jacksonized
     @Schema(description = "Выбранная опция для заказа")
-    public static class CartSelectedOptionsDto {
+    public static class SelectedOptionsDto {
 
         @Schema(description = "Название опции, выбранной пользователем", example = "Стрим-сопровождение")
         private String optionTitle;

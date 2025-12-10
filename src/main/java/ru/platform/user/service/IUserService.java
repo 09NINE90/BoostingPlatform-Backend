@@ -4,13 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import ru.platform.user.dto.request.ConfirmPasswordRecoveryRqDto;
 import ru.platform.user.dto.request.ConfirmationEmailRqDto;
 import ru.platform.user.dto.request.SignupUserRqDto;
-import ru.platform.user.dto.response.BoosterProfileRsDto;
-import ru.platform.user.dto.response.ConfirmationRsDto;
-import ru.platform.user.dto.response.CustomerProfileRsDto;
-import ru.platform.user.dto.response.MiniBoosterProfileRsDto;
+import ru.platform.user.dto.response.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 public interface IUserService {
     /**
@@ -52,4 +48,10 @@ public interface IUserService {
      * Обновление описания профиля пользователя
      */
     void changeDescription(String description);
+
+
+    /**
+     * Получение данных о рефералах заказчика
+     */
+    ReferralInfoRsDto getUserReferralInfo();
 }

@@ -23,6 +23,7 @@ import ru.platform.user.repository.BoosterProfileRepository;
 import ru.platform.user.repository.UserRepository;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.IBoosterService;
+import ru.platform.utils.DtoUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -153,6 +154,7 @@ public class BoosterService implements IBoosterService {
         BoosterProfileEntity boosterProfile = userEntity.getBoosterProfile();
 
         return BoosterProfileRsDto.builder()
+                .uuid(userEntity.getId())
                 .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
@@ -222,7 +224,16 @@ public class BoosterService implements IBoosterService {
     @Override
     @PlatformMonitoring(name = MonitoringMethodType.BOOSTER_BECOME_REQUEST)
     public void becomeBoosterRequest(BecomeBoosterRqDto becomeBoosterRqDto) {
-        becomeBoosterRequestRepository.save(toEntity(becomeBoosterRqDto));
+        BecomeBoosterRequestEntity entity = toEntity(becomeBoosterRqDto);
+        if (!DtoUtil.isDeepEmpty(becomeBoosterRqDto, BecomeBoosterRqDto::getReferrerId)) {
+            UUID referrerId = becomeBoosterRqDto.getReferrerId();
+            if (userRepository.existsById(referrerId)) {
+                UserEntity referrer = userRepository.findById(referrerId)
+                        .orElseThrow(() -> new PlatformException(NOT_FOUND_ERROR));
+                entity.setReferrer(referrer);
+            }
+        }
+        becomeBoosterRequestRepository.save(entity);
     }
 
     private BecomeBoosterRequestEntity toEntity(BecomeBoosterRqDto dto) {

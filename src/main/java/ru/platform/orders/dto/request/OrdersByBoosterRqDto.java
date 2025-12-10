@@ -7,16 +7,16 @@ import lombok.Data;
 import ru.platform.games.enumz.GamePlatform;
 import ru.platform.orders.enumz.OrderStatus;
 import ru.platform.orders.sorting.OrderSortFilter;
-import ru.platform.user.dao.UserEntity;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
 public class OrdersByBoosterRqDto {
 
     @Schema(hidden = true)
-    private UserEntity booster;
+    private UUID boosterId;
 
     @ArraySchema(
             arraySchema = @Schema(description = "Доступные статусы заказов"),

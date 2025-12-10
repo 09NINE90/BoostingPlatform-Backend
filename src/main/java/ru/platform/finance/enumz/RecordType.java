@@ -12,5 +12,6 @@ import lombok.Getter;
 public enum RecordType {
     SALARY,
     WITHDRAWAL,
-    TIPS
+    TIPS,
+    REFERRAL_BONUS
 }

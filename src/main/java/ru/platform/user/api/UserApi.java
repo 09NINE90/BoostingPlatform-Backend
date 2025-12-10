@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.platform.user.dto.response.ReferralInfoRsDto;
 import ru.platform.user.service.IUserService;
 
 import static ru.platform.LocalConstants.Api.*;
@@ -29,5 +30,12 @@ public class UserApi {
     public ResponseEntity<Void> changeDescriptionProfile(@RequestParam String description) {
         userService.changeDescription(description);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/referrals")
+    @Operation(summary = "Получение информации о рефералах пользователя")
+    public ResponseEntity<ReferralInfoRsDto> getUserReferralInfo() {
+        ReferralInfoRsDto result = userService.getUserReferralInfo();
+        return ResponseEntity.ok(result);
     }
 }

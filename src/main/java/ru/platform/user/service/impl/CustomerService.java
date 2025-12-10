@@ -45,6 +45,7 @@ public class CustomerService implements ICustomerService {
         CustomerProfileEntity customerProfile = userEntity.getCustomerProfile();
 
         return CustomerProfileRsDto.builder()
+                .uuid(userEntity.getId())
                 .email(userEntity.getUsername())
                 .nickname(profileEntity.getNickname())
                 .imageUrl(profileEntity.getImageUrl())
@@ -81,4 +82,5 @@ public class CustomerService implements ICustomerService {
             case IMMORTAL -> null;
         };
     }
+
 }

@@ -14,6 +14,7 @@ import ru.platform.orders.dao.OrderEntity;
 import ru.platform.orders.dao.OrderEntity_;
 import ru.platform.orders.dto.request.OrdersByBoosterRqDto;
 import ru.platform.user.dao.UserEntity;
+import ru.platform.user.dao.UserEntity_;
 import ru.platform.utils.IBaseSpecificationUtil;
 
 import java.util.*;
@@ -41,9 +42,12 @@ public class OrdersByBoosterSpecification implements IBaseSpecificationUtil<Orde
     }
 
     private void prepareBooster(Set<Specification<OrderEntity>> set, OrdersByBoosterRqDto request) {
-        UserEntity booster = request.getBooster();
-        if (Objects.nonNull(booster)) {
-            set.add(fieldEqualTo(booster, OrderEntity_.BOOSTER));
+        UUID boosterId = request.getBoosterId();
+        if (Objects.nonNull(boosterId)) {
+            set.add((root, query, criteriaBuilder) -> {
+                Join<OrderEntity, UserEntity> boosterJoin = root.join(OrderEntity_.BOOSTER, JoinType.INNER);
+                return criteriaBuilder.equal(boosterJoin.get(UserEntity_.ID), boosterId);
+            });
         }
     }
 

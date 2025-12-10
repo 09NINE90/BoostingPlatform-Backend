@@ -20,6 +20,8 @@ import ru.platform.user.dao.UserEntity;
 import ru.platform.user.enumz.CustomerStatus;
 import ru.platform.user.service.IAuthService;
 import ru.platform.user.service.ICustomerService;
+import ru.platform.user.service.IReferralRelationService;
+import ru.platform.utils.DtoUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,6 +41,7 @@ public class OrderCustomerService implements IOrderCustomerService {
     private final OrderRepository orderRepository;
     private final ICustomerService customerService;
     private final OfferCartRepository offerCartRepository;
+    private final IReferralRelationService referralRelationService;
 
     private final String LOG_PREFIX = "OrderCustomerService: {}";
 
@@ -47,7 +50,6 @@ public class OrderCustomerService implements IOrderCustomerService {
     @PlatformMonitoring(name = MonitoringMethodType.CREATE_ORDER)
     public void createOrder(List<UUID> itemsIds) {
 
-        // Получение заказов из таблицы по списку id
         List<OfferCartEntity> cartEntities = offerCartRepository.findAllById(itemsIds);
 
         UserEntity user = authService.getAuthUser();
@@ -59,11 +61,10 @@ public class OrderCustomerService implements IOrderCustomerService {
                 })
                 .toList();
 
-        // Сохранение заказов из корзины
         orderRepository.saveAll(ordersToSave);
 
+        calculateReferralBonus(user, ordersToSave);
         updateCustomerProfile(user.getCustomerProfile(), ordersToSave);
-        // Удаление из корзины объектов, по которым созданы заказы
         offerCartRepository.deleteAllById(itemsIds);
     }
 
@@ -107,6 +108,24 @@ public class OrderCustomerService implements IOrderCustomerService {
         }
 
         customerService.updateCustomerProfile(customerProfile);
+    }
+
+    /**
+     * Расчет реферального бонуса
+     */
+    private void calculateReferralBonus(UserEntity referral, List<OrderEntity> ordersToSave) {
+        if (DtoUtil.isDeepEmpty(referral, UserEntity::getReferredBy)) return;
+
+        BigDecimal totalSum = ordersToSave.stream()
+                .map(OrderEntity::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal bonusPercent = referral.getReferredBy().getReferralPercentage();
+        BigDecimal bonusSum = totalSum.multiply(bonusPercent);
+
+        Integer totalOrderCount = ordersToSave.size();
+
+        referralRelationService.calculateReferralBonus(referral, bonusSum, totalSum, totalOrderCount);
     }
 
     @Override

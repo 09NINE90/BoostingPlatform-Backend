@@ -9,11 +9,15 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @Schema(description = "Заявка на присоединение к бустерам")
 public class BecomeBoosterRqDto {
+
+    @Schema(description = "ID реферера")
+    private UUID referrerId;
 
     @NotNull
     @NotBlank
